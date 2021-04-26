@@ -1,0 +1,71 @@
+{% extends 'houses/base.html' %}
+{% load static %}
+
+
+{% block title %}SharePay - Welcome{% endblock title %}
+
+{% block content %}
+  <div class="overlay"></div>
+  <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
+    <source src="{% static 'mp4/bg.mp4' %}" type="video/mp4">
+  </video>
+
+  <div class="masthead">
+    <div class="masthead-bg"></div>
+    <div class="container h-100">
+      <div class="row h-100">
+        <div class="col-12 my-auto">
+          <div class="masthead-content text-white py-5 py-md-0">
+            <h1 class="mb-3">Are you ready?</h1>
+            <p class="mb-5">Share how much each houses mates will pay in
+              <strong>{% now 'M Y' %}</strong>! Sign up and lets break it down!</p>
+
+              {% if not user.is_authenticated %}
+            <div class="input-group input-group-newsletter">
+              <!-- <input type="email" class="form-control" placeholder="Enter email..." aria-label="Enter email..." aria-describedby="submit-button"> -->
+              <div class="input-group-append">
+                <a href="{% url 'users:signup' %}" type="button" class="btn btn-outline-warning btn-lg btn-block">Sign Up</a>
+              </div>
+            </div>
+            {% else %}
+            <div class="input-group input-group-newsletter">
+              <!-- <input type="email" class="form-control" placeholder="Enter email..." aria-label="Enter email..." aria-describedby="submit-button"> -->
+              <div class="input-group-append">
+                <a href="{% url 'users:logout' %}" type="button" class="btn btn-outline-warning btn-lg btn-block">Start SharePay</a>
+              </div>
+            </div>
+            {% endif %}
+            {% if user.is_authenticated %}
+            <hr>
+            <hr>
+            <hr>
+              <div class="input-group-append">
+                <a href="{% url 'users:logout' %}" type="button" class="btn btn-outline-warning btn-sm ">Log Out</a>
+              </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="social-icons">
+    <ul class="list-unstyled text-center mb-0">
+      <li class="list-unstyled-item">
+        <a href="#">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+      <li class="list-unstyled-item">
+        <a href="#">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+      </li>
+      <li class="list-unstyled-item">
+        <a href="#">
+          <i class="fab fa-instagram"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+{% endblock content %}

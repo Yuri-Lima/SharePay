@@ -1,0 +1,66 @@
+{% extends 'registration/base.html' %}
+{% load static %}
+
+{% block title %}Log In{% endblock %}
+
+{% block content %}
+  
+    <div class="d-flex py-3 flex-column">
+        <div class="py-5 ">         
+        </div>
+        <div class="p-1 align-self-center">
+            <img class="d-block  py-2 mx-auto align-self-center" src="{% static 'logo/sharepay_dogao_text.png' %}" alt="" width="212" height='mx-auto'>
+        </div>
+    
+        <div class="p-2 align-self-center">
+            <div class="form-group">
+                <form class="needs-validation" novalidate method="POST">
+                    {% csrf_token %}
+                    {% if form.errors %}
+                    <div class="alert alert-warning" role="alert">
+                        Your username or password didn't match. Please try again.
+                    </div>
+                    {% endif %}
+                    <div class="p-2 align-self-center">
+                        <!-- UserName Field -->
+                        {{ form.username.label_tag }}
+                        <div class="input-group">
+                            
+                            {{form.username}}
+                        </div>
+                    </div>
+                    <div class="p-2 align-self-center">
+                        <!-- Password Field -->
+                        {{ form.password.label_tag }}
+                        <div class="input-group">
+                            
+                            {{form.password}}
+                        </div>
+                        
+                    </div>
+                    <div class="p-2 align-self-center">
+                        <button class="btn btn-primary btn-md btn-block" type="submit">Login</button><br>
+                        
+                    </div>
+                </form>
+                <a href="{% url 'users:signup' %}"><small>Register for an account?</small></a><br>
+                <a href="{% url 'users:password_reset' %}"><small>Lost password?</small></a>
+            </div>
+        </div>
+    
+
+    <!-- ==================Footer================ -->
+
+    <footer class="my-1 pt-1 text-muted text-center text-small">
+        <p class="mb-1">&copy; 2021 - {% now 'Y'%} SharePay</p>
+        <ul class="list-inline">
+          <li class="list-inline-item"><a href="#">Privacy</a></li>
+          <li class="list-inline-item"><a href="#">Terms</a></li>
+          <li class="list-inline-item"><a href="#">Support</a></li>
+        </ul>
+      </footer>
+    </div>
+</div>
+    {% endblock content %}
+    
+    {% url 'password_reset' %}
