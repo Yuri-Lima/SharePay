@@ -16,7 +16,15 @@
       <div class="row h-100">
         <div class="col-12 my-auto">
           <div class="masthead-content text-white py-5 py-md-0">
-            <h1 class="mb-3">Are you ready?</h1>
+          {% if user.is_authenticated %}
+            {% if houses %}
+              <h1 class="mb-3">Welcome Back, {{ user|capfirst }}!</h1>
+            {% else %}
+              <h1 class="mb-3">Are you ready, {{ user|capfirst }}?</h1>
+            {% endif %}
+          {% else %}
+          <h1 class="mb-3">Welcome!</h1>
+          {% endif %}
             <p class="mb-5">Share how much each houses mates will pay in
               <strong>{% now 'M Y' %}</strong>! Sign up and lets break it down!</p>
 
@@ -29,10 +37,16 @@
             </div>
             {% else %}
             <div class="input-group input-group-newsletter">
-              <!-- <input type="email" class="form-control" placeholder="Enter email..." aria-label="Enter email..." aria-describedby="submit-button"> -->
+            {% if houses %}
               <div class="input-group-append">
-                <a href="{% url 'users:logout' %}" type="button" class="btn btn-outline-warning btn-lg btn-block">Start SharePay</a>
+                <a href="{% url 'share:list_house_name' %}" type="button" class="btn btn-outline-warning btn-lg btn-block">Edit SharePay</a>
               </div>
+            {% else %}
+              <div class="input-group-append">
+                <a href="{% url 'share:create_house_name' %}" type="button" class="btn btn-outline-warning btn-lg btn-block">Start SharePay</a>
+              </div>
+            {% endif %}
+              
             </div>
             {% endif %}
             {% if user.is_authenticated %}

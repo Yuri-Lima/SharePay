@@ -13,7 +13,7 @@ class HouseNameModel(models.Model):
         return self.house_name
     
     def get_absolute_url(self):
-        return reverse('share:houses_name_detail', kwargs={'pk': self.pk})
+        return reverse('share:detail_house_name', kwargs={'pk': self.pk})
 
 class HouseTenantModel(models.Model):
     house_name_FK = models.ForeignKey(HouseNameModel, null=False, blank=False, max_length=255,
@@ -50,4 +50,4 @@ class HouseBillModel(models.Model):
             self.days_bill = 30
     
     def get_absolute_url(self):
-        return reverse('share:houses_name_detail', kwargs={'pk': self.pk})
+        return reverse('share:detail_house_name', kwargs={'pk': self.pk})

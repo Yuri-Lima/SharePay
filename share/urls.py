@@ -1,15 +1,22 @@
 from django.urls import path
-from .views import IndexTemplateView
+from .views import (
+    IndexTemplateView,
+    HouseNameListView, 
+    HouseNameCreateView, 
+    HouseNameDetailView,
+    HouseNameFormView,
+    HouseBillFormView,
+)
 
 app_name = 'share'
 
 urlpatterns = [
     path('', IndexTemplateView.as_view(), name='index'),
-    path('sharepay/', HousesNameListView.as_view(), name='houses_name_list'),
-    path('sharepay/add/', HousesNameCreateView.as_view(), name='houses_name_create'),
-    path('sharepay/<int:pk>/', HousesNameDetailView.as_view(), name='houses_name_detail'),
-    path('sharepay/<int:pk>/tenant/edit/', HousesNameUpdateView.as_view(), name='houses_name_edit'),
-    path('sharepay/<int:pk>/bill/edit/', HousesBillUpdateView.as_view(), name='houses_bill_add'),
+    path('sharepay/', HouseNameListView.as_view(), name='list_house_name'),
+    path('sharepay/add/', HouseNameCreateView.as_view(), name='create_house_name'),
+    path('sharepay/<int:pk>/', HouseNameDetailView.as_view(), name='detail_house_name'),
+    path('sharepay/<int:pk>/tenant/edit/', HouseNameFormView.as_view(), name='edit_house_name'),
+    path('sharepay/<int:pk>/bill/edit/', HouseBillFormView.as_view(), name='add_house_bill'),
 
 
 

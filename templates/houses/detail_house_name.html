@@ -1,0 +1,99 @@
+{% extends 'houses/base.html' %}
+{% load static %}
+
+{% block title %}SharePay - Details House - {{house.id}} {% endblock title %}
+
+{% block content %}
+  <div class="overlay"></div>
+  <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
+    <source src="{% static 'mp4/bg.mp4' %}" type="video/mp4">
+  </video>
+
+  <div class="masthead">
+    <div class="masthead-bg"></div>
+    <div class="container h-100">
+      <div class="row h-100">
+        <div class="col-12 my-auto">
+            <div class="masthead-content text-white py-5 py-md-0">
+                <!-- ================================ -->
+                    {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li>{{message}}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                <!-- ================================ -->
+                <!-- ================================ -->
+                <h3>Tenants from {{house.house_name}}</h3>
+                {% comment %} <div class="d-flex d-flex-inline">
+                    <span class="pe-2">Owner Name:</span><h5>{{ house.user|capfirst  }}</h5>
+                </div> {% endcomment %}
+                {% if house.house_bill_related.all %}
+                    {% for bill in  house.house_bill_related.all %}
+                        <div class="d-flex d-flex-inline">
+                            <span class="pe-2">Amout:</span><h5> €{{ bill.amount_bill }} </h5> 
+                        </div>
+                    {% endfor %}
+                    <a href="{% url 'share:add_house_bill' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Edit Bill Value</a>
+                {% else %}
+                    <a href="{% url 'share:add_house_bill' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Add Bill Value</a>
+                {% endif %}
+                {% if house.house_tenant_related.all %}
+                    <a href="{% url 'share:edit_house_name' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Add Another Tenant</a>
+                    {% for name in house.house_tenant_related.all %}
+                        <div class="small">House Id: {{ name.id }}</div>
+                        <div>{{forloop.counter}} - <strong>Tenant's Name:</strong> {{ name.house_tenant }}</div>
+                        <div>Days: {{ name.days }}</div>
+                        <hr>
+                    {% endfor %}
+                {% else %}
+                    <a href="{% url 'share:edit_house_name' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Add Tenants</a>
+                {% endif %}
+                {% if house.house_tenant_related.all %}
+                <p>
+                    {% comment %} <a href="{% url 'share:edit_house_name' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Edit or Add Tenants</a> {% endcomment %}
+                    <a href="{% url 'share:list_house_name' %}" role="button" class="btn btn-secondary w-100">All House's Name</a>
+                </p>
+                {% endif %}
+
+            
+
+
+
+
+
+                {% if user.is_authenticated %}
+                <hr>
+                <hr>
+                <hr>
+                <div class="input-group-append">
+                <a href="{% url 'users:logout' %}" type="button" class="btn btn-outline-warning btn-sm ">Log Out</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="social-icons">
+    <ul class="list-unstyled text-center mb-0">
+      <li class="list-unstyled-item">
+        <a href="#">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+      <li class="list-unstyled-item">
+        <a href="#">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+      </li>
+      <li class="list-unstyled-item">
+        <a href="#">
+          <i class="fab fa-instagram"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+{% endblock content %}
