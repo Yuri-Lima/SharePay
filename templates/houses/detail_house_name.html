@@ -39,14 +39,39 @@
                 {% else %}
                     <a href="{% url 'share:add_house_bill' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Add Bill Value</a>
                 {% endif %}
-                {% if house.house_tenant_related.all %}
+                {% if object_list %}
                     <a href="{% url 'share:edit_house_name' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Add Another Tenant</a>
-                    {% for name in house.house_tenant_related.all %}
-                        <div class="small">House Id: {{ name.id }}</div>
-                        <div>{{forloop.counter}} - <strong>Tenant's Name:</strong> {{ name.house_tenant }}</div>
-                        <div>Days: {{ name.days }}</div>
-                        <hr>
+                    <div> <b>Total Tenants:</b> {{house.house_tenant_related.all.count}}</div>
+                    {% for name in object_list %}
+                      <div class="small">House Id: {{ name.id }}</div>
+                      <div>{{forloop.counter}} - <strong>Tenant's Name:</strong> {{ name.house_tenant }}</div>
+                      <div>Days: {{ name.days }}</div>
+                      <hr>
                     {% endfor %}
+                  <!-- Paginations -->
+              
+                {% if is_paginated %}
+
+                    {% if page_obj.has_previous %}<!-- Esse o objeto que nossa Views passa dentro do nosso template -->
+                        <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+                        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                    {% endif %}
+
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if page_obj.number == num %}<!-- page_obj.number e o numero atual da pagina -->
+                            <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+                        {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                            <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+                        {% endif %}
+
+                    {% endfor %}
+
+                    {% if page_obj.has_next %}<!-- Esse o objeto que nossa Views passa dentro do nosso template -->
+                        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
+                        <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a> <!-- page_obj.pagintor.num_pages Retorna o numero total de paginas -->
+                    {% endif %}
+
+                {% endif %} 
                 {% else %}
                     <a href="{% url 'share:edit_house_name' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Add Tenants</a>
                 {% endif %}
@@ -56,12 +81,6 @@
                     <a href="{% url 'share:list_house_name' %}" role="button" class="btn btn-secondary w-100">All House's Name</a>
                 </p>
                 {% endif %}
-
-            
-
-
-
-
 
                 {% if user.is_authenticated %}
                 <hr>

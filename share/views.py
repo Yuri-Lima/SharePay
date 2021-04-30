@@ -2,12 +2,14 @@ from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls.base import reverse
 from django.views.generic.detail import SingleObjectMixin
+from django.views.generic.list import MultipleObjectMixin
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from .models import HouseNameModel, HouseTenantModel, HouseBillModel
 from .forms import HouseNameFormset, HouseBillFormset 
 from django.views.generic import (CreateView, TemplateView, DeleteView, FormView, ListView, DetailView)
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # Create your views here.
 """Get any context"""
@@ -25,7 +27,7 @@ class IndexTemplateView(TemplateView):
             return ctx
     
 
-class HouseNameListView(ListView):
+class HouseNameListView(LoginRequiredMixin, ListView):
     model = HouseNameModel
     template_name = 'houses/list_house_name.html'
 
@@ -33,7 +35,7 @@ class HouseNameListView(ListView):
         ctx = {
             'housesnames' : HouseNameModel.objects.all().filter(user_FK=self.request.user), 
         }
-        return super().get_context_data(**ctx)
+        return super(HouseNameListView, self).get_context_data(**ctx)
 
 
 class HouseNameCreateView(LoginRequiredMixin, CreateView):
@@ -54,10 +56,19 @@ class HouseNameCreateView(LoginRequiredMixin, CreateView):
 
     
 
-class HouseNameDetailView(LoginRequiredMixin, DetailView):
+class HouseNameDetailView(LoginRequiredMixin, DetailView, MultipleObjectMixin):
     model = HouseNameModel
     template_name = 'houses/detail_house_name.html'
     context_object_name = 'house'
+    paginate_by = 2
+
+    def get_context_data(self, **kwargs):
+        # print(f'OBJECT:{self.object}') 
+        object_list = HouseTenantModel.objects.filter(house_name_FK=self.object)
+        context = super(HouseNameDetailView, self).get_context_data(object_list= object_list, **kwargs)
+        return context
+    
+    
 
 
 class HouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
@@ -67,12 +78,12 @@ class HouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
 
     """Handle GET requests: instantiate a blank version of the form."""
     def get(self, request, *args, **kwargs):
-        self.object = self.get_object(queryset=HouseNameModel.objects.all().order_by('-id'))
-        return super().get(request, *args, **kwargs)
+        self.object = self.get_object(queryset=HouseNameModel.objects.all())
+        return super(HouseNameFormView, self).get(request, *args, **kwargs)
     
     def post(self, request, *args, **kwargs):
-        self.object = self.get_object(queryset=HouseNameModel.objects.all().order_by('-id'))
-        return super().post(request, *args, **kwargs)
+        self.object = self.get_object(queryset=HouseNameModel.objects.all())
+        return super(HouseNameFormView, self).post(request, *args, **kwargs)
 
     """Handle a Formset setting - Instansce get self.object which was set for HousesName by each user"""
     def get_form(self, form_class=None):

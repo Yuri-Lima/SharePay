@@ -8,12 +8,17 @@ class HouseNameModel(models.Model):
     user_FK = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_related', null=False)
     house_name = models.CharField(verbose_name="House name",max_length=150, null=False, blank=False)
     meter = models.IntegerField(default=1)
+    last_updated_house = models.DateField(auto_now_add=True, null=True, blank=True)
     
     def __str__(self) -> str:
         return self.house_name
     
     def get_absolute_url(self):
         return reverse('share:detail_house_name', kwargs={'pk': self.pk})
+
+    class Meta:
+        ordering = ['-last_updated_house']
+    
 
 class HouseTenantModel(models.Model):
     house_name_FK = models.ForeignKey(HouseNameModel, null=False, blank=False, max_length=255,
@@ -22,6 +27,7 @@ class HouseTenantModel(models.Model):
     start_date = models.DateField(null=False, blank=False)
     end_date = models.DateField(null=False, blank=False)
     days = models.IntegerField(default=0)
+    last_updated_tenant = models.DateField(auto_now_add=True, null=True, blank=True)
     
     def __str__(self) -> str:
         return self.house_tenant
@@ -31,6 +37,8 @@ class HouseTenantModel(models.Model):
             self.days = int((self.end_date - self.start_date).days)
         else:
             self.days = 30
+    class Meta:
+        ordering = ['-last_updated_tenant']
         
 class HouseBillModel(models.Model):
     house_bill_FK = models.ForeignKey(HouseNameModel, null=False, blank= False, max_length=255,
@@ -39,6 +47,10 @@ class HouseBillModel(models.Model):
     start_date_bill = models.DateField(null=False, blank=False)
     end_date_bill = models.DateField(null=False, blank=False)
     days_bill = models.IntegerField(default=0)
+    last_updated_bill = models.DateField(auto_now_add=True, null=True, blank=True)
+
+    class Meta:
+        ordering = ['-last_updated_bill']
 
     def __str__(self):
         return str(self.house_bill_FK) + ' - ' + str(self.amount_bill)
