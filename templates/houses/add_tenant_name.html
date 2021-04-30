@@ -29,7 +29,7 @@
             {{ hidden_field.erros }}
         {% endfor %}
         <div class="row pl-4 pr-4 pt-4 pb-2">
-            <p>What is the Tenant's {{forloop.counter|ordinal}} Name?</p>
+            <p>What is the Tenant's <b>{{forloop.counter|ordinal}}</b> Name?</p>
         </div>
         <div class="row pl-4">
             <p>{{ name_form.house_tenant }}</p>
@@ -43,47 +43,34 @@
                 <p>From:</p>
                 <p>{{ name_form.start_date }}</p>
             </div>
-        </div>
-        <div class="row p-4">
-            <div class="col">
+            <div class="col p-0">
                 <p>End:</p>
-            </div>
-            <div class="col">
                 <p>{{ name_form.end_date }}</p>
             </div>
         </div>
         <div class="row p-4">
-            <div class="col">
+            <div class="col p-0">
                 {% if form.can_delete and name_form.instance.id %}
                 <!-- If you are useing formset as ModelFormSet (name_form.id) -->
                 {{ name_form.id }}
-                <p>{{ name_form.DELETE }} - Delete  </p>
+                <p>{{ name_form.DELETE }} - <b>Delete</b></p>
             {% endif %}
+            <button type="submit" value="Add Tenants" class="btn btn-primary w-100 mb-3" >Save/Update</button>
+            <a href="{{ houses.get_absolute_url }}" role="button" class="btn btn-secondary w-100">Back</a>
             </div>
         </div>
         
         {% endfor %}
-        <hr>
-        
-        <p>
-            <button type="submit" value="Add Tenants" class="btn btn-primary w-100 mb-3" >Save/Update</button>
-            <a href="{{ house.get_absolute_url }}" role="button" class="btn btn-secondary w-100">Cancel</a>
-        </p>
       </form>
     
     </div>
     
     {% if user.is_authenticated %}
-    <hr>
-    <hr>
-    <hr>
     <div class="input-group-append">
       <a href="{% url 'users:logout' %}" type="button" class="btn btn-outline-warning btn-sm ">Log Out</a>
     </div>
     {% endif %}
-  </div>
-
-  
+  </div>  
 {% endblock content %}
 
 
@@ -109,22 +96,4 @@
     </div>
   </div>
 
-  <div class="social-icons">
-    <ul class="list-unstyled text-center mb-0">
-      <li class="list-unstyled-item">
-        <a href="#">
-          <i class="fab fa-twitter"></i>
-        </a>
-      </li>
-      <li class="list-unstyled-item">
-        <a href="#">
-          <i class="fab fa-facebook-f"></i>
-        </a>
-      </li>
-      <li class="list-unstyled-item">
-        <a href="#">
-          <i class="fab fa-instagram"></i>
-        </a>
-      </li>
-    </ul>
-  </div>
+  

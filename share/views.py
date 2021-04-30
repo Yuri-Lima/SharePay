@@ -111,15 +111,20 @@ class HouseBillFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
     """Handle GET requests: instantiate a blank version of the form."""
     def get(self, request, *args, **kwargs):
         self.object = self.get_object(queryset=HouseNameModel.objects.all())
-        return super().get(request, *args, **kwargs)
+        return super(HouseBillFormView, self).get(request, *args, **kwargs)
     
     def post(self, request, *args, **kwargs):
         self.object = self.get_object(queryset=HouseNameModel.objects.all())
-        return super().post(request, *args, **kwargs)
+        return super(HouseBillFormView, self).post(request, *args, **kwargs)
 
     """Handle a Formset setting - Instansce get self.object which was set for HousesName by each user"""
     def get_form(self, form_class=None):
         formset = HouseBillFormset(**self.get_form_kwargs(), instance=self.object)
+        # def get_context_data(self, **kwargs):
+        #     context = super(HouseBillFormView, self).get_context_data(object_list= self.formset**kwargs)
+        #     # context["formset"] = self.formset
+        #     return context
+        
         return formset # inline FormSet
 
     def form_valid(self, form) :

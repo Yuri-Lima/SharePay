@@ -9,7 +9,6 @@
   <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
     <source src="{% static 'mp4/bg.mp4' %}" type="video/mp4">
   </video>
-
   <div class="masthead">
     <div class="masthead-bg"></div>
     <div class="container h-100">
@@ -30,23 +29,16 @@
                 <h3>Add a Value of Bill</h3>
                 {% for bill_form in form.forms %}
                     <hr>
-                    <h5> 
-                        {% if form.forms|length > 1 %}
-                            Add Another Value of Bill
-                        {% else %}
-                            Add a Value of Bill
-                        {% endif %}
-                        
-                    </h5>
                 {% for hidden_field in bill_form.hidden_fields %}
                     {{ hidden_field.erros }}
                 {% endfor %}
                 <div class="row">
                     <div class="col">
                         <p>Please Provide to us:</p>
+                        <p>{{ bill_form.amount_bill }}</p>
                     </div>
                     <div class="col">
-                        <p>{{ bill_form.amount_bill }}</p>
+                        
                     </div>
                 </div>
                 <div class="row">
@@ -75,24 +67,26 @@
                         {% if form.can_delete and bill_form.instance.id %}
                         <!-- If you are useing formset as ModelFormSet (name_form.id) -->
                         {{ bill_form.id }}
-                        <p>{{ bill_form.DELETE }} - Delete  </p>
+                        <p>{{ bill_form.DELETE }} - <b>Delete</b></p>
                     {% endif %}
                     </div>
                 </div>
-                
                 {% endfor %}
                 <hr>
-                
                 <p>
-                    <button type="submit" value="Add Tenants" class="btn btn-primary w-100 mb-3" >Add House Bill</button>
-                    <a href="{{ housesbill.get_absolute_url }}" role="button" class="btn btn-secondary w-100">Cancel</a>
+                {{form.house_bill_FK.id }}
+                   {% if form.house_bill_FK.id %}
+                   <button type="submit" value="Add Tenants" class="btn btn-primary w-100 mb-3" >Update House Bill</button>
+                   {% else %}
+                   <button type="submit" value="Add Tenants" class="btn btn-primary w-100 mb-3" >Add House Bill</button>
+                   {% endif %}
+                    
+                    <a href="{{ housesbill.get_absolute_url }}" role="button" class="btn btn-secondary w-100">Back</a>
                 </p>
             </form>
 
 
             {% if user.is_authenticated %}
-            <hr>
-            <hr>
             <hr>
             <div class="input-group-append">
               <a href="{% url 'users:logout' %}" type="button" class="btn btn-outline-warning btn-sm ">Log Out</a>

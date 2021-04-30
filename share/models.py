@@ -31,6 +31,9 @@ class HouseTenantModel(models.Model):
     
     def __str__(self) -> str:
         return self.house_tenant
+    
+    def get_absolute_url(self):
+        return reverse('share:detail_house_name', kwargs={'pk': self.pk})
 
     def clean(self):
         if self.start_date and self.end_date:
@@ -43,7 +46,7 @@ class HouseTenantModel(models.Model):
 class HouseBillModel(models.Model):
     house_bill_FK = models.ForeignKey(HouseNameModel, null=False, blank= False, max_length=255,
                                 on_delete=models.CASCADE, related_name='house_bill_related')
-    amount_bill = models.FloatField(null=False, blank=False)
+    amount_bill = models.DecimalField(null=True, blank= True, max_digits=6, decimal_places=2)
     start_date_bill = models.DateField(null=False, blank=False)
     end_date_bill = models.DateField(null=False, blank=False)
     days_bill = models.IntegerField(default=0)
