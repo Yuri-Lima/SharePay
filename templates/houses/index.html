@@ -38,11 +38,11 @@
             {% else %}
             <div class="input-group input-group-newsletter">
             {% if houses %}
-              <div class="input-group-append">
+              <div class="input-group-append p-3">
                 <a href="{% url 'share:list_house_name' %}" type="button" class="btn btn-outline-warning btn-lg btn-block">Edit SharePay</a>
               </div>
             {% else %}
-              <div class="input-group-append">
+              <div class="input-group-append p-3">
                 <a href="{% url 'share:create_house_name' %}" type="button" class="btn btn-outline-warning btn-lg btn-block">Start SharePay</a>
               </div>
             {% endif %}
@@ -50,10 +50,7 @@
             </div>
             {% endif %}
             {% if user.is_authenticated %}
-            <hr>
-            <hr>
-            <hr>
-              <div class="input-group-append">
+              <div class="input-group-append p-3">
                 <a href="{% url 'users:logout' %}" type="button" class="btn btn-outline-warning btn-sm ">Log Out</a>
               </div>
             {% endif %}

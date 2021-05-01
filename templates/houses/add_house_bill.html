@@ -1,7 +1,6 @@
 {% extends 'houses/base.html' %}
 {% load static %}
 
-
 {% block title %}SharePay - Bill House{% endblock title %}
 
 {% block content %}
@@ -35,7 +34,7 @@
                 <div class="row">
                     <div class="col">
                         <p>Please Provide to us:</p>
-                        <p>{{ bill_form.amount_bill }}</p>
+                        <p>{{bill_form.amount_bill}}</p>
                     </div>
                     <div class="col">
                         
@@ -74,13 +73,11 @@
                 {% endfor %}
                 <hr>
                 <p>
-                {{form.house_bill_FK.id }}
-                   {% if form.house_bill_FK.id %}
-                   <button type="submit" value="Add Tenants" class="btn btn-primary w-100 mb-3" >Update House Bill</button>
-                   {% else %}
-                   <button type="submit" value="Add Tenants" class="btn btn-primary w-100 mb-3" >Add House Bill</button>
-                   {% endif %}
-                    
+                {% for bill in  housesbill.house_bill_related.all %}
+                    <button type="submit" value="Add Tenants" class="btn btn-primary w-100 mb-3" >Update House Bill</button>
+                {% empty %}
+                    <button type="submit" value="Add Tenants" class="btn btn-primary w-100 mb-3" >Add House Bill</button>
+                {% endfor %}
                     <a href="{{ housesbill.get_absolute_url }}" role="button" class="btn btn-secondary w-100">Back</a>
                 </p>
             </form>

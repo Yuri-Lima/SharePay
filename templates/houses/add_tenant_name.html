@@ -55,7 +55,7 @@
                 {{ name_form.id }}
                 <p>{{ name_form.DELETE }} - <b>Delete</b></p>
             {% endif %}
-            <button type="submit" value="Add Tenants" class="btn btn-primary w-100 mb-3" >Save/Update</button>
+            <button type="submit" value="Add Tenants" class="btn btn-primary w-100 mb-3" >Save</button>
             <a href="{{ houses.get_absolute_url }}" role="button" class="btn btn-secondary w-100">Back</a>
             </div>
         </div>
@@ -66,34 +66,11 @@
     </div>
     
     {% if user.is_authenticated %}
-    <div class="input-group-append">
+    <div class="input-group-append py-3 pl-2">
       <a href="{% url 'users:logout' %}" type="button" class="btn btn-outline-warning btn-sm ">Log Out</a>
     </div>
     {% endif %}
   </div>  
 {% endblock content %}
-
-
-<div class="masthead">
-    <div class="masthead-bg"></div>
-    <div class="container h-100">
-      <div class="row h-100">
-        <div class="col-12 my-auto">
-          <div class="masthead-content text-white py-5 py-md-0">
-              
-
-            {% if user.is_authenticated %}
-            <hr>
-            <hr>
-            <hr>
-            <div class="input-group-append">
-              <a href="{% url 'users:logout' %}" type="button" class="btn btn-outline-warning btn-sm ">Log Out</a>
-            </div>
-            {% endif %}
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 
   

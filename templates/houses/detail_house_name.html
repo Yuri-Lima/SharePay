@@ -1,5 +1,6 @@
 {% extends 'houses/base.html' %}
 {% load static %}
+{% load humanize %}
 
 {% block title %}SharePay - Details House - {{house.id}} {% endblock title %}
 
@@ -32,7 +33,7 @@
                 {% if house.house_bill_related.all %}
                     {% for bill in  house.house_bill_related.all %}
                         <div class="d-flex d-flex-inline">
-                            <span class="pe-2">Amout:</span><h5> €{{ bill.amount_bill }} </h5> 
+                            <span class="pe-2"><h6>Amout: €{{ bill.amount_bill|intcomma }}</h6></span>
                         </div>
                     {% endfor %}
                     <a href="{% url 'share:add_house_bill' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Edit Bill Value</a>
@@ -83,9 +84,6 @@
                 {% endif %}
 
                 {% if user.is_authenticated %}
-                <hr>
-                <hr>
-                <hr>
                 <div class="input-group-append">
                 <a href="{% url 'users:logout' %}" type="button" class="btn btn-outline-warning btn-sm ">Log Out</a>
                 </div>

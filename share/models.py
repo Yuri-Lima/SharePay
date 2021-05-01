@@ -46,7 +46,7 @@ class HouseTenantModel(models.Model):
 class HouseBillModel(models.Model):
     house_bill_FK = models.ForeignKey(HouseNameModel, null=False, blank= False, max_length=255,
                                 on_delete=models.CASCADE, related_name='house_bill_related')
-    amount_bill = models.DecimalField(null=True, blank= True, max_digits=6, decimal_places=2)
+    amount_bill = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=2)
     start_date_bill = models.DateField(null=False, blank=False)
     end_date_bill = models.DateField(null=False, blank=False)
     days_bill = models.IntegerField(default=0)

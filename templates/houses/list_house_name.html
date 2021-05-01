@@ -20,9 +20,14 @@
                 {% if housesnames %}
                 <ul class="list-group">
                     {% for housename in housesnames %}
-                    <li class="list-group-item">
-                        <b><a href="{{ housename.get_absolute_url }}" class="text-rest">{{housename.house_name}}</a></b>
-                    </li>
+                    <div class="list-group">
+                      <a href="{{ housename.get_absolute_url }}" class="list-group-item list-group-item-action flex-column align-items-start">
+                        <div class="d-flex w-100 justify-content-between">
+                          <h6 class="mb-1">{{housename.house_name}}</h6>
+                          <small>{{housename.last_updated_house}}</small>
+                        </div>
+                      </a>
+                    </div>
                     {% endfor %}
                 </ul>
                 {%else %}
@@ -32,9 +37,6 @@
                     <a href="{% url 'share:index' %} " role="button" class="btn btn-secondary w-100">Back</a>
                 </p> 
             {% if user.is_authenticated %}
-            <hr>
-            <hr>
-            <hr>
             <div class="input-group-append">
               <a href="{% url 'users:logout' %}" type="button" class="btn btn-outline-warning btn-sm ">Log Out</a>
             </div>
