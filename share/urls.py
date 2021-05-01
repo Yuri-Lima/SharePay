@@ -6,6 +6,8 @@ from .views import (
     HouseNameDetailView,
     HouseNameFormView,
     HouseBillFormView,
+    HouseNameUpdateView,
+    HouseNameDeleteView,
 )
 
 app_name = 'share'
@@ -17,7 +19,8 @@ urlpatterns = [
     path('sharepay/<int:pk>/', HouseNameDetailView.as_view(), name='detail_house_name'),
     path('sharepay/<int:pk>/tenant/edit/', HouseNameFormView.as_view(), name='edit_house_name'),
     path('sharepay/<int:pk>/bill/edit/', HouseBillFormView.as_view(), name='add_house_bill'),
-
+    path('sharepay/update/<int:pk>/', HouseNameUpdateView.as_view(), name='update_house_name'),
+    path('sharepay/<int:pk>/delete', HouseNameDeleteView.as_view(), name='delete_house_name'),
 
 
     #Authenticaios Users

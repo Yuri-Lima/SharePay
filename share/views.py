@@ -1,13 +1,20 @@
 from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-from django.urls.base import reverse
+from django.urls.base import reverse, reverse_lazy 
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.list import MultipleObjectMixin
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from .models import HouseNameModel, HouseTenantModel, HouseBillModel
 from .forms import HouseNameFormset, HouseBillFormset 
-from django.views.generic import (CreateView, TemplateView, DeleteView, FormView, ListView, DetailView)
+from django.views.generic import (
+    CreateView,
+    TemplateView,
+    DeleteView,
+    FormView,
+    ListView,
+    DetailView,
+    UpdateView)
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
@@ -49,11 +56,34 @@ class HouseNameCreateView(LoginRequiredMixin, CreateView):
 
         messages.add_message(
             self.request, 
-            messages.SUCCESS,
+            messages.INFO,
             'The House Name has been added'
         )
         return super(HouseNameCreateView, self).form_valid(form)
 
+class HouseNameUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = HouseNameModel
+    template_name = 'houses/update_house_name.html'
+    fields = ['house_name', 'meter']
+    context_object_name = 'house'
+
+    def test_func(self):
+        user = self.get_object()
+        if user.user_FK == self.request.user:
+            return True
+        return False
+
+class HouseNameDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = HouseNameModel
+    template_name = 'houses/delete_house_name.html'
+    success_url = reverse_lazy('share:list_house_name')
+    context_object_name = 'house'
+
+    def test_func(self):
+        user = self.get_object()
+        if user.user_FK == self.request.user:
+            return True
+        return False
     
 
 class HouseNameDetailView(LoginRequiredMixin, DetailView, MultipleObjectMixin):
@@ -95,8 +125,8 @@ class HouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
         form.save()
         messages.add_message(
             self.request, 
-            messages.SUCCESS,
-            'New House Name Was Added'
+            messages.INFO,
+            "Tenant's Detail Was Informed."
         )
         return HttpResponseRedirect(self.get_success_url())
     
@@ -132,8 +162,8 @@ class HouseBillFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
         form.save()
         messages.add_message(
             self.request, 
-            messages.SUCCESS,
-            'Bill Was Added'
+            messages.INFO,
+            "Bill's Detail Was Informed."
         )
         return HttpResponseRedirect(self.get_success_url())
         

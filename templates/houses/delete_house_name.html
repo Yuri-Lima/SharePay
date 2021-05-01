@@ -1,0 +1,30 @@
+{% extends 'houses/base.html' %}
+
+{% block content %}
+    <div class="content-section">
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                
+                    <div class="d-flex p-0 text-black rounded"> 
+                        <div class="d-flex flex-column">
+                            <div class="p-1 mr-auto align-self-start"><legend class="border-bottom mb-6">Delete House</legend></div>                            
+                            <div class="p-1 mr-auto align-self-start">
+                                <div class="border border-danger rounded m-2">
+                                    <div class="p-2 pr-4 mr-auto align-self-start">
+                                        <small><b>You will delete:</b></small>
+                                        <p>{{house.house_name}}</p>
+                                    </div>
+                                </div>    
+                            </div>
+                        </div>
+                    </div>
+                
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-danger m-2" type="submit">Yes, Delete House</button>
+                <a class="btn btn-warning" href="{% url 'share:list_house_name' %}">Back</a>
+            </div>
+        </form>
+    </div>
+{% endblock content %}

@@ -16,29 +16,54 @@
       <div class="row h-100">
         <div class="col-12 my-auto">
           <div class="masthead-content text-white py-5 py-md-0">
-            <h2 class="h3">Houses</h2>
+            <h2 class="h3 p-1">Houses</h2>
                 {% if housesnames %}
                 <ul class="list-group">
                     {% for housename in housesnames %}
-                    <div class="list-group">
-                      <a href="{{ housename.get_absolute_url }}" class="list-group-item list-group-item-action flex-column align-items-start">
-                        <div class="d-flex w-100 justify-content-between">
-                          <h6 class="mb-1">{{housename.house_name}}</h6>
-                          <small>{{housename.last_updated_house}}</small>
-                        </div>
-                      </a>
+                    <div class="list-group ">
+                      <div class="d-flex flex-row">
+                        <a href="{{ housename.get_absolute_url }}" class="list-group-item list-group-item-action list-group-item-primary align-items-start p-2">
+                          <div class="d-flex w-100 justify-content-between">
+                            <h6 class="mb-1">{{housename.house_name}}</h6>
+                          </div>
+                        </a>
+                        <a href="{% url 'share:update_house_name' pk=housename.id %}" class="list-group-item list-group-item-action list-group-item-success align-items-end p-2">Update</a>
+                      </div>
                     </div>
+                    
+                    {% comment %} <div class="d-flex flex-md-row">
+                      <div class="d-flex flex-md-column p-0">
+                        <div class="list-group">
+                          <a href="{{ housename.get_absolute_url }}" class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                              <h6 class="mb-1">{{housename.house_name}}</h6>
+                              <small class="ml-3">{{housename.last_updated_house}}</small>
+                            </div>
+                          </a>
+                        </div>
+                      </div>
+                      <div class="flex-md-column  pl-2">
+                        <a href="{{ housename.get_absolute_url }}" class="list-group-item list-group-item-action flex-column align-items-start">
+                            <div class="d-flex w-100 justify-content-between">
+                              <h6 class="mb-1">Update</h6>
+                              
+                            </div>
+                          </a>
+                      </div>
+                    </div> {% endcomment %}
+                    
+                    
                     {% endfor %}
                 </ul>
                 {%else %}
                 <p>There is no House to display</p>
                 {% endif %}
                 <p class="pt-2">
-                    <a href="{% url 'share:index' %} " role="button" class="btn btn-secondary w-100">Back</a>
+                    <a href="{% url 'share:index' %} " role="button" class="btn btn-secondary w-100 p-1">Back</a>
                 </p> 
             {% if user.is_authenticated %}
             <div class="input-group-append">
-              <a href="{% url 'users:logout' %}" type="button" class="btn btn-outline-warning btn-sm ">Log Out</a>
+              <a href="{% url 'users:logout' %}" type="button" class="btn btn-outline-warning btn-sm p-1">Log Out</a>
             </div>
             {% endif %}
           </div>
