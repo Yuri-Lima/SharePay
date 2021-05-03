@@ -36,7 +36,7 @@ video
 {
     body
     {
-        /* background:url(img/bg-mobile-fallback.jpg); */
+        background: #002e66;
         /* #002e66 no-repeat center center scroll */
         background-size:cover
     }
