@@ -66,3 +66,25 @@ class HouseBillModel(models.Model):
     
     def get_absolute_url(self):
         return reverse('share:detail_house_name', kwargs={'pk': self.pk})
+
+class HouseKilowattModel(models.Model):
+    house_kwh_FK = models.ForeignKey(HouseNameModel, null=False, blank=False, max_length=255,
+                                on_delete=models.CASCADE, related_name='house_kilowatt_related')
+    kwh = models.IntegerField(null=True, blank=True)
+    last_read_kwh = models.IntegerField(null=True, blank=True)
+    read_kwh = models.IntegerField(null=True, blank=True)
+    last_updated_kwh = models.DateField(auto_now_add=True, null=True, blank=True)
+
+    class Meta:
+        ordering = ['-last_updated_kwh']
+
+    def __str__(self):
+        return str(kwh)
+
+    def clean(self):
+        if self.last_read_kwh and self.read_kwh:
+            self.kwh = int(self.read_kwh - self.last_read_kwh)
+
+    def get_absolute_url(self):
+        return reverse('share:detail_house_name', kwargs={'pk': self.pk})
+
