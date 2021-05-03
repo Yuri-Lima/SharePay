@@ -46,7 +46,7 @@
                     {% for name in object_list %}
                       <div class="small">House Id: {{ name.id }}</div>
                       <div>{{forloop.counter}} - <strong>Tenant's Name:</strong> {{ name.house_tenant }}</div>
-                      <div>Days: {{ name.days }}</div>
+                      <div>Days: {{ name.days }}</div>  
                       <hr>
                     {% endfor %}
                   <!-- Paginations -->
@@ -79,7 +79,11 @@
                 {% if house.house_tenant_related.all %}
                 <p>
                     {% comment %} <a href="{% url 'share:edit_house_name' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Edit or Add Tenants</a> {% endcomment %}
-                    <a href="{% url 'share:list_house_name' %}" role="button" class="btn btn-secondary w-100">All House's Name</a>
+                    <a href="{% url 'share:list_house_name' %}" role="button" class="btn btn-secondary w-100 p-1">All House's Name</a>
+                </p>
+                {% else %}
+                <p class="pt-2">
+                    <a href="{% url 'share:list_house_name' %} " role="button" class="btn btn-secondary w-100 p-1">Back</a>
                 </p>
                 {% endif %}
 

@@ -1,30 +1,61 @@
 {% extends 'houses/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}SharePay - Delete House - {{house.id}} {% endblock title %}
 
 {% block content %}
-    <div class="content-section">
-        <form method="POST">
-            {% csrf_token %}
-            <fieldset class="form-group">
-                
-                    <div class="d-flex p-0 text-black rounded"> 
-                        <div class="d-flex flex-column">
-                            <div class="p-1 mr-auto align-self-start"><legend class="border-bottom mb-6">Delete House</legend></div>                            
-                            <div class="p-1 mr-auto align-self-start">
-                                <div class="border border-danger rounded m-2">
-                                    <div class="p-2 pr-4 mr-auto align-self-start">
-                                        <small><b>You will delete:</b></small>
-                                        <p>{{house.house_name}}</p>
-                                    </div>
-                                </div>    
-                            </div>
-                        </div>
+  <div class="overlay"></div>
+  <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
+    <source src="{% static 'mp4/bg.mp4' %}" type="video/mp4">
+  </video>
+
+  <div class="masthead">
+    <div class="masthead-bg"></div>
+    <div class="container h-100">
+      <div class="row h-100">
+        <div class="col-12 my-auto">
+            <div class="masthead-content text-white py-5 py-md-0">
+            <h2 class="h3">Delete House</h2>
+                <form method="POST">
+                    {% csrf_token %}
+                    <fieldset class="form-group">
+                        <p>You will <q><b>permanently</b></q> delete:</p>
+                        <p>{{house.house_name}}</p>
+                    </fieldset>
+                    <div class="form-group">
+                        <button class="btn btn-outline-danger text-white m-2" type="submit">Yes. Delete House</button>
+                        <a class="btn btn-warning" href="{% url 'share:list_house_name' %}">Back</a>
                     </div>
-                
-            </fieldset>
-            <div class="form-group">
-                <button class="btn btn-outline-danger m-2" type="submit">Yes, Delete House</button>
-                <a class="btn btn-warning" href="{% url 'share:list_house_name' %}">Back</a>
+                </form>
+                {% if user.is_authenticated %}
+                <div class="input-group-append">
+                <a href="{% url 'users:logout' %}" type="button" class="btn btn-outline-warning btn-sm ">Log Out</a>
+                </div>
+                {% endif %}
             </div>
-        </form>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <div class="social-icons">
+    <ul class="list-unstyled text-center mb-0">
+      <li class="list-unstyled-item">
+        <a href="#">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+      <li class="list-unstyled-item">
+        <a href="#">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+      </li>
+      <li class="list-unstyled-item">
+        <a href="#">
+          <i class="fab fa-instagram"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
 {% endblock content %}
