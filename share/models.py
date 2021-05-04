@@ -61,8 +61,9 @@ class HouseBillModel(models.Model):
     def clean(self):
         if self.start_date_bill and self.end_date_bill:
             self.days_bill = int((self.end_date_bill - self.start_date_bill).days)
-        else:
-            self.days_bill = 30
+            return self.days_bill
+        self.days_bill = 30
+        return self.days_bill
     
     def get_absolute_url(self):
         return reverse('share:detail_house_name', kwargs={'pk': self.pk})
@@ -70,7 +71,7 @@ class HouseBillModel(models.Model):
 class HouseKilowattModel(models.Model):
     house_kwh_FK = models.ForeignKey(HouseNameModel, null=False, blank=False, max_length=255,
                                 on_delete=models.CASCADE, related_name='house_kilowatt_related')
-    kwh = models.IntegerField(null=True, blank=True)
+    kwh = models.IntegerField(null=True, blank=True, default=0)
     last_read_kwh = models.IntegerField(null=True, blank=True)
     read_kwh = models.IntegerField(null=True, blank=True)
     last_updated_kwh = models.DateField(auto_now_add=True, null=True, blank=True)
@@ -84,6 +85,8 @@ class HouseKilowattModel(models.Model):
     def clean(self):
         if self.last_read_kwh and self.read_kwh:
             self.kwh = int(self.read_kwh - self.last_read_kwh)
+            return self.kwh
+        return self.kwh
 
     def get_absolute_url(self):
         return reverse('share:detail_house_name', kwargs={'pk': self.pk})
