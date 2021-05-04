@@ -5,8 +5,15 @@ from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.list import MultipleObjectMixin
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
-from .models import HouseNameModel, HouseTenantModel, HouseBillModel
-from .forms import HouseNameFormset, HouseBillFormset 
+from .models import (
+    HouseNameModel,
+    HouseTenantModel,
+    HouseBillModel,
+    HouseKilowattModel)
+from .forms import (
+    HouseNameFormset,
+    HouseBillFormset,
+    HouseKilowattsFormset)
 from django.views.generic import (
     CreateView,
     TemplateView,
@@ -149,12 +156,7 @@ class HouseBillFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
 
     """Handle a Formset setting - Instansce get self.object which was set for HousesName by each user"""
     def get_form(self, form_class=None):
-        formset = HouseBillFormset(**self.get_form_kwargs(), instance=self.object)
-        # def get_context_data(self, **kwargs):
-        #     context = super(HouseBillFormView, self).get_context_data(object_list= self.formset**kwargs)
-        #     # context["formset"] = self.formset
-        #     return context
-        
+        formset = HouseBillFormset(**self.get_form_kwargs(), instance=self.object)        
         return formset # inline FormSet
 
     def form_valid(self, form) :
@@ -164,6 +166,44 @@ class HouseBillFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
             self.request, 
             messages.INFO,
             "Bill's Detail Was Informed."
+        )
+        return HttpResponseRedirect(self.get_success_url())
+        
+    def get_success_url(self):
+        return reverse('share:detail_house_name', kwargs={'pk': self.object.pk})
+
+class HouseKilowattsFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
+    model = HouseNameModel
+    template_name = 'houses/add_house_kwh.html'
+    context_object_name = 'houseskwh'
+
+    """Handle GET requests: instantiate a blank version of the form."""
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=HouseNameModel.objects.all())
+        return super(HouseKilowattsFormView, self).get(request, *args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=HouseNameModel.objects.all())
+        return super(HouseKilowattsFormView, self).post(request, *args, **kwargs)
+
+    """Handle a Formset setting - Instansce get self.object which was set for HousesName by each user"""
+    def get_form(self, form_class=None):
+        formset = HouseKilowattsFormset(**self.get_form_kwargs(), instance=self.object)       
+        return formset # inline FormSet
+
+    def form_valid(self, form) :
+        # print(form)
+        # print(form.instance.last_read_kwh)
+        obj = self.get_object()
+        kwh_objs = HouseKilowattModel.objects.all().filter(house_kwh_FK=self.object)
+        for kwh_obj in kwh_objs:
+            print(kwh_obj.last_read_kwh)
+            print(kwh_obj.read_kwh) 
+        form.save()
+        messages.add_message(
+            self.request, 
+            messages.INFO,
+            "Kilowatts/Hour Was Informed."
         )
         return HttpResponseRedirect(self.get_success_url())
         
