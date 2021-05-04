@@ -1,0 +1,123 @@
+{% extends 'houses/base.html' %}
+{% load static %}
+
+{% block title %}SharePay - Kwh{% endblock title %}
+
+{% block content %}
+  <div class="overlay"></div>
+  <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
+    <source src="{% static 'mp4/bg.mp4' %}" type="video/mp4">
+  </video>
+  <div class="masthead">
+    <div class="masthead-bg"></div>
+    <div class="container h-100">
+      <div class="row h-100">
+        <div class="col-12 my-auto">
+          <div class="masthead-content text-white py-5 py-md-0">
+            <form action="" method="POST", enctype="multipart/form-data">
+                {% for hidden_field in form.hidden_fields %}
+                    {{ hidden_field.erros }}
+                    {{ hidden_field }}
+                {% endfor %}
+
+                {% csrf_token %}
+
+                {{ form.management_form }}
+                {{ form.non_form_erros }}
+
+                <h3>Add Kilowatts/Hour</h3>
+                {% for kwh_form in form.forms %}
+                    <hr>
+                {% for hidden_field in kwh_form.hidden_fields %}
+                    {{ hidden_field.erros }}
+                {% endfor %}
+                <div class="row">
+                    <div class="col">
+                        <div class="alert alert-warning" role="alert" p-1><strong>Attention!</strong> You must fill max one option.</div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p><b>Option 1</b></p>
+                        <p>Total Kilowatts/Hour:</p>
+                        <p>{{kwh_form.kwh}}</p>
+                    </div>
+                </div>
+
+
+                <div class="row">
+                    <div class="col">
+                    <p><b>Option 2</b></p>
+                        <p>What was the last Kwh read:</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p>{{ kwh_form.last_read_kwh }}</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <p>What is the most recently Kwh read:</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <p>{{ kwh_form.read_kwh }}</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        {% if form.can_delete and kwh_form.instance.id %}
+                        <!-- If you are useing formset as ModelFormSet (name_form.id) -->
+                        {{ kwh_form.id }}
+                        <p>{{ kwh_form.DELETE }} - <b>Delete</b></p>
+                    {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+                <hr>
+                <p>
+                {% for kwh in  houseskwh.house_kilowatt_related.all %}
+                    <button type="submit" value="Add Tenants" class="btn btn-primary w-100 mb-3" >Update Kilowatts</button>
+                {% empty %}
+                    <button type="submit" value="Add Tenants" class="btn btn-primary w-100 mb-3" >Add Kilowatts</button>
+                {% endfor %}
+                    <a href="{{ houseskwh.get_absolute_url }}" role="button" class="btn btn-secondary w-100">Back</a>
+                </p>
+            </form>
+
+
+            {% if user.is_authenticated %}
+            <hr>
+            <div class="input-group-append">
+              <a href="{% url 'users:logout' %}" type="button" class="btn btn-outline-warning btn-sm ">Log Out</a>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="social-icons">
+    <ul class="list-unstyled text-center mb-0">
+      <li class="list-unstyled-item">
+        <a href="#">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+      <li class="list-unstyled-item">
+        <a href="#">
+          <i class="fab fa-facebook-f"></i>
+        </a>
+      </li>
+      <li class="list-unstyled-item">
+        <a href="#">
+          <i class="fab fa-instagram"></i>
+        </a>
+      </li>
+    </ul>
+  </div>
+{% endblock content %}
