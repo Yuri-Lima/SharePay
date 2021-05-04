@@ -22,13 +22,13 @@
                     {% for housename in housesnames %}
                       <div class="list-group ">
                         <div class="d-flex flex-row">
-                          <a href="{{ housename.get_absolute_url }}" class="list-group-item list-group-item-action list-group-item-primary align-items-start p-2">
+                          <a href="{{ housename.get_absolute_url }}" class="list-group-item list-group-item-action list-group-item-primary flex-column align-items-start p-2 col-7">
                             <div class="d-flex w-100 justify-content-between">
                               <h6 class="mb-1">{{housename.house_name}}</h6>
                             </div>
                           </a>
-                          <a href="{% url 'share:update_house_name' pk=housename.id %}" class="list-group-item list-group-item-action list-group-item-success align-items-end p-2"><b>Update</b></a>
-                          <a href="{% url 'share:delete_house_name' pk=housename.id %}" class="list-group-item list-group-item-action list-group-item-danger align-items-end p-2">Delete</a>
+                          <a href="{% url 'share:update_house_name' pk=housename.id %}" class="list-group-item list-group-item-action list-group-item-success flex-column align-items-start p-1 "><b>Update</b></a>
+                          <a href="{% url 'share:delete_house_name' pk=housename.id %}" class="list-group-item list-group-item-action list-group-item-danger flex-column align-items-start p-1 ">Delete</a>
                         </div>
                       </div> 
                     {% endfor %}

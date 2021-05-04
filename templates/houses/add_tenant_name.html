@@ -3,9 +3,10 @@
 {% load humanize %}
 
 
-{% block title %}SharePay - Tenants House{% endblock title %}
+{% block title %}SharePay - Tenants{% endblock title %}
 
 {% block content %}
+<div class="masthead-bg">
   <div class="container contact-form">
     <div class="contact-image p-4">
         <img class="d-block  py-2 mx-auto align-self-center" src="{% static 'logo/sharepay_text.png' %}" alt="SharePay" width="112" height='mx-auto'>
@@ -70,7 +71,8 @@
       <a href="{% url 'users:logout' %}" type="button" class="btn btn-outline-warning btn-sm">Log Out</a>
     </div>
     {% endif %}
-  </div>  
+  </div>
+</div>
 {% endblock content %}
 
   
