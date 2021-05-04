@@ -14,6 +14,7 @@ body
     position:relative;
     font-family:'Source Sans Pro';
     font-weight:300
+    
 }
 h1,h2,h3,h4,h5,h6
 {
@@ -76,6 +77,9 @@ video
     background-color:rgba(0,46,102,.8);
     transform:skewY(4deg);
     transform-origin:bottom right
+}
+.masthead-bg{
+    background-color:rgba(0,46,102,.8);
 }
 .masthead .masthead-content h1
 {
