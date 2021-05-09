@@ -96,14 +96,14 @@ video
     font-weight:700
 }
 
-.row .col .errorlist 
+/* .row .col .errorlist 
 {
     color: red;
 }
 .row .col .errorlist  ul>li
 {
     color: red;
-}
+} */
 
 .masthead .masthead-content .input-group-newsletter input
 {
@@ -122,7 +122,7 @@ video
 
 .errorlist
 {
-    color: red;
+    color: white;
 }
 
 @media (min-width:768px)
@@ -153,14 +153,14 @@ video
     {
         font-size:1.3rem
     }
-.row .col .errorlist 
+/* .row .col .errorlist 
 {
     color: red;
 }
 .row .col .errorlist  ul>li
 {
     color: red;
-}
+} */
 }
 .social-icons
 {
@@ -232,7 +232,7 @@ video
     }
     .errorlist
     {
-    color: red;
+    color: white;
     }
 }
 .btn-secondary
@@ -250,6 +250,13 @@ video
     font-weight:300!important
 }
 .errorlist
-    {
-    color: red;
-    }
+{
+    /* background-color: #ff9800; */
+    border-radius: 15px;
+    border: 2px solid  #ff9800;
+    color: white;
+}
+.errorlist li
+{
+    list-style-type: none;
+}
