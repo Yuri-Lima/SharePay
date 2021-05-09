@@ -91,17 +91,19 @@ class HouseKilowattModel(models.Model):
         if self.last_read_kwh and self.read_kwh:
             if (self.last_read_kwh > self.read_kwh):
                 raise ValidationError({
-                    'last_read_kwh': _('Should be greatter than last read Kwh')
+                    'read_kwh': _('Should be greatter than previous Kw/h read')
                     })
             else:
                 self.kwh = self.read_kwh - self.last_read_kwh
             return self.kwh
-
-        raise ValidationError({
-                    'kwh': _('Fill up at least one option!'),
-                    'last_read_kwh': _('Fill up at least one option!'),
-                    # 'read_kwh' : _('Only Numbers'),
-                    })
+        elif self.kwh:
+            return self.kwh
+        else:
+            raise ValidationError({
+                        'kwh': _('Fill up at least one option!'),
+                        'last_read_kwh': _('Fill up at least one option!'),
+                        # 'read_kwh' : _('Only Numbers'),
+                        })
 
     def get_absolute_url(self):
         return reverse('share:detail_house_name', kwargs={'pk': self.pk})
