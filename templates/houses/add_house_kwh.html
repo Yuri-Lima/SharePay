@@ -43,9 +43,7 @@
                         <p class='text-white'><b>Option 1</b></p>
                         <p class='text-white'>Total Kilowatts/Hour:</p>
                         <p>{{kwh_form.kwh}}</p>
-                        <div class='p-3 mb-2 bg-warning text-dark' id="error">
                           <p>{{kwh_form.kwh.errors}}</p>
-                        </div>
                     </div>
                 </div>
 
@@ -58,9 +56,7 @@
                 <div class="row">
                     <div class="col">
                         <p>{{ kwh_form.last_read_kwh }}</p>
-                        <div class='p-3 mb-2 bg-warning text-dark' id="error">
                           <p>{{kwh_form.last_read_kwh.errors}}</p>
-                        </div>
                     </div>
                 </div>
 
@@ -72,10 +68,7 @@
                 <div class="row">
                     <div class="col">
                         <p>{{ kwh_form.read_kwh }}</p>
-                        <div class='p-3 mb-2 bg-warning text-dark' id="error">
                           <p>{{kwh_form.read_kwh.errors}}</p>
-                        </div>
-                        
                     </div>
                 </div>
                 {% if form.can_delete and kwh_form.instance.id %}

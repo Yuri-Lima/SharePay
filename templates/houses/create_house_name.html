@@ -72,9 +72,7 @@
           </form>
           
             {% if user.is_authenticated %}
-            <hr>
-            <hr>
-            <hr>
+            
             <div class="input-group-append">
               <a href="{% url 'users:logout' %}" type="button" class="btn btn-outline-warning btn-sm ">Log Out</a>
             </div>
