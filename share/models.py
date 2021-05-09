@@ -2,7 +2,10 @@ from django.db import models
 from django.conf import settings
 from django.forms import widgets
 from django.urls import reverse
+from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
+from django.utils.translation import gettext_lazy as _
 from django.forms.widgets import DateTimeInput
+
 
 class HouseNameModel(models.Model):
     user_FK = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_related', null=False, verbose_name='User')
@@ -72,9 +75,9 @@ class HouseBillModel(models.Model):
 class HouseKilowattModel(models.Model):
     house_kwh_FK = models.ForeignKey(HouseNameModel, null=False, blank=False, max_length=255,
                                 on_delete=models.CASCADE, related_name='house_kilowatt_related', verbose_name='House Name')
-    kwh = models.IntegerField(null=True, blank=True, default=0, verbose_name='KWH')
+    kwh = models.IntegerField(null=True, blank=True, verbose_name='KWH')
     last_read_kwh = models.IntegerField(null=True, blank=True)
-    read_kwh = models.IntegerField(null=True, blank=True)
+    read_kwh = models.IntegerField(null=True, blank=True, help_text='Should be greatter than last read Kwh')
     last_updated_kwh = models.DateField(auto_now=True, null=True, blank=True)
 
     class Meta:
@@ -82,13 +85,23 @@ class HouseKilowattModel(models.Model):
 
     def __str__(self):
         return str(self.house_kwh_FK) + ' - ' + str(self.kwh) + 'kwh'
-    
 
+    #https://docs.djangoproject.com/en/3.2/ref/models/instances/
     def clean(self):
         if self.last_read_kwh and self.read_kwh:
-            self.kwh = int(self.read_kwh - self.last_read_kwh)
-        else:
-            self.kwh
+            if (self.last_read_kwh > self.read_kwh):
+                raise ValidationError({
+                    'last_read_kwh': _('Should be greatter than last read Kwh')
+                    })
+            else:
+                self.kwh = self.read_kwh - self.last_read_kwh
+            return self.kwh
+
+        raise ValidationError({
+                    'kwh': _('Fill up at least one option!'),
+                    'last_read_kwh': _('Fill up at least one option!'),
+                    # 'read_kwh' : _('Only Numbers'),
+                    })
 
     def get_absolute_url(self):
         return reverse('share:detail_house_name', kwargs={'pk': self.pk})
