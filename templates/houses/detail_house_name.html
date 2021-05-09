@@ -17,16 +17,15 @@
         <div class="col-12 my-auto">
             <div class="masthead-content text-white py-5 py-md-0">
                 <!-- ================================ -->
-                    {% if messages %}
-                    <ul class="messages">
+                  {% if messages %}
+                    <ul class="detail_messages">
                         {% for message in messages %}
                             <li>{{message}}</li>
                         {% endfor %}
                     </ul>
-                    {% endif %}
+                  {% endif %}
                 <!-- ================================ -->
-                <!-- ================================ -->
-                <h3>Tenants from {{house.house_name}}</h3>
+                <h3>Details from {{house.house_name}}</h3>
                 {% comment %} <div class="d-flex d-flex-inline">
                     <span class="pe-2">Owner Name:</span><h5>{{ house.user|capfirst  }}</h5>
                 </div> {% endcomment %}

@@ -13,7 +13,7 @@
     <div class="container h-100">
       <div class="row h-100">
         <div class="col-12 my-auto">
-          <div class="masthead-content text-white py-5 py-md-0">
+          <div class="masthead-content py-5 py-md-0">
             <form action="" method="POST", enctype="multipart/form-data">
                 {% for hidden_field in form.hidden_fields %}
                     {{ hidden_field.erros }}
@@ -23,9 +23,11 @@
                 {% csrf_token %}
 
                 {{ form.management_form }}
-                {{ form.non_form_erros }}
+                {{ form.non_form_errors }}
+                {{ form.non_filed_errors }}
+                
 
-                <h3>Add Kilowatts/Hour</h3>
+                <h3 class='text-white'>Add Kilowatts/Hour</h3>
                 {% for kwh_form in form.forms %}
                     <hr>
                 {% for hidden_field in kwh_form.hidden_fields %}
@@ -37,45 +39,54 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col">
-                        <p><b>Option 1</b></p>
-                        <p>Total Kilowatts/Hour:</p>
+                    <div class="col ">
+                        <p class='text-white'><b>Option 1</b></p>
+                        <p class='text-white'>Total Kilowatts/Hour:</p>
                         <p>{{kwh_form.kwh}}</p>
+                        <div class='p-3 mb-2 bg-warning text-dark' id="error">
+                          <p>{{kwh_form.kwh.errors}}</p>
+                        </div>
                     </div>
                 </div>
 
-
                 <div class="row">
                     <div class="col">
-                    <p><b>Option 2</b></p>
-                        <p>What was the last Kwh read:</p>
+                    <p class='text-white'><b>Option 2</b></p>
+                        <p class='text-white' >What was the previous Kw/h read:</p>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
                         <p>{{ kwh_form.last_read_kwh }}</p>
+                        <div class='p-3 mb-2 bg-warning text-dark' id="error">
+                          <p>{{kwh_form.last_read_kwh.errors}}</p>
+                        </div>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col">
-                        <p>What is the most recently Kwh read:</p>
+                        <p class='text-white' >What is the present Kw/h read:</p>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
                         <p>{{ kwh_form.read_kwh }}</p>
+                        <div class='p-3 mb-2 bg-warning text-dark' id="error">
+                          <p>{{kwh_form.read_kwh.errors}}</p>
+                        </div>
+                        
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col">
-                        {% if form.can_delete and kwh_form.instance.id %}
-                        <!-- If you are useing formset as ModelFormSet (name_form.id) -->
-                        {{ kwh_form.id }}
-                        <p>{{ kwh_form.DELETE }} - <b>Delete</b></p>
-                    {% endif %}
-                    </div>
-                </div>
+                {% if form.can_delete and kwh_form.instance.id %}
+                  <div class="row">
+                      <div class="col">
+                          <!-- If you are useing formset as ModelFormSet (name_form.id) -->
+                          {{ kwh_form.id }}
+                          <p class='text-white'>{{ kwh_form.DELETE }} - <b>Delete</b></p>
+                      </div>
+                  </div>
+                {% endif %}
                 {% endfor %}
                 <hr>
                 <p>

@@ -5,6 +5,7 @@ from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.list import MultipleObjectMixin
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
+from django.core.exceptions import ValidationError
 from .models import (
     HouseNameModel,
     HouseTenantModel,
@@ -13,7 +14,8 @@ from .models import (
 from .forms import (
     HouseNameFormset,
     HouseBillFormset,
-    HouseKilowattsFormset)
+    HouseKilowattsFormset,
+    )
 from django.views.generic import (
     CreateView,
     TemplateView,
@@ -173,7 +175,7 @@ class HouseBillFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
         return reverse('share:detail_house_name', kwargs={'pk': self.object.pk})
 
 class HouseKilowattsFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
-    model = HouseNameModel
+    model = HouseKilowattModel 
     template_name = 'houses/add_house_kwh.html'
     context_object_name = 'houseskwh'
 
@@ -192,20 +194,11 @@ class HouseKilowattsFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
         return formset # inline FormSet
 
     def form_valid(self, form) :
-        # print(form)
-        # print(form.instance.last_read_kwh)
-        obj = self.get_object()
-        kwh_objs = HouseKilowattModel.objects.all().filter(house_kwh_FK=self.object)
-        for kwh_obj in kwh_objs:
-            print(kwh_obj.last_read_kwh)
-            print(kwh_obj.read_kwh) 
         form.save()
-        messages.add_message(
-            self.request, 
-            messages.INFO,
-            "Kilowatts/Hour Was Informed."
-        )
         return HttpResponseRedirect(self.get_success_url())
+    
+    def reverse_url(self):
+        return reverse('share:add_house_kwh', kwargs={'pk': self.object.pk})
         
     def get_success_url(self):
         return reverse('share:detail_house_name', kwargs={'pk': self.object.pk})

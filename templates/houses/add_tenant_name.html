@@ -11,6 +11,15 @@
     <div class="contact-image p-4">
         <img class="d-block  py-2 mx-auto align-self-center" src="{% static 'logo/sharepay_text.png' %}" alt="SharePay" width="112" height='mx-auto'>
     </div>
+    <!-- ================================ -->
+                    {% if messages %}
+                    <ul class="tenant_messages">
+                        {% for message in messages %}
+                            <li>{{message}}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+            <!-- ================================ -->
     <div class="row-md">
       <form action="" method="POST", enctype="multipart/form-data">
         {% for hidden_field in form.hidden_fields %}

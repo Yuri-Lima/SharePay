@@ -1,8 +1,14 @@
 {% extends 'houses/base.html' %}
 {% load static %}
 
+{% block title %}
+  {% if housesnames.count > 1 %}
+    SharePay - Houses
+  {% else %}
+    SharePay - House
+  {% endif %}
+{% endblock title %}
 
-{% block title %}SharePay - Bill House{% endblock title %}
 
 {% block content %}
    <div class="overlay"></div>
