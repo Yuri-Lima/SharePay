@@ -43,6 +43,7 @@
         </div>
         <div class="row pl-4">
             <p>{{ name_form.house_tenant }}</p>
+            <p>{{ name_form.house_tenant.errors }}</p>
         </div>
         
         <div class="row pl-4 pr-4 pt-2 pb-2 text-white">
@@ -52,10 +53,12 @@
             <div class="col p-0 text-white">
                 <p>From:</p>
                 <p>{{ name_form.start_date }}</p>
+                <p>{{ name_form.start_date.errors }}</p>
             </div>
             <div class="col p-0 text-white">
                 <p>End:</p>
                 <p>{{ name_form.end_date }}</p>
+                <p>{{ name_form.end_date.errors }}</p>
             </div>
         </div>
         <div class="row p-4">

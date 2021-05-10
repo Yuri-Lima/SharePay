@@ -91,6 +91,11 @@ class HouseNameDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     def test_func(self):
         user = self.get_object()
         if user.user_FK == self.request.user:
+            messages.add_message(
+                self.request, 
+                messages.INFO,
+                "House Name has been Deleted."
+            )  
             return True
         return False
     
@@ -106,7 +111,6 @@ class HouseNameDetailView(LoginRequiredMixin, DetailView, MultipleObjectMixin):
         object_list = HouseTenantModel.objects.filter(house_name_FK=self.object)
         context = super(HouseNameDetailView, self).get_context_data(object_list= object_list, **kwargs)
         return context
-    
     
 
 
@@ -195,10 +199,15 @@ class HouseKilowattsFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
 
     def form_valid(self, form) :
         form.save()
+        messages.add_message(
+            self.request, 
+            messages.INFO,
+            "Kilowatts Details Was Informed."
+        )
         return HttpResponseRedirect(self.get_success_url())
     
-    def reverse_url(self):
-        return reverse('share:add_house_kwh', kwargs={'pk': self.object.pk})
+    # def reverse_url(self):
+    #     return reverse('share:add_house_kwh', kwargs={'pk': self.object.pk})
         
     def get_success_url(self):
         return reverse('share:detail_house_name', kwargs={'pk': self.object.pk})

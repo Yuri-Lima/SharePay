@@ -39,9 +39,19 @@ class HouseTenantModel(models.Model):
         return reverse('share:detail_house_name', kwargs={'pk': self.pk})
 
     def clean(self):
-        self.house_tenant = self.house_tenant.capitalize()
+        if self.house_tenant:
+            self.house_tenant = self.house_tenant.capitalize()
+        else:
+            raise ValidationError({
+                    'house_tenant': _('This field is required.'),
+                })
         if self.start_date and self.end_date:
             self.days = int((self.end_date - self.start_date).days)
+            if self.days < 0:
+                raise ValidationError({
+                    'start_date': _('Is that start date correct?'),
+                    'end_date': _('This field should be older!')
+                })
         else:
             self.days = 30
             
@@ -66,8 +76,15 @@ class HouseBillModel(models.Model):
     def clean(self):
         if self.start_date_bill and self.end_date_bill:
             self.days_bill = int((self.end_date_bill - self.start_date_bill).days)
-        else:
-            self.days_bill = 30
+            if self.days_bill < 0:
+                raise ValidationError({
+                    'start_date_bill': _('Is that start date correct?'),
+                    'end_date_bill': _('This field should be older!')
+                })
+            if self.amount_bill < 0:
+                raise ValidationError({
+                    'amount_bill': _('Should be a positive number!'),
+                })
     
     def get_absolute_url(self):
         return reverse('share:detail_house_name', kwargs={'pk': self.pk})

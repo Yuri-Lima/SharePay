@@ -255,6 +255,7 @@ video
     border-radius: 15px;
     border: 2px solid  #ff9800;
     color: white;
+    padding: 10rem;
 }
 .errorlist li
 {

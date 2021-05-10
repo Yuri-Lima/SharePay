@@ -22,6 +22,15 @@
       <div class="row h-100">
         <div class="col-12 my-auto">
           <div class="masthead-content text-white py-5 py-md-0">
+            <!-- ================================ -->
+              {% if messages %}
+              <ul class="tenant_messages">
+                  {% for message in messages %}
+                      <li>{{message}}</li>
+                  {% endfor %}
+              </ul>
+              {% endif %}
+            <!-- ================================ -->
             <h2 class="h3 p-1">Houses</h2>
                 {% if housesnames %}
                   <ul class="list-group">
