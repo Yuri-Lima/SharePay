@@ -256,6 +256,8 @@ video
     border: 2px solid  #ff9800;
     color: white;
     padding: 10rem;
+    align-content: center;
+    text-align: center;
 }
 .errorlist li
 {
