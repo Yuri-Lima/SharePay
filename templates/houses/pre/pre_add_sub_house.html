@@ -1,0 +1,93 @@
+{% extends 'houses/base.html' %}
+{% load static %}
+
+{% block title %}SharePay - Pre-Sub House.{{house.id}}{% endblock title %}
+
+{% block content %}
+  <div class="overlay"></div>
+  <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
+    <source src="{% static 'mp4/bg.mp4' %}" type="video/mp4">
+  </video>
+  <div class="masthead">
+    <div class="masthead-bg"></div>
+    <div class="container h-100">
+      <div class="row h-100">
+        <div class="col-12 my-auto">
+          <div class="masthead-content text-white py-5 py-md-0">
+            <!-- =============== MENSSAGES ================= --> 
+              {% if messages %}
+                <ul class="detail_messages">
+                    {% for message in messages %}
+                        <li>{{message}}</li>
+                    {% endfor %}
+                </ul>
+              {% endif %}
+            <!-- =============== END MENSSAGES ================= --> 
+            <h3>Details from {{house.sub_house_name}}</h3>
+            <!-- =============== KILOWATTS ================= --> 
+            {% if house.sub_house_kilowatt_related.all %}
+              {% for kwh in  house.sub_house_kilowatt_related.all %}
+                  <div class="d-flex d-flex-inline">
+                      <span class="pe-2"><h6>Read: {{kwh.sub_kwh}}-kwh</h6></span>
+                  </div>
+              {% endfor %}
+                <a href="{% url 'share:add_house_kwh' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Edit Kilowatts</a>
+            {% else %}
+              <a href="{% url 'share:add_house_kwh' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Add Kilowatts</a>
+            {% endif %}
+            <!-- =============== END KILOWATTS ================= -->
+            
+            <!-- =============== TENANTS ================= --> 
+              {% if house.sub_house_kilowatt_related.all %} 
+                {% if object_list %}<!-- ACTIVATES PAGINATIONS -->
+                  <span class="pe-2"><h6>Total Sub Tenants: {{house.sub_tenant_related.all.count}}</h6></span>
+                    <a href="{% url 'share:add_house_tenant_name' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Add/Edit Tenant</a>
+                    {% for name in object_list %}
+                      {% comment %} <div class="small">Tenant Id: {{ name.id }}</div> {% endcomment %}
+                      <div>{{forloop.counter}} - <strong>Tenant's Name:</strong> {{ name.sub_house_tenant }}</div>
+                      <div><b>{{name.sub_days}} days</b> living at {{name.sub_tenant_FK}}</div>  
+                      <hr>
+                    {% endfor %}
+                  <!-- =============== PAGINATIONS ================= --> 
+                    {% if is_paginated %}
+                        {% if page_obj.has_previous %}<!-- Esse o objeto que nossa Views passa dentro do nosso template -->
+                            <a class="btn btn-outline-primary mb-4" href="?page=1">First</a>
+                            <a class="btn btn-outline-primary mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                        {% endif %}
+                        {% for num in page_obj.paginator.page_range %}
+                            {% if page_obj.number == num %}<!-- page_obj.number e o numero atual da pagina -->
+                                <a class="btn btn-primary mb-4" href="?page={{ num }}">{{ num }}</a>
+                            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                <a class="btn btn-primary mb-4" href="?page={{ num }}">{{ num }}</a>
+                            {% endif %}
+                        {% endfor %}
+                        {% if page_obj.has_next %}<!-- Esse o objeto que nossa Views passa dentro do nosso template -->
+                            <a class="btn btn-outline-primary mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
+                            <a class="btn btn-outline-primary mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a> <!-- page_obj.pagintor.num_pages Retorna o numero total de paginas -->
+                        {% endif %}
+
+                    {% endif %}
+                  <!-- =============== END PAGINATIONS ================= --> 
+                {% else %}
+                    <a href="{% url 'share:add_house_tenant_name' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Add Tenants</a>
+                {% endif %}
+              {% endif %}
+            <!-- =============== END TENANTS ================= -->
+            
+            <!-- =============== LOGOUT BUTTON ================= --> 
+              {% if user.is_authenticated %}
+                <hr>
+                <div class="input-group-append">
+                  <a href="{% url 'users:logout' %}" type="button" class="btn btn-outline-warning btn-sm ">Log Out</a>
+                </div>
+              {% endif %}
+            <!-- =============== END LOGOUT BUTTON ================= --> 
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% include 'social_media/social_media.html' %}
+  
+{% endblock content %}
