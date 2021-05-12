@@ -3,7 +3,10 @@ from .models import (
     HouseNameModel,
     HouseTenantModel,
     HouseBillModel,
-    HouseKilowattModel
+    HouseKilowattModel,
+    SubHouseNameModel,
+    SubKilowattModel,
+    SubTenantModel
     ) 
 
 
@@ -22,3 +25,15 @@ class HouseBillAdmin(admin.ModelAdmin):
 @admin.register(HouseKilowattModel)
 class HouseKilowattAdmin(admin.ModelAdmin):
     list_display = ['house_kwh_FK','kwh', 'last_updated_kwh']
+
+@admin.register(SubHouseNameModel)
+class SubHouseNameModelAdmin(admin.ModelAdmin):
+    list_display = ['sub_house_FK','sub_house_name', 'sub_meter', 'sub_main_house', 'sub_last_updated_house']
+
+@admin.register(SubKilowattModel)
+class SubKilowattModelAdmin(admin.ModelAdmin):
+    list_display = ['main_house_kwh_FK', 'sub_house_kwh_FK','sub_kwh', 'sub_last_read_kwh', 'sub_read_kwh', 'sub_last_updated_kwh']
+
+@admin.register(SubTenantModel)
+class SubTenantModelAdmin(admin.ModelAdmin):
+    list_display = ['main_tenant_FK', 'sub_house_tenant_FK','sub_house_tenant', 'sub_start_date', 'sub_end_date', 'sub_days', 'sub_last_updated_tenant']

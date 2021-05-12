@@ -5,8 +5,11 @@ from share.models import (
     HouseTenantModel,
     HouseBillModel,
     HouseKilowattModel,
+    SubHouseNameModel,
+    SubTenantModel,
+    SubKilowattModel
 )
-
+""" CALENDAR """
 class HouseNameDateInput(DateInput):
     input_type = 'date'
     def __init__(self, **kwargs):
@@ -15,6 +18,7 @@ class HouseNameDateInput(DateInput):
     
 
 HouseNameFormset = inlineformset_factory(
+
     HouseNameModel,
     HouseTenantModel,
     fields=['house_tenant', 'start_date', 'end_date'],
@@ -68,3 +72,38 @@ HouseKilowattsFormset = inlineformset_factory(
     },
 )
 
+SubHouseNameFormset = inlineformset_factory(
+
+    HouseNameModel, 
+    SubHouseNameModel,
+    fields=['sub_house_FK','sub_house_name', 'sub_meter', 'sub_main_house'], 
+    extra=1, 
+    min_num=1,
+    max_num=2,
+    can_delete=True,
+    can_order=True,
+)
+
+SubHouseKilowattFormset = inlineformset_factory(
+
+    HouseNameModel,
+    SubKilowattModel,
+    fields=['main_house_kwh_FK', 'sub_house_kwh_FK', 'sub_kwh', 'sub_last_read_kwh', 'sub_read_kwh'],
+    extra=0,
+    min_num=1,
+    max_num=2,
+    can_delete=True,
+    can_order=True,
+)
+
+SubHouseTenantFormset = inlineformset_factory(
+
+    HouseNameModel,
+    SubTenantModel,
+    fields=['main_tenant_FK', 'sub_house_tenant_FK', 'sub_house_tenant', 'sub_start_date', 'sub_end_date', 'sub_days'],
+    extra=1,
+    min_num=1,
+    max_num=2,
+    can_delete=True,
+    can_order=True,
+)
