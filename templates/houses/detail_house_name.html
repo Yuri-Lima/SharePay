@@ -26,11 +26,6 @@
                   {% endif %}
                 <!-- ================================ -->
                 <h3>Details from {{house.house_name}}</h3>
-                {% comment %} <div class="d-flex d-flex-inline">
-                    <span class="pe-2">Owner Name:</span><h5>{{ house.user|capfirst  }}</h5>
-                </div> {% endcomment %}
-
-
                 {% if house.house_bill_related.all %}
                     {% for bill in  house.house_bill_related.all %}
                         <div class="d-flex d-flex-inline">
@@ -58,51 +53,54 @@
                 {% if house.house_kilowatt_related.all %} 
                   {% if object_list %}<!-- for Paginations -->
                     <span class="pe-2"><h6>Total Tenants: {{house.house_tenant_related.all.count}}</h6></span>
-                      <a href="{% url 'share:add_house_name' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Add/Edit Tenant</a>
+                      <a href="{% url 'share:add_house_tenant_name' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Add/Edit Tenant</a>
                       {% for name in object_list %}
                         {% comment %} <div class="small">Tenant Id: {{ name.id }}</div> {% endcomment %}
                         <div>{{forloop.counter}} - <strong>Tenant's Name:</strong> {{ name.house_tenant }}</div>
                         <div><b>{{name.days}} days</b> living at {{name.house_name_FK}}</div>  
                         <hr>
-                      {% endfor %}
+                      {% endfor %}len
 
                     <!-- Paginations -->
                     {% if is_paginated %}
 
                         {% if page_obj.has_previous %}<!-- Esse o objeto que nossa Views passa dentro do nosso template -->
-                            <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
-                            <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                            <a class="btn btn-outline-primary mb-4" href="?page=1">First</a>
+                            <a class="btn btn-outline-primary mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
                         {% endif %}
 
                         {% for num in page_obj.paginator.page_range %}
                             {% if page_obj.number == num %}<!-- page_obj.number e o numero atual da pagina -->
-                                <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+                                <a class="btn btn-primary mb-4" href="?page={{ num }}">{{ num }}</a>
                             {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                                <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+                                <a class="btn btn-primary mb-4" href="?page={{ num }}">{{ num }}</a>
                             {% endif %}
 
                         {% endfor %}
 
                         {% if page_obj.has_next %}<!-- Esse o objeto que nossa Views passa dentro do nosso template -->
-                            <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
-                            <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a> <!-- page_obj.pagintor.num_pages Retorna o numero total de paginas -->
+                            <a class="btn btn-outline-primary mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
+                            <a class="btn btn-outline-primary mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a> <!-- page_obj.pagintor.num_pages Retorna o numero total de paginas -->
                         {% endif %}
 
                     {% endif %} 
                   {% else %}
-                      <a href="{% url 'share:add_house_name' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Add Tenants</a>
+                      <a href="{% url 'share:add_house_tenant_name' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Add Tenants</a>
                   {% endif %}
                 {% endif %}
 
                 {% if house.house_tenant_related.all %}
-                <p>
-                    {% comment %} <a href="{% url 'share:add_house_name' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Edit or Add Tenants</a> {% endcomment %}
-                    <a href="{% url 'share:list_house_name' %}" role="button" class="btn btn-secondary w-100 p-1">All House's Name</a>
-                </p>
+                  {% if house.sub_house_related.all %}
+                    <a href="{% url 'share:add_sub_house' pk=house.id %}" role="button" class="btn btn-success w-100 mb-2">Edit Sub Houses</a>
+                  {% else %}
+                    <a href="{% url 'share:add_sub_house' pk=house.id %}" role="button" class="btn btn-success w-100 mb-2">Add Sub Houses</a>
+                  {% endif %}
+                  
+                  <a href="{% url 'share:pre_detail_house_name' pk=house.id %} " role="button" class="btn btn-secondary w-100 mb-2">Back</a>
+                  {% comment %} <a href="{% url 'share:add_house_tenant_name' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Edit or Add Tenants</a> {% endcomment %}
+                  <a href="{% url 'share:list_house_name' %}" role="button" class="btn btn-secondary w-100 mb-2">All House's Name</a>
                 {% else %}
-                <p class="pt-2">
-                    <a href="{% url 'share:list_house_name' %} " role="button" class="btn btn-secondary w-100 p-1">Back</a>
-                </p>
+                  <a href="{% url 'share:pre_detail_house_name' pk=house.id %} " role="button" class="btn btn-secondary w-100 mb-2">Back</a>
                 {% endif %}
 
                 {% if user.is_authenticated %}
@@ -116,23 +114,5 @@
     </div>
   </div>
 
-  <div class="social-icons">
-    <ul class="list-unstyled text-center mb-0">
-      <li class="list-unstyled-item">
-        <a href="#">
-          <i class="fab fa-twitter"></i>
-        </a>
-      </li>
-      <li class="list-unstyled-item">
-        <a href="#">
-          <i class="fab fa-facebook-f"></i>
-        </a>
-      </li>
-      <li class="list-unstyled-item">
-        <a href="#">
-          <i class="fab fa-instagram"></i>
-        </a>
-      </li>
-    </ul>
-  </div>
+  {% include 'social_media/social_media.html' %}
 {% endblock content %}

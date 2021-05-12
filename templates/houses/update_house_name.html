@@ -39,7 +39,17 @@
                         <p>House Name:</p>
                     </div>
                     <div class="col py-2">
-                        {{ form.house_name }} 
+                        <p>{{form.house_name}}</p>
+                        <p>{{form.house_name.errors}}</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col py-2">
+                        <abbr title="Is the bill belongs this house typed above?" class="initialism" ><p>Is that main house?</p></abbr>
+                    </div>
+                    <div class="col py-2">
+                        <p>{{form.main_house}}</p>
+                        <p>{{form.main_house.errors}}</p>
                     </div>
                 </div>
                 <div class="row">
@@ -49,7 +59,8 @@
                 </div>
                 <div class="row">
                   <div class="col py-1">
-                        {{ form.meter }} 
+                        <p>{{form.meter}}</p>
+                        <p>{{form.meter.errors}}</p>
                     </div>
                 </div>
               </div> 
@@ -70,23 +81,6 @@
     </div>
   </div>
 
-  <div class="social-icons">
-    <ul class="list-unstyled text-center mb-0">
-      <li class="list-unstyled-item">
-        <a href="#">
-          <i class="fab fa-twitter"></i>
-        </a>
-      </li>
-      <li class="list-unstyled-item">
-        <a href="#">
-          <i class="fab fa-facebook-f"></i>
-        </a>
-      </li>
-      <li class="list-unstyled-item">
-        <a href="#">
-          <i class="fab fa-instagram"></i>
-        </a>
-      </li>
-    </ul>
-  </div>
+  {% include 'social_media/social_media.html' %}
+  
 {% endblock content %}

@@ -31,6 +31,7 @@
               </ul>
               {% endif %}
             <!-- ================================ -->
+
             <h2 class="h3 p-1">Houses</h2>
                 {% if housesnames %}
                   <ul class="list-group">
@@ -39,7 +40,11 @@
                         <div class="d-flex flex-row">
                           <a href="{{ housename.get_absolute_url }}" class="list-group-item list-group-item-action list-group-item-primary flex-column align-items-start p-2 col-7">
                             <div class="d-flex w-100 justify-content-between">
-                              <h6 class="mb-1">{{housename.house_name}}</h6>
+                              {% if housename.main_house %}
+                                <h6 class="mb-1">{{housename.house_name}}*</h6>
+                              {% else %}
+                                <h6 class="mb-1">{{housename.house_name}}</h6>
+                              {% endif %}
                             </div>
                           </a>
                           <a href="{% url 'share:update_house_name' pk=housename.id %}" class="list-group-item list-group-item-action list-group-item-success flex-column align-items-start p-1 "><b>Update</b></a>
@@ -67,23 +72,5 @@
     </div>
   </div>
 
-  <div class="social-icons">
-    <ul class="list-unstyled text-center mb-0">
-      <li class="list-unstyled-item">
-        <a href="#">
-          <i class="fab fa-twitter"></i>
-        </a>
-      </li>
-      <li class="list-unstyled-item">
-        <a href="#">
-          <i class="fab fa-facebook-f"></i>
-        </a>
-      </li>
-      <li class="list-unstyled-item">
-        <a href="#">
-          <i class="fab fa-instagram"></i>
-        </a>
-      </li>
-    </ul>
-  </div>
+  {% include 'social_media/social_media.html' %}
 {% endblock content %}
