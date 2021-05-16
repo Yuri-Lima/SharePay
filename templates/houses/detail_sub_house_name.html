@@ -25,30 +25,22 @@
                     </ul>
                   {% endif %}
                 <!-- ================================ -->
-                <!-- Sub Houses Details -->
-                {% if house.main_house_kilowatt_related.all %}
-                <div>{{house.main_house_kilowatt_related.all}}</div>
-                    {% for sub_house in  house.sub_house_related.all %}
-                        <div class="d-flex d-flex-inline">
-                            <span class="pe-2"><h6><b>{{forloop.counter|ordinal}}</b> - Sub_House: {{sub_house.sub_house_name }}</h6></span>
-                        </div>
-                        {% if house.sub_house_kilowatt_related.all %}
-                        {% for sub_kwh in house.sub_house_kilowatt_related.all %}
-                            <div>{{forloop.counter}}<strong>Sub Kwh:</strong>-{{sub_kwh.sub_kwh}}</div>
-                            <div><b>KWH</b> from {{sub_kwh.sub_house_kwh_FK}}</div>  
-                            <hr>
-                        {% endfor %}
-                            
-                        {% else %}
+                <h3>Details from {{house.house_name}}</h3>
 
-                        {% endif %}
-                    {% endfor %}
-                    <a href="{% url 'share:add_sub_house' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Edit Sub Houses Name</a>
+                {% if subhouse.main_house_kilowatt_related.all %}
+                  {% for kwh in  subhouse.main_house_kilowatt_related.all %}
+                      <div class="d-flex d-flex-inline">
+                          <span class="pe-2"><h6>Read: {{kwh.sub_kwh}}-kwh</h6></span>
+                      </div>
+                  {% endfor %}
+                    <a href="" role="button" class="btn btn-primary w-100 mb-2">Edit Kilowatts</a>
+                  
+                  {% comment %} {% url 'share:add_sub_house_kwh' pk=house.id %} {% endcomment %}
                 {% else %}
-                    <a href="{% url 'share:add_sub_house' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Add Sub Houses</a>
+                  <a href="{% url 'share:add_sub_house_kwh' pk=house.id subpk=subhouse.id %}" role="button" class="btn btn-primary w-100 mb-2">Add Kilowatts</a>
                 {% endif %}
-                
-                
+                  {% comment %} <a href="{% url 'share:list_detail_sub_house_name' pk=house.id %} " role="button" class="btn btn-secondary w-100 mb-2">Back</a> {% endcomment %}
+
                 {% if user.is_authenticated %}
                 <div class="input-group-append">
                 <a href="{% url 'users:logout' %}" type="button" class="btn btn-outline-warning btn-sm ">Log Out</a>
@@ -65,32 +57,9 @@
 
 
 
-<h3>Details from {{house.house_name}}</h3>
-                {% if house.house_bill_related.all %}
-                    {% for bill in  house.house_bill_related.all %}
-                        <div class="d-flex d-flex-inline">
-                            <span class="pe-2"><h6>Amout: €{{ bill.amount_bill|intcomma }}</h6></span>
-                        </div>
-                    {% endfor %}
-                    <a href="{% url 'share:add_house_bill' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Edit Bill Value</a>
-                {% else %}
-                    <a href="{% url 'share:add_house_bill' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Add Bill Value</a>
-                {% endif %}
 
-                {% if house.house_bill_related.all %}
-                  {% if house.house_kilowatt_related.all %}
-                    {% for kwh in  house.house_kilowatt_related.all %}
-                        <div class="d-flex d-flex-inline">
-                            <span class="pe-2"><h6>Read: {{kwh.kwh}}-kwh</h6></span>
-                        </div>
-                    {% endfor %}
-                      <a href="{% url 'share:add_house_kwh' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Edit Kilowatts</a>
-                  {% else %}
-                    <a href="{% url 'share:add_house_kwh' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Add Kilowatts</a>
-                  {% endif %}
-                {% endif %}
 
-                {% if house.house_kilowatt_related.all %} 
+{% if house.house_kilowatt_related.all %} 
                   {% if object_list %}<!-- for Paginations -->
                     <span class="pe-2"><h6>Total Tenants: {{house.house_tenant_related.all.count}}</h6></span>
                       <a href="{% url 'share:add_house_tenant_name' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Add/Edit Tenant</a>
@@ -129,26 +98,16 @@
                   {% endif %}
                 {% endif %}
 
-                <!-- Sub Houses Details -->
-                {% comment %} {% if house.sub_house_related.all %}
-                    {% for sub_house in  house.sub_house_related.all %}
-                        <div class="d-flex d-flex-inline">
-                            <span class="pe-2"><h6><b>{{forloop.counter|ordinal}}</b>-Sub_House: {{sub_house.sub_house_name }}</h6></span>
-                        </div>
-                    {% endfor %}
-                    <a href="{% url 'share:add_sub_house' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Edit Sub Houses</a>
-                {% else %}
-                    <a href="{% url 'share:add_sub_house' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Add Sub Houses</a>
-                {% endif %} {% endcomment %}
-
                 {% if house.house_tenant_related.all %}
-
-                  <a href="{% url 'share:add_sub_house' pk=house.id %}" role="button" class="btn btn-success w-100 mb-2">Add Sub Houses</a>
+                  {% if house.sub_house_related.all %}
+                    <a href="{% url 'share:add_sub_house' pk=house.id %}" role="button" class="btn btn-success w-100 mb-2">Edit Sub Houses</a>
+                  {% else %}
+                    <a href="{% url 'share:add_sub_house' pk=house.id %}" role="button" class="btn btn-success w-100 mb-2">Add Sub Houses</a>
+                  {% endif %}
+                  
                   <a href="{% url 'share:pre_detail_house_name' pk=house.id %} " role="button" class="btn btn-secondary w-100 mb-2">Back</a>
-                  {% comment %} <a href="{% url 'share:add_house_tenant_name' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Edit or Add Tenants</a> {% endcomment %}
+                  
                   <a href="{% url 'share:list_house_name' %}" role="button" class="btn btn-secondary w-100 mb-2">All House's Name</a>
-
-
                 {% else %}
                   <a href="{% url 'share:pre_detail_house_name' pk=house.id %} " role="button" class="btn btn-secondary w-100 mb-2">Back</a>
                 {% endif %}

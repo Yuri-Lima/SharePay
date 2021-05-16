@@ -26,7 +26,6 @@
                 {{ form.non_form_errors }}
                 {{ form.non_filed_errors }}
                 
-                {{form.forms|length}}
                 <h3 class='text-white'>Add Sub Kilowatts/Hour</h3>
                 {% for kwh_form in form.forms %}
                     <hr>
@@ -38,6 +37,7 @@
                             <div class="alert alert-warning" role="alert" p-1><strong>Attention!</strong> You must fill max one option.</div>
                         </div>
                     </div>
+                    
                     <div class="row">
                         <div class="col ">
                             <p class='text-white'><b>Option 1</b></p>
