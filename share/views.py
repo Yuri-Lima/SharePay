@@ -5,7 +5,6 @@ from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.list import MultipleObjectMixin
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
-from django.core.exceptions import ValidationError
 from .models import (
     HouseNameModel,
     HouseTenantModel,
@@ -31,7 +30,7 @@ from django.views.generic import (
     UpdateView,
     RedirectView)
 from django.contrib.auth.models import User
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.shortcuts import get_object_or_404
 
 # Create your views here.
 """Get any context"""
@@ -100,18 +99,34 @@ class HouseNameDetailView(LoginRequiredMixin, DetailView, MultipleObjectMixin):
         context = super(HouseNameDetailView, self).get_context_data(object_list= object_list, **kwargs)
         return context
 
-class SubHouseNameDetailView(LoginRequiredMixin, DetailView, MultipleObjectMixin):
+class SubHouseNameListDetailView(LoginRequiredMixin, DetailView, MultipleObjectMixin):
     model = HouseNameModel
-    template_name = 'houses/detail_sub_house_name.html'
+    template_name = 'houses/list_detail_sub_house_name.html'
     context_object_name = 'house'
     paginate_by = 2
 
-    #Activate PAGINATIONS
+    #Activate PAGINATIONS [MultipleObjectMixin]
     def get_context_data(self, **kwargs):
         # print(f'Objects: {self.object.id}')
-        object_list = SubHouseNameModel.objects.filter(sub_house_FK=self.object.id)
-        context = super(SubHouseNameDetailView, self).get_context_data(object_list= object_list, **kwargs)
-        return context
+        context = {
+            'object_list': SubHouseNameModel.objects.filter(sub_house_FK=self.object.id),
+        }
+        return super(SubHouseNameListDetailView, self).get_context_data(**context)
+
+class SubHouseNameDetailView(LoginRequiredMixin, DetailView, MultipleObjectMixin):
+    model= HouseNameModel
+    template_name= 'houses/detail_sub_house_name.html'
+    context_object_name= 'house'
+    paginate_by= 2
+
+    #Activate PAGINATIONS [MultipleObjectMixin]
+    def get_context_data(self, **kwargs):
+        # print(f'kwargs: {self.kwargs["subpk"]}') 
+        context = {
+            'object_list': SubTenantModel.objects.filter(sub_house_tenant_FK=self.object.id),
+            'subhouse': SubHouseNameModel.objects.get(pk=self.kwargs['subpk'])
+        }
+        return super(SubHouseNameDetailView, self).get_context_data(**context)
       
 class HouseNameUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = HouseNameModel
@@ -234,6 +249,9 @@ class SubHouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
         )
         return HttpResponseRedirect(self.get_success_url())
 
+    def get_success_url(self):
+        return reverse('share:list_detail_sub_house_name', kwargs={'pk': self.object.pk})
+
 class HouseKilowattsFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
     model = HouseKilowattModel 
     template_name = 'houses/add/add_house_kwh.html'
@@ -277,26 +295,37 @@ class HouseKilowattsFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
         return reverse('share:detail_house_name', kwargs={'pk': self.object.pk})
 
 class SubHouseKilowattsFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
-    model = HouseNameModel 
+    model = HouseNameModel    
     template_name = 'houses/add/add_sub_house_kwh.html'
-    context_object_name = 'houseskwh'
+    # context_object_name = 'houseskwh'
 
     """Handle GET requests: instantiate a blank version of the form."""
     def get(self, request, *args, **kwargs):
-        self.object = self.get_object(queryset=HouseNameModel.objects.all())
+        self.object = SubHouseNameModel.objects.get(pk=self.kwargs.get('subpk'))
         return super(SubHouseKilowattsFormView, self).get(request, *args, **kwargs)
     
     def post(self, request, *args, **kwargs):
-        self.object = self.get_object(queryset=HouseNameModel.objects.all())
+        self.object = SubHouseNameModel.objects.get(pk=self.kwargs.get('subpk'))
+        # self.object = self.get_object(queryset=SubHouseNameModel.objects.get(pk=self.kwargs.get('subpk')))
+        # forms = self.get_form()
+        # for form in forms:
+        #     if form.is_valid():
+        #         form.cleaned_data['main_house_kwh_FK'] = self.kwargs['pk']
+        #         print(form.cleaned_data['main_house_kwh_FK'])
+        # forms.save() 
+            
+        # print(f'FORMS:{forms}')
         return super(SubHouseKilowattsFormView, self).post(request, *args, **kwargs)
 
-    """Handle a Formset setting - Instansce get self.object which was set for HousesName by each user"""
+
+    # """Handle a Formset setting - Instansce get self.object which was set for HousesName by each user"""
     def get_form(self, form_class=None):
-        formset = SubHouseKilowattFormset(**self.get_form_kwargs(), instance=self.object)       
+        formset = SubHouseKilowattFormset(**self.get_form_kwargs(), instance=self.object)
         return formset # inline FormSet
 
-    def form_valid(self, form) :
+    def form_valid(self, form):
         form.save()
+        
         messages.add_message(
             self.request, 
             messages.INFO,
@@ -304,8 +333,12 @@ class SubHouseKilowattsFormView(LoginRequiredMixin, SingleObjectMixin, FormView)
         )
         return HttpResponseRedirect(self.get_success_url())
     
-    # def reverse_url(self):
-    #     return reverse('share:add_house_kwh', kwargs={'pk': self.object.pk})
+    def form_invalid(self, form):
+        print('Invalid Form')
+        return super().form_invalid(form)
         
     def get_success_url(self):
-        return reverse('share:pre_detail_house_name', kwargs={'pk': self.object.pk})
+        return reverse('share:detail_sub_house_name', kwargs={
+                                                            'pk': self.kwargs['pk'],
+                                                            'subpk' : self.kwargs['subpk']
+                                                            })

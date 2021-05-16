@@ -9,7 +9,7 @@ from django.forms.widgets import DateTimeInput
 
 class HouseNameModel(models.Model):
     user_FK = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_related', null=False, verbose_name='User')
-    house_name = models.CharField(verbose_name="House Name",max_length=150, null=False, blank=False)
+    house_name = models.CharField(verbose_name="House Name",max_length=150, null=True, blank=True)
     meter = models.IntegerField(default=1)
     main_house = models.BooleanField(null=False, blank=False, help_text='Is the bill belongs this house typed above?')
     last_updated_house = models.DateField(auto_now_add=True, null=True, blank=True)
@@ -18,13 +18,16 @@ class HouseNameModel(models.Model):
         return self.house_name
     
     def get_absolute_url(self):
-        return reverse('share:pre_detail_house_name', kwargs={'pk': self.pk})
+        return reverse('share:pre_detail_house_name', kwargs={
+                                                        'pk': self.pk,
+                                                        'subpk': self.subpk,
+                                                        })
 
     class Meta:
         ordering = ['-last_updated_house']
         
 class HouseBillModel(models.Model):
-    house_bill_FK = models.ForeignKey(HouseNameModel, null=False, blank= False, max_length=255,
+    house_bill_FK = models.ForeignKey(HouseNameModel, null=True, blank=True, max_length=255,
                                 on_delete=models.CASCADE, related_name='house_bill_related', verbose_name='House Bill')
     amount_bill = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=2)
     start_date_bill = models.DateField(null=False, blank=False)
@@ -52,10 +55,13 @@ class HouseBillModel(models.Model):
                 })
     
     def get_absolute_url(self):
-        return reverse('share:detail_house_name', kwargs={'pk': self.pk})
+        return reverse('share:detail_house_name', kwargs={
+                                                        'pk': self.pk,
+                                                        'subpk': self.subpk,
+                                                        })
 
 class HouseKilowattModel(models.Model):
-    house_kwh_FK = models.ForeignKey(HouseNameModel, null=False, blank=False, max_length=255,
+    house_kwh_FK = models.ForeignKey(HouseNameModel, null=True, blank=True, max_length=255,
                                 on_delete=models.CASCADE, related_name='house_kilowatt_related', verbose_name='House Name')
     kwh = models.IntegerField(null=True, blank=True, verbose_name='KWH')
     last_read_kwh = models.IntegerField(null=True, blank=True)
@@ -88,10 +94,13 @@ class HouseKilowattModel(models.Model):
                         })
 
     def get_absolute_url(self):
-        return reverse('share:detail_house_name', kwargs={'pk': self.pk})
+        return reverse('share:detail_house_name', kwargs={
+                                                        'pk': self.pk,
+                                                        'subpk': self.subpk,
+                                                        })
 
 class HouseTenantModel(models.Model):
-    house_name_FK = models.ForeignKey(HouseNameModel, null=False, blank=False, max_length=255,
+    house_name_FK = models.ForeignKey(HouseNameModel, null=True, blank=True, max_length=255,
                             on_delete=models.CASCADE, related_name='house_tenant_related', verbose_name='Tenant Name')
     house_tenant = models.CharField(max_length=150, null=True, blank=True)
     start_date = models.DateField(null=False, blank=False)
@@ -103,7 +112,10 @@ class HouseTenantModel(models.Model):
         return self.house_tenant
     
     def get_absolute_url(self):
-        return reverse('share:detail_house_name', kwargs={'pk': self.pk})
+        return reverse('share:detail_house_name', kwargs={
+                                                        'pk': self.pk,
+                                                        'subpk': self.subpk,
+                                                        })
 
     def clean(self):
         if self.house_tenant:
@@ -126,31 +138,31 @@ class HouseTenantModel(models.Model):
         ordering = ['-last_updated_tenant']
 
 class SubHouseNameModel(models.Model):
-    sub_house_FK = models.ForeignKey(HouseNameModel, null=False, blank=False, max_length=255,
+    sub_house_FK = models.ForeignKey(HouseNameModel, null=True, blank=True, max_length=255,
                                 on_delete=models.CASCADE, related_name='sub_house_related', verbose_name='House Name')
     sub_house_name = models.CharField(verbose_name="Sub House Name",max_length=150, null=False, blank=False)
     sub_meter = models.IntegerField(default=1)
     sub_main_house = models.BooleanField(null=False, blank=False, help_text='Is the bill belongs this house typed above?')
     sub_last_updated_house = models.DateField(auto_now_add=True, null=True, blank=True)
 
-    class Meta:
-        ordering = ['-sub_last_updated_kwh']
-
     def __str__(self) -> str:
         return self.sub_house_name
 
     def get_absolute_url(self):
-        return reverse('share:add_sub_house_kwh', kwargs={'pk': self.pk})
+        return reverse('share:add_sub_house_kwh', kwargs={
+                                                        'pk': self.pk,
+                                                        'subpk': self.subpk,
+                                                        })
 
     class Meta:
         ordering = ['-sub_last_updated_house']
 
 class SubKilowattModel(models.Model):
-    main_house_kwh_FK = models.ForeignKey(HouseNameModel, null=True, blank=False, max_length=255,
+    main_house_kwh_FK = models.ForeignKey(HouseNameModel, null=True, blank=True, max_length=255,
                                 on_delete=models.CASCADE, related_name='main_house_kilowatt_related', verbose_name='House Name')
-    sub_house_kwh_FK = models.ForeignKey(SubHouseNameModel, null=True, blank=False, max_length=255,
+    sub_house_kwh_FK = models.ForeignKey(SubHouseNameModel, null=True, blank=True, max_length=255,
                                 on_delete=models.CASCADE, related_name='sub_house_kilowatt_related', verbose_name='Sub House Name')              
-    sub_kwh = models.IntegerField(null=True, blank=True, verbose_name='KWH')
+    sub_kwh = models.IntegerField(null=True, blank=True, default=0,verbose_name='KWH')
     sub_last_read_kwh = models.IntegerField(null=True, blank=True)
     sub_read_kwh = models.IntegerField(null=True, blank=True, help_text='Should be greatter than last read Kwh')
     sub_last_updated_kwh = models.DateField(auto_now=True, null=True, blank=True)
@@ -181,12 +193,15 @@ class SubKilowattModel(models.Model):
                         })
 
     def get_absolute_url(self):
-        return reverse('share:pre_detail_house_name', kwargs={'pk': self.pk})
+        return reverse('share:pre_detail_house_name', kwargs={
+                                                        'pk': self.pk,
+                                                        'subpk': self.subpk,
+                                                        })
 
 class SubTenantModel(models.Model):
-    main_tenant_FK = models.ForeignKey(HouseNameModel, null=True, blank=False, max_length=255,
+    main_tenant_FK = models.ForeignKey(HouseNameModel, null=True, blank=True, max_length=255,
                                 on_delete=models.CASCADE, related_name='main_house_tenant_related', verbose_name='House Name')
-    sub_house_tenant_FK = models.OneToOneField(SubHouseNameModel, null=True, blank=False, max_length=255,
+    sub_house_tenant_FK = models.ForeignKey(SubHouseNameModel, null=True, blank=False, max_length=255,
                                 on_delete=models.CASCADE, related_name='sub_house_tenant_related', verbose_name='Sub House Name')
     sub_house_tenant = models.CharField(max_length=150, null=True, blank=True)
     sub_start_date = models.DateField(null=False, blank=False)
@@ -201,7 +216,10 @@ class SubTenantModel(models.Model):
         return self.sub_house_tenant
 
     def get_absolute_url(self):
-        return reverse('share:detail_house_name', kwargs={'pk': self.pk})
+        return reverse('share:detail_house_name', kwargs={
+                                                        'pk': self.pk,
+                                                        'subpk': self.subpk,
+                                                        })
 
     def clean(self):
         if self.sub_house_tenant:

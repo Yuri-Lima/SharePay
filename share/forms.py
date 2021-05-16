@@ -1,5 +1,7 @@
+from django.db.models.base import Model
+from django import forms
 from django.forms.models import inlineformset_factory
-from django.forms import ModelForm, TextInput, DateInput
+from django.forms import ModelForm, TextInput, DateInput, fields
 from share.models import (
     HouseNameModel,
     HouseTenantModel,
@@ -7,8 +9,10 @@ from share.models import (
     HouseKilowattModel,
     SubHouseNameModel,
     SubTenantModel,
+    SubKilowattModel,
     SubKilowattModel
 )
+from django.forms import BaseInlineFormSet
 """ CALENDAR """
 class HouseNameDateInput(DateInput):
     input_type = 'date'
@@ -16,7 +20,6 @@ class HouseNameDateInput(DateInput):
         kwargs['format'] = '%Y-%m-%d'
         super(HouseNameDateInput, self).__init__(**kwargs) 
     
-
 HouseNameFormset = inlineformset_factory(
 
     HouseNameModel,
@@ -86,7 +89,7 @@ SubHouseNameFormset = inlineformset_factory(
 
 SubHouseKilowattFormset = inlineformset_factory(
 
-    HouseNameModel,
+    SubHouseNameModel,
     SubKilowattModel,
     fields=['main_house_kwh_FK', 'sub_house_kwh_FK', 'sub_kwh', 'sub_last_read_kwh', 'sub_read_kwh'],
     extra=0,
