@@ -325,7 +325,12 @@ class SubHouseKilowattsFormView(LoginRequiredMixin, SingleObjectMixin, FormView)
 
     def form_valid(self, form):
         form.save()
-        
+        objs = SubKilowattModel.objects.all().filter(sub_house_kwh_FK= self.object)
+        for obj in objs:
+            if not obj.main_house_kwh_FK:
+                obj.main_house_kwh_FK = HouseNameModel.objects.get(pk=self.kwargs['pk']) 
+                obj.save()
+            
         messages.add_message(
             self.request, 
             messages.INFO,

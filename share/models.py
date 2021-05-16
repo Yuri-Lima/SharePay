@@ -19,8 +19,7 @@ class HouseNameModel(models.Model):
     
     def get_absolute_url(self):
         return reverse('share:pre_detail_house_name', kwargs={
-                                                        'pk': self.pk,
-                                                        'subpk': self.subpk,
+                                                        'pk': self.pk
                                                         })
 
     class Meta:
