@@ -1,0 +1,92 @@
+{% extends 'houses/base.html' %}
+{% load static %}
+{% load humanize %}
+
+
+{% block title %}SharePay - Tenants{% endblock title %}
+
+{% block content %}
+<div class="masthead-bg">
+  <div class="container contact-form">
+    <div class="contact-image p-4">
+        <img class="d-block  py-2 mx-auto align-self-center" src="{% static 'logo/sharepay_text.png' %}" alt="SharePay" width="112" height='mx-auto'>
+    </div>
+    <!-- ================================ -->
+                    {% if messages %}
+                    <ul class="tenant_messages">
+                        {% for message in messages %}
+                            <li>{{message}}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+            <!-- ================================ -->
+    <div class="row-md">
+      <form action="" method="POST", enctype="multipart/form-data">
+        {% for hidden_field in form.hidden_fields %}
+            {{ hidden_field.erros }}
+            {{ hidden_field }}
+        {% endfor %}
+
+        {% csrf_token %}
+
+        {{ form.management_form }}
+        {{ form.non_form_erros }}
+        {{ form.non_filed_errors }}
+
+        <h3 class='p-2 text-white'>Tenants - {{sub_tenants.sub_house_tenant_related.all.count }}</h3>
+        {% for name_form in form.forms %}
+        <hr>
+        {% for hidden_field in name_form.hidden_fields %}
+            {{ hidden_field.erros }}
+        {% endfor %}
+        <div class="row pl-4 pr-4 pt-4 pb-2 text-white">
+            <p>What is the Tenant's <b>{{forloop.counter|ordinal}}</b> Name?</p>
+        </div>
+        <div class="row pl-4">
+            <p>{{ name_form.sub_house_tenant }}</p>
+            <p>{{ name_form.sub_house_tenant.errors }}</p>
+        </div>
+        
+        <div class="row pl-4 pr-4 pt-2 pb-2 text-white">
+            <p>How long has he/she been stayed?</p>
+        </div>
+        <div class="row pl-4 pr-4 pt-2 pb-2">
+            <div class="col p-0 text-white">
+                <p>From:</p>
+                <p>{{ name_form.sub_start_date }}</p>
+                <p>{{ name_form.sub_start_date.errors }}</p>
+            </div>
+            <div class="col p-0 text-white">
+                <p>End:</p>
+                <p>{{ name_form.sub_end_date }}</p>
+                <p>{{ name_form.sub_end_date.errors }}</p>
+            </div>
+        </div>
+        <div class="row p-4">
+            <div class="col p-0 text-white">
+                {% if form.can_delete and name_form.instance.id %}
+                <!-- If you are useing formset as ModelFormSet (name_form.id) -->
+                {{ name_form.id }}
+                <p>{{ name_form.DELETE }} - <b>Delete</b></p>
+            {% endif %}
+            <button type="submit" value="Add Tenants" class="btn btn-primary w-100 mb-3" >Save</button>
+            <a href="{% url 'share:detail_sub_house_name' pk=sub_tenants.sub_house_FK.id subpk=sub_tenants.id %}" role="button" class="btn btn-secondary w-100">Back</a>
+            
+            </div>
+        </div>
+        
+        {% endfor %}
+      </form>
+    
+    </div>
+    
+    {% if user.is_authenticated %}
+    <div class="input-group-append py-3 pl-2">
+      <a href="{% url 'users:logout' %}" type="button" class="btn btn-outline-warning btn-sm">Log Out</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock content %}
+
+  

@@ -82,13 +82,13 @@
                     {% endif %}
                 {% endfor %}
                 <hr>
-                <p>
+                <p> 
                 {% for kwh in  houseskwh.sub_house_kilowatt_related.all %}
                     <button type="submit" value="Add Tenants" class="btn btn-primary w-100 mb-3" >Update Sub Kilowatts</button>
                 {% empty %}
                     <button type="submit" value="Add Tenants" class="btn btn-primary w-100 mb-3" >Add Sub Kilowatts</button>
                 {% endfor %}
-                    <a href="{{ houseskwh.get_absolute_url }}" role="button" class="btn btn-secondary w-100">Back</a>
+                    <a href="{% url 'share:detail_sub_house_name' pk=houseskwh.sub_house_FK.id subpk=houseskwh.id %}" role="button" class="btn btn-secondary w-100">Back</a>
                 </p>
             </form>
 

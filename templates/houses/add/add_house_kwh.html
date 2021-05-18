@@ -74,7 +74,7 @@
                 {% if form.can_delete and kwh_form.instance.id %}
                   <div class="row">
                       <div class="col">
-                          <!-- If you are useing formset as ModelFormSet (name_form.id) -->
+                          <!-- If you are useing formset as ModelFormSet, you must provide the ID onto FormSet -->
                           {{ kwh_form.id }}
                           <p class='text-white'>{{ kwh_form.DELETE }} - <b>Delete</b></p>
                       </div>

@@ -17,8 +17,11 @@ from .forms import (
     HouseNameFormset,
     HouseBillFormset,
     HouseKilowattsFormset,
+
     SubHouseNameFormset,
     SubHouseKilowattFormset,
+    SubHouseTenantFormset,
+
     )
 from django.views.generic import (
     CreateView,
@@ -31,7 +34,7 @@ from django.views.generic import (
     RedirectView)
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
-
+from django.core.exceptions import ObjectDoesNotExist
 # Create your views here.
 """Get any context"""
 class IndexTemplateView(TemplateView):
@@ -60,9 +63,7 @@ class HouseNameListView(LoginRequiredMixin, ListView):
 class HouseNameCreateView(LoginRequiredMixin, CreateView):
     model = HouseNameModel
     template_name = 'houses/create_house_name.html'
-    fields = ['house_name', 'meter', 'main_house']
-    
-    
+    fields = ['house_name', 'meter',]
 
     def form_valid(self, form):
         #Set User
@@ -123,7 +124,7 @@ class SubHouseNameDetailView(LoginRequiredMixin, DetailView, MultipleObjectMixin
     def get_context_data(self, **kwargs):
         # print(f'kwargs: {self.kwargs["subpk"]}') 
         context = {
-            'object_list': SubTenantModel.objects.filter(sub_house_tenant_FK=self.object.id),
+            'object_list': SubTenantModel.objects.filter(main_tenant_FK=self.object.id),
             'subhouse': SubHouseNameModel.objects.get(pk=self.kwargs['subpk'])
         }
         return super(SubHouseNameDetailView, self).get_context_data(**context)
@@ -156,8 +157,42 @@ class HouseNameDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             )  
             return True
         return False
+
+class SubHouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
+    model = HouseNameModel
+    template_name = 'houses/add/add_sub_house.html'
+    context_object_name = 'sub_houses'
+
+    """Handle GET requests: instantiate a blank version of the form."""
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=HouseNameModel.objects.all())
+        return super(SubHouseNameFormView, self).get(request, *args, **kwargs)
     
-class HouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
+    def post(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=HouseNameModel.objects.all())
+        return super(SubHouseNameFormView, self).post(request, *args, **kwargs)
+
+    """Handle a Formset setting - Instansce get self.object which was set for HousesName by each user"""
+    def get_form(self, form_class=None):
+        formset = SubHouseNameFormset(**self.get_form_kwargs(), instance=self.object)
+        print(f'SubHouseNameFormView:\n {formset}')
+        print(f'*'*10)      
+        return formset # inline FormSet
+
+    def form_valid(self, form) :
+        # print(form)
+        form.save()
+        messages.add_message(
+            self.request, 
+            messages.INFO,
+            "Sub House Name Was Informed."
+        )
+        return HttpResponseRedirect(self.get_success_url())#
+
+    def get_success_url(self):
+        return reverse('share:list_detail_sub_house_name', kwargs={'pk': self.kwargs['pk']})
+    
+class TenantsHouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
     model = HouseNameModel
     template_name = 'houses/add/add_tenant_name.html'
     context_object_name = 'houses'
@@ -165,19 +200,20 @@ class HouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
     """Handle GET requests: instantiate a blank version of the form."""
     def get(self, request, *args, **kwargs):
         self.object = self.get_object(queryset=HouseNameModel.objects.all())
-        return super(HouseNameFormView, self).get(request, *args, **kwargs)
+        return super(TenantsHouseNameFormView, self).get(request, *args, **kwargs)
     
     def post(self, request, *args, **kwargs):
         self.object = self.get_object(queryset=HouseNameModel.objects.all())
-        return super(HouseNameFormView, self).post(request, *args, **kwargs)
+        return super(TenantsHouseNameFormView, self).post(request, *args, **kwargs)
 
     """Handle a Formset setting - Instansce get self.object which was set for HousesName by each user"""
     def get_form(self, form_class=None):
         formset = HouseNameFormset(**self.get_form_kwargs(), instance=self.object)
+        # print(f'TenantsHouseName:\n {formset}')
+        # print(f'*'*10)
         return formset # inline FormSet
 
     def form_valid(self, form) :
-        # print(form)
         form.save()
         messages.add_message(
             self.request, 
@@ -209,7 +245,11 @@ class HouseBillFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
         return formset # inline FormSet
 
     def form_valid(self, form) :
-        # print(form)
+        # print(form.has_changed())
+        # if form.has_changed():
+        #     form.update()
+        # else:
+        #     form.save()
         form.save()
         messages.add_message(
             self.request, 
@@ -221,36 +261,63 @@ class HouseBillFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
     def get_success_url(self):
         return reverse('share:detail_house_name', kwargs={'pk': self.object.pk})
 
-class SubHouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
-    model = HouseNameModel
-    template_name = 'houses/add/add_sub_house.html'
-    context_object_name = 'sub_houses'
+    def form_invalid(self, form):
+        print('Invalid Form')
+        return super().form_invalid(form)
 
+class SubTenantsHouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
+    model = SubHouseNameModel
+    template_name = 'houses/add/add_sub_house_tenant.html'
+    context_object_name = 'sub_tenants'
+    
     """Handle GET requests: instantiate a blank version of the form."""
     def get(self, request, *args, **kwargs):
-        self.object = self.get_object(queryset=HouseNameModel.objects.all())
-        return super(SubHouseNameFormView, self).get(request, *args, **kwargs)
+        self.object = SubHouseNameModel.objects.get(pk=self.kwargs.get('subpk'))
+        # print(self.object)
+        return super(SubTenantsHouseNameFormView, self).get(request, *args, **kwargs)
     
     def post(self, request, *args, **kwargs):
-        self.object = self.get_object(queryset=HouseNameModel.objects.all())
-        return super(SubHouseNameFormView, self).post(request, *args, **kwargs)
+        self.object = SubHouseNameModel.objects.get(pk=self.kwargs.get('subpk'))
+        # print(self.object)
+        return super(SubTenantsHouseNameFormView, self).post(request, *args, **kwargs)
+
 
     """Handle a Formset setting - Instansce get self.object which was set for HousesName by each user"""
     def get_form(self, form_class=None):
-        formset = SubHouseNameFormset(**self.get_form_kwargs(), instance=self.object)       
+        formset = SubHouseTenantFormset(**self.get_form_kwargs(), instance=self.object)
+        print(f' SubTenantsHouse:\n {formset}')
+        print(f'*'*10) 
         return formset # inline FormSet
+    
 
     def form_valid(self, form) :
         form.save()
+        #I had to do this, because up to now, it was what a learned.
+        objs = SubTenantModel.objects.all().filter(sub_house_tenant_FK= self.object)
+        for obj in objs:
+            if not obj.main_tenant_FK:
+                obj.main_tenant_FK = HouseNameModel.objects.get(pk=self.kwargs['pk']) 
+                obj.save()
+            if obj.sub_house_tenant == None:
+                obj.delete()
+        #END
+
         messages.add_message(
             self.request, 
             messages.INFO,
-            "Sub House Was Informed."
+            "Sub Tenant Was Informed."
         )
         return HttpResponseRedirect(self.get_success_url())
 
     def get_success_url(self):
-        return reverse('share:list_detail_sub_house_name', kwargs={'pk': self.object.pk})
+        return reverse('share:detail_sub_house_name', kwargs={
+                                                            'pk': self.kwargs['pk'],
+                                                            'subpk' : self.kwargs['subpk']
+                                                            })
+
+    def form_invalid(self, form):
+        print('Invalid Form')
+        return super().form_invalid(form)
 
 class HouseKilowattsFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
     model = HouseKilowattModel 
@@ -279,25 +346,14 @@ class HouseKilowattsFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
             "Kilowatts Details Was Informed."
         )
         return HttpResponseRedirect(self.get_success_url())
-    
-    # def reverse_url(self):
-    #     return reverse('share:add_house_kwh', kwargs={'pk': self.object.pk})
-        
-    def get_success_url(self):
-        return reverse('share:detail_house_name', kwargs={'pk': self.object.pk})
-
-
-    
-    # def reverse_url(self):
-    #     return reverse('share:add_house_kwh', kwargs={'pk': self.object.pk})
         
     def get_success_url(self):
         return reverse('share:detail_house_name', kwargs={'pk': self.object.pk})
 
 class SubHouseKilowattsFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
-    model = HouseNameModel    
+    model = SubHouseNameModel    
     template_name = 'houses/add/add_sub_house_kwh.html'
-    # context_object_name = 'houseskwh'
+    context_object_name = 'houseskwh'
 
     """Handle GET requests: instantiate a blank version of the form."""
     def get(self, request, *args, **kwargs):
@@ -305,25 +361,19 @@ class SubHouseKilowattsFormView(LoginRequiredMixin, SingleObjectMixin, FormView)
         return super(SubHouseKilowattsFormView, self).get(request, *args, **kwargs)
     
     def post(self, request, *args, **kwargs):
+        # self.object = self.get_object(queryset=HouseNameModel.objects.all())
         self.object = SubHouseNameModel.objects.get(pk=self.kwargs.get('subpk'))
-        # self.object = self.get_object(queryset=SubHouseNameModel.objects.get(pk=self.kwargs.get('subpk')))
-        # forms = self.get_form()
-        # for form in forms:
-        #     if form.is_valid():
-        #         form.cleaned_data['main_house_kwh_FK'] = self.kwargs['pk']
-        #         print(form.cleaned_data['main_house_kwh_FK'])
-        # forms.save() 
-            
-        # print(f'FORMS:{forms}')
+        # print(self.object)
         return super(SubHouseKilowattsFormView, self).post(request, *args, **kwargs)
-
 
     # """Handle a Formset setting - Instansce get self.object which was set for HousesName by each user"""
     def get_form(self, form_class=None):
         formset = SubHouseKilowattFormset(**self.get_form_kwargs(), instance=self.object)
+        # print(f' SubHouseKilowattsFormView:\n {formset}')
+        # print(f'*'*10) 
         return formset # inline FormSet
 
-    def form_valid(self, form):
+    def form_valid(self, form): 
         form.save()
         objs = SubKilowattModel.objects.all().filter(sub_house_kwh_FK= self.object)
         for obj in objs:
@@ -338,9 +388,9 @@ class SubHouseKilowattsFormView(LoginRequiredMixin, SingleObjectMixin, FormView)
         )
         return HttpResponseRedirect(self.get_success_url())
     
-    def form_invalid(self, form):
-        print('Invalid Form')
-        return super().form_invalid(form)
+    # def form_invalid(self, form):
+    #     print('Invalid Form')
+    #     return super().form_invalid(form)
         
     def get_success_url(self):
         return reverse('share:detail_sub_house_name', kwargs={

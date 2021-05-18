@@ -75,9 +75,9 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        {% if form.can_delete and bill_form.instance.id %}
-                        <!-- If you are useing formset as ModelFormSet (name_form.id) -->
-                        {{ bill_form.id }}
+                        {% if form.can_delete  and bill_form.instance.id %} 
+                        <!-- If you are useing formset as ModelFormSet, you must provide the ID onto FormSet -->
+                        {{bill_form.id}}
                         <p>{{ bill_form.DELETE }} - <b>Delete</b></p>
                     {% endif %}
                     </div>

@@ -34,7 +34,7 @@
                     {% endfor %}
                     <a href="{% url 'share:add_house_bill' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Edit Bill Value</a>
                 {% else %}
-                    <a href="{% url 'share:add_house_bill' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Add Bill Value</a>
+                    <a href="{% url 'share:add_house_bill' pk=house.id %}" role="button" class="btn btn-success w-100 mb-2">Add Bill Value</a>
                 {% endif %}
 
                 {% if house.house_bill_related.all %}
@@ -46,7 +46,7 @@
                     {% endfor %}
                       <a href="{% url 'share:add_house_kwh' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Edit Kilowatts</a>
                   {% else %}
-                    <a href="{% url 'share:add_house_kwh' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Add Kilowatts</a>
+                    <a href="{% url 'share:add_house_kwh' pk=house.id %}" role="button" class="btn btn-success w-100 mb-2">Add Kilowatts</a>
                   {% endif %}
                 {% endif %}
 
@@ -85,13 +85,13 @@
 
                     {% endif %} 
                   {% else %}
-                      <a href="{% url 'share:add_house_tenant_name' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Add Tenants</a>
+                      <a href="{% url 'share:add_house_tenant_name' pk=house.id %}" role="button" class="btn btn-success w-100 mb-2">Add Tenants</a>
                   {% endif %}
                 {% endif %}
 
                 {% if house.house_tenant_related.all %}
                   {% if house.sub_house_related.all %}
-                    <a href="{% url 'share:add_sub_house' pk=house.id %}" role="button" class="btn btn-success w-100 mb-2">Edit Sub Houses</a>
+                    <a href="{% url 'share:add_sub_house' pk=house.id %}" role="button" class="btn btn-info w-100 mb-2">Edit Sub Houses</a>
                   {% else %}
                     <a href="{% url 'share:add_sub_house' pk=house.id %}" role="button" class="btn btn-success w-100 mb-2">Add Sub Houses</a>
                   {% endif %}

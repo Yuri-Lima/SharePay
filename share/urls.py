@@ -8,14 +8,17 @@ from .views import (
 
     HouseNameDetailView,
     PreHouseNameDetailView,
+
     SubHouseNameListDetailView,
     SubHouseNameDetailView,
 
-    HouseNameFormView,
+    TenantsHouseNameFormView,
     HouseBillFormView,
     HouseKilowattsFormView,
+
     SubHouseNameFormView,
     SubHouseKilowattsFormView,
+    SubTenantsHouseNameFormView,
 
     HouseNameUpdateView,
     HouseNameDeleteView,
@@ -43,12 +46,15 @@ urlpatterns = [
     #Fourth View
     path('detail_house_name/<int:pk>/', HouseNameDetailView.as_view(), name='detail_house_name'),
     path('list_detail_sub_house_name/<int:pk>/', SubHouseNameListDetailView.as_view(), name='list_detail_sub_house_name'),
-    path('detail_sub_house_name/<int:pk>/<int:subpk>/', SubHouseNameDetailView.as_view(), name='detail_sub_house_name'),
+    path('detail_sub_house_name/<int:pk>/subhouse/<int:subpk>/', SubHouseNameDetailView.as_view(), name='detail_sub_house_name'),
 
     #Fifth View
     path('add_house_bill/<int:pk>/bill/edit/', HouseBillFormView.as_view(), name='add_house_bill'),
     path('add_house_kwh/<int:pk>/kwh/edit/', HouseKilowattsFormView.as_view(), name='add_house_kwh'),
-    path('add_tenant_name/<int:pk>/tenant/edit/', HouseNameFormView.as_view(), name='add_house_tenant_name'), 
+    path('add_tenant_name/<int:pk>/tenant/edit/', TenantsHouseNameFormView.as_view(), name='add_house_tenant_name'), 
+    
+    #Sixth View
     path('add_sub_house/<int:pk>/subhouse/edit/', SubHouseNameFormView.as_view(), name='add_sub_house'),
-    path('add_sub_house_kwh/<int:pk>/subkwh/edit/<int:subpk>/', SubHouseKilowattsFormView.as_view(), name='add_sub_house_kwh'),
+    path('add_sub_house_kwh/<int:pk>/subhouse/<int:subpk>/edit', SubHouseKilowattsFormView.as_view(), name='add_sub_house_kwh'),
+    path('add_sub_tenant_name/<int:pk>/subtenant/<int:subpk>/edit/', SubTenantsHouseNameFormView.as_view(), name='add_sub_house_tenant_name'), 
 ]

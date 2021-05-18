@@ -16,7 +16,7 @@
       <div class="row h-100">
         <div class="col-12 my-auto">
             <div class="masthead-content text-white py-5 py-md-0">
-                <!-- ================================ -->
+                <!-- ==============MESSAGES================== -->
                   {% if messages %}
                     <ul class="detail_messages">
                         {% for message in messages %}
@@ -24,23 +24,67 @@
                         {% endfor %}
                     </ul>
                   {% endif %}
-                <!-- ================================ -->
-                <h3>Details from {{house.house_name}}</h3>
+                <!-- ==============END_MESSAGES================== -->
 
-                {% if subhouse.main_house_kilowatt_related.all %}
-                  {% for kwh in  subhouse.main_house_kilowatt_related.all %}
+                <h3>Details from {{subhouse.sub_house_name}}</h3>
+
+                <!-- ==============ADD_KILOWATTS================== -->
+                {% if subhouse.sub_house_kilowatt_related.all %}
+                  {% for kwh in  subhouse.sub_house_kilowatt_related.all %}
                       <div class="d-flex d-flex-inline">
                           <span class="pe-2"><h6>Read: {{kwh.sub_kwh}}-kwh</h6></span>
                       </div>
                   {% endfor %}
-                    <a href="" role="button" class="btn btn-primary w-100 mb-2">Edit Kilowatts</a>
-                  
-                  {% comment %} {% url 'share:add_sub_house_kwh' pk=house.id %} {% endcomment %}
-                {% else %}
-                  <a href="{% url 'share:add_sub_house_kwh' pk=house.id subpk=subhouse.id %}" role="button" class="btn btn-primary w-100 mb-2">Add Kilowatts</a>
-                {% endif %}
-                  {% comment %} <a href="{% url 'share:list_detail_sub_house_name' pk=house.id %} " role="button" class="btn btn-secondary w-100 mb-2">Back</a> {% endcomment %}
+                    <a href="{% url 'share:add_sub_house_kwh' pk=house.id subpk=subhouse.id %}" role="button" class="btn btn-primary w-100 mb-2">Edit Kilowatts</a>
+                  <!-- ==============ADD_TENANTS================== -->
+                    {% if house.main_house_tenant_related.all %}
+                      {% if object_list %}<!-- for Paginations -->
+                        <span class="pe-2"><h6>Total Tenants: {{house.main_house_tenant_related.all.count}}</h6></span>
+                        <a href="{% url 'share:add_sub_house_tenant_name' pk=house.id subpk=subhouse.id %}" role="button" class="btn btn-primary w-100 mb-2">Add/Edit Tenant</a>
+                        {% for name in object_list %}
+                          {% comment %} <div class="small">Tenant Id: {{ name.id }}</div> {% endcomment %}
+                          <div>{{forloop.counter}} - <strong>Sub Tenant's Name:</strong> {{ name.sub_house_tenant }}</div>
+                          <div><b>{{name.sub_days}} days</b> living at {{name.sub_house_tenant_FK.sub_house_name}}</div>  
+                          <hr>
+                        {% endfor %}
 
+                        <!-- Paginations -->
+                          {% if is_paginated %}
+                            {% if page_obj.has_previous %}<!-- Esse o objeto que nossa Views passa dentro do nosso template -->
+                                <a class="btn btn-outline-primary mb-4" href="?page=1">First</a>
+                                <a class="btn btn-outline-primary mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                            {% endif %}
+
+                            {% for num in page_obj.paginator.page_range %}
+                                {% if page_obj.number == num %}<!-- page_obj.number e o numero atual da pagina -->
+                                    <a class="btn btn-primary mb-4" href="?page={{ num }}">{{ num }}</a>
+                                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                                    <a class="btn btn-primary mb-4" href="?page={{ num }}">{{ num }}</a>
+                                {% endif %}
+
+                            {% endfor %}
+
+                            {% if page_obj.has_next %}<!-- Esse o objeto que nossa Views passa dentro do nosso template -->
+                                <a class="btn btn-outline-primary mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
+                                <a class="btn btn-outline-primary mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a> <!-- page_obj.pagintor.num_pages Retorna o numero total de paginas -->
+                            {% endif %}
+                          {% endif %} 
+                      {% endif %}
+                    
+                    {% else %}
+                      <a href="{% url 'share:add_sub_house_tenant_name' pk=house.id subpk=subhouse.id %}" role="button" class="btn btn-success w-100 mb-2">Add Sub Tenants</a>
+                    {% endif %}
+                  <!-- ==============END_TENANTS================== -->
+                {% else %}
+                  <a href="{% url 'share:add_sub_house_kwh' pk=house.id subpk=subhouse.id %}" role="button" class="btn btn-success w-100 mb-2">Add Kilowatts</a>
+                {% endif %}
+                <!-- ==============END_KILOWATTS================== -->
+
+
+
+
+{% comment %} =============================Down_Page============================================================================================================================ {% endcomment %}
+                  <a href="{% url 'share:list_detail_sub_house_name' pk=house.id %} " role="button" class="btn btn-secondary w-100 mb-2">Back</a>
                 {% if user.is_authenticated %}
                 <div class="input-group-append">
                 <a href="{% url 'users:logout' %}" type="button" class="btn btn-outline-warning btn-sm ">Log Out</a>
