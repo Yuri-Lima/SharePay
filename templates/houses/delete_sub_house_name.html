@@ -21,26 +21,25 @@
                     {% csrf_token %}
                     <fieldset class="form-group">
                         <p>You will <q><b>permanently</b></q> delete:</p>
-                        <table>
-                        <tr>
-                        {% comment %}Start First columm{% endcomment %}
-                          <th>  
-                            <ul>
-                              <li><p>{{house.house_name}}</p></li>
-                              <ul>
-                                <li>Bill</li>
-                                <li>KiloWatts and SubKiloWatts</li>
-                                <li>Tenants and SubTenants</li>
-                              </ul>
-                            </ul>
-                          </th>
-                        </tr>
-
-                        </table>
+                        <ul>
+                          <li>{{subhouse.sub_house_name}}</li>
+                          <ul>
+                            {% for sub in subhouse.sub_house_tenant_related.all %}
+                              <li>{{sub}}</li>
+                            {% empty%}
+                              <li>No Tenants had been added.</li>
+                            {% endfor %}
+                            {% for sub in subhouse.sub_house_kilowatt_related.all %}
+                              <li>{{sub.sub_kwh}} kwh</li> 
+                            {% empty%}
+                              <li>No SubKilowatts had been added.</li>
+                            {% endfor %}
+                          </ul>
+                        </ul>
                     </fieldset>
                     <div class="form-group">
                         <button class="btn btn-outline-danger text-white m-2" type="submit">Yes. Delete House</button>
-                        <a class="btn btn-warning" href="{% url 'share:list_house_name' %}">Back</a>
+                        <a class="btn btn-warning" href="{% url 'share:list_detail_sub_house_name' pk=house.id %}">Back</a>
                     </div>
                 </form>
                 {% if user.is_authenticated %}

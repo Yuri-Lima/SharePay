@@ -42,7 +42,7 @@
                 {% endfor %}
                 <div class="row">
                     <div class="col">
-                        <p>Please! Provide to us:</p>
+                        <p>What is the value's bill:</p>
                         <p>{{bill_form.amount_bill}}</p>
                         <p>{{bill_form.amount_bill.errors}}</p>
                     </div>
@@ -52,7 +52,7 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <p>What is the period of the bill?</p>
+                        <p>What is the bill's period?</p>
                     </div>
                 </div>
                 <div class="row">
@@ -90,7 +90,7 @@
                 {% empty %}
                     <button type="submit" value="Add Tenants" class="btn btn-primary w-100 mb-3" >Add House Bill</button>
                 {% endfor %}
-                    <a href="{{ housesbill.get_absolute_url }}" role="button" class="btn btn-secondary w-100">Back</a>
+                    <a href="{% url 'share:detail_house_name' pk=housesbill.id %}" role="button" class="btn btn-secondary w-100">Back</a>
                 </p>
             </form>
 

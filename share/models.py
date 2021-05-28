@@ -13,7 +13,7 @@ class HouseNameModel(models.Model):
     house_name = models.CharField(verbose_name="House Name",max_length=150, null=True, blank=True)
     meter = models.IntegerField(default=1)
     # main_house = models.BooleanField(null=False, blank=False, help_text='Is the bill belongs this house typed above?')
-    last_updated_house = models.DateField(auto_now_add=True, null=True, blank=True)
+    last_updated_house = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     
     def __str__(self) -> str:
         return self.house_name
@@ -31,7 +31,7 @@ class HouseBillModel(models.Model):
     start_date_bill = models.DateField(null=False, blank=False)
     end_date_bill = models.DateField(null=False, blank=False)
     days_bill = models.IntegerField(default=0)
-    last_updated_bill = models.DateField(auto_now=True, null=True, blank=True)
+    last_updated_bill = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     class Meta:
         ordering = ['-last_updated_bill']
@@ -59,10 +59,10 @@ class HouseBillModel(models.Model):
 class HouseKilowattModel(models.Model):
     house_kwh_FK = models.ForeignKey(HouseNameModel, null=True, blank=True, max_length=255,
                                 on_delete=models.CASCADE, related_name='house_kilowatt_related', verbose_name='House Name')
-    kwh = models.IntegerField(null=True, blank=True, verbose_name='KWH')
-    last_read_kwh = models.IntegerField(null=True, blank=True)
-    read_kwh = models.IntegerField(null=True, blank=True, help_text='Should be greatter than last read Kwh')
-    last_updated_kwh = models.DateField(auto_now=True, null=True, blank=True)
+    kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=2)
+    last_read_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=2)
+    read_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=2)
+    last_updated_kwh = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     class Meta:
         ordering = ['-last_updated_kwh']
@@ -115,10 +115,10 @@ class HouseTenantModel(models.Model):
 
     def clean(self):
         if self.house_tenant:
-            print(self.house_tenant)
+            # print(self.house_tenant)
             self.house_tenant = self.house_tenant.capitalize()
         else:
-            print(self.house_tenant)
+            # print(self.house_tenant)
             raise ValidationError({
                     'house_tenant': _('This field is required.'),
                 })
@@ -141,7 +141,7 @@ class SubHouseNameModel(models.Model):
     sub_house_name = models.CharField(verbose_name="Sub House Name",max_length=150, null=True, blank=True)
     sub_meter = models.IntegerField(null=True, blank=True, default=1)
     sub_main_house = models.BooleanField(null=False, blank=False, help_text='Is the bill belongs this house typed above?')
-    sub_last_updated_house = models.DateField(auto_now_add=True, null=True, blank=True)
+    sub_last_updated_house = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     def __str__(self) -> str:
         return self.sub_house_name
@@ -160,10 +160,10 @@ class SubKilowattModel(models.Model):
                                 on_delete=models.CASCADE, related_name='main_house_kilowatt_related', verbose_name='House Name')
     sub_house_kwh_FK = models.ForeignKey(SubHouseNameModel, null=True, blank=True, max_length=255,
                                 on_delete=models.CASCADE, related_name='sub_house_kilowatt_related', verbose_name='Sub House Name')              
-    sub_kwh = models.IntegerField(null=True, blank=True, default=0)
-    sub_last_read_kwh = models.IntegerField(null=True, blank=True)
-    sub_read_kwh = models.IntegerField(null=True, blank=True, help_text='Should be greatter than last read Kwh')
-    sub_last_updated_kwh = models.DateField(auto_now=True, null=True, blank=True)
+    sub_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=2)
+    sub_last_read_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=2)
+    sub_read_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=2)
+    sub_last_updated_kwh = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     class Meta:
         ordering = ['-sub_last_updated_kwh']
@@ -205,7 +205,7 @@ class SubTenantModel(models.Model):
     sub_start_date = models.DateField(null=True, blank=True)
     sub_end_date = models.DateField(null=True, blank=True)
     sub_days = models.IntegerField(null=True, blank=True, default=0)
-    sub_last_updated_tenant = models.DateField(auto_now=True, null=True, blank=True)
+    sub_last_updated_tenant = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     class Meta:
         ordering = ['-sub_last_updated_tenant']
@@ -221,8 +221,10 @@ class SubTenantModel(models.Model):
 
     def clean(self):
         if self.sub_house_tenant:
-            print(self.sub_house_tenant)
-            self.sub_house_tenant = self.sub_house_tenant.capitalize()
+            concat_sliced_name=''
+            for sliced_name in self.sub_house_tenant.split():
+                concat_sliced_name = concat_sliced_name + sliced_name.capitalize() + ' '
+            self.sub_house_tenant =  concat_sliced_name.strip()
         # else:
         #     print(self.sub_house_tenant)
         #     raise ValidationError({

@@ -3,6 +3,7 @@ from django.shortcuts import redirect, render
 from django.urls.base import reverse, reverse_lazy 
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.list import MultipleObjectMixin
+from django.views.generic.edit import BaseDeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from .models import (
@@ -35,8 +36,9 @@ from django.views.generic import (
 from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
-# Create your views here.
-"""Get any context"""
+from django.forms import BaseInlineFormSet
+
+#############  START NORMAL GENERICS VIEWS  WITHOUT MODIFICATIONS  #########################
 class IndexTemplateView(TemplateView):
     template_name = 'houses/index.html'
 
@@ -56,7 +58,7 @@ class HouseNameListView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         ctx = {
-            'housesnames' : HouseNameModel.objects.all().filter(user_FK=self.request.user), 
+            'housesnames' : HouseNameModel.objects.all().filter(user_FK=self.request.user).order_by('-last_updated_house'), 
         }
         return super(HouseNameListView, self).get_context_data(**ctx)
 
@@ -75,18 +77,6 @@ class HouseNameCreateView(LoginRequiredMixin, CreateView):
             'The House Name has been added'
         )
         return super(HouseNameCreateView, self).form_valid(form)
-
-class PreHouseNameDetailView(LoginRequiredMixin, DetailView, MultipleObjectMixin):
-    model = HouseNameModel
-    template_name = 'houses/pre/pre_detail_house_name.html'
-    context_object_name = 'house'
-    paginate_by = 2
-
-    def get_context_data(self, **kwargs):
-        # print(f'OBJECT:{self.object}') 
-        object_list = SubTenantModel.objects.filter(main_tenant_FK=self.object)
-        context = super(PreHouseNameDetailView, self).get_context_data(object_list= object_list, **kwargs)
-        return context
 
 class HouseNameDetailView(LoginRequiredMixin, DetailView, MultipleObjectMixin):
     model = HouseNameModel
@@ -110,9 +100,35 @@ class SubHouseNameListDetailView(LoginRequiredMixin, DetailView, MultipleObjectM
     def get_context_data(self, **kwargs):
         # print(f'Objects: {self.object.id}')
         context = {
-            'object_list': SubHouseNameModel.objects.filter(sub_house_FK=self.object.id),
+            'object_list': SubHouseNameModel.objects.filter(sub_house_FK=self.object.id).order_by('-sub_last_updated_house'),
         }
         return super(SubHouseNameListDetailView, self).get_context_data(**context)
+
+class HouseNameUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = HouseNameModel
+    template_name = 'houses/update_house_name.html'
+    fields = ['house_name', 'meter',]
+    context_object_name = 'house'
+
+    def test_func(self):
+        user = self.get_object()
+        if user.user_FK == self.request.user:
+            return True
+        return False
+#############  END NORMAL GENERICS VIEWS  WITHOUT MODIFICATIONS  #########################
+
+#############  START SOME LITTLE ADAPTATIONS VIEWS WITH MODIFICATIONS #########################
+class PreHouseNameDetailView(LoginRequiredMixin, DetailView, MultipleObjectMixin):
+    model = HouseNameModel
+    template_name = 'houses/pre/pre_detail_house_name.html'
+    context_object_name = 'house'
+    paginate_by = 2
+
+    def get_context_data(self, **kwargs):
+        # print(f'OBJECT:{self.object}') 
+        object_list = SubTenantModel.objects.filter(main_tenant_FK=self.object)
+        context = super(PreHouseNameDetailView, self).get_context_data(object_list= object_list, **kwargs)
+        return context
 
 class SubHouseNameDetailView(LoginRequiredMixin, DetailView, MultipleObjectMixin):
     model= HouseNameModel
@@ -128,18 +144,6 @@ class SubHouseNameDetailView(LoginRequiredMixin, DetailView, MultipleObjectMixin
             'subhouse': SubHouseNameModel.objects.get(pk=self.kwargs['subpk'])
         }
         return super(SubHouseNameDetailView, self).get_context_data(**context)
-      
-class HouseNameUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
-    model = HouseNameModel
-    template_name = 'houses/update_house_name.html'
-    fields = ['house_name', 'meter', 'main_house']
-    context_object_name = 'house'
-
-    def test_func(self):
-        user = self.get_object()
-        if user.user_FK == self.request.user:
-            return True
-        return False
 
 class HouseNameDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = HouseNameModel
@@ -147,17 +151,56 @@ class HouseNameDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     success_url = reverse_lazy('share:list_house_name')
     context_object_name = 'house'
 
+    def post(self, request, *args, **kwargs):
+        obj = self.get_object()
+        messages.add_message(
+                self.request, 
+                messages.INFO,
+                f"{obj.house_name} has been Deleted."
+            )  
+        return super(HouseNameDeleteView, self).post(request, *args, **kwargs)
     def test_func(self):
         user = self.get_object()
         if user.user_FK == self.request.user:
-            messages.add_message(
-                self.request, 
-                messages.INFO,
-                "House Name has been Deleted."
-            )  
             return True
         return False
 
+class SubHouseNameDeleteView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = SubHouseNameModel
+    template_name = 'houses/delete_sub_house_name.html'
+    fields= '__all__'
+    
+    def get_context_data(self, **kwargs):
+        kwargs={
+            'house': HouseNameModel.objects.get(pk=self.kwargs['pk']),
+            'subhouse': SubHouseNameModel.objects.get(pk=self.kwargs['subpk'])
+        }
+        return super(SubHouseNameDeleteView, self).get_context_data(**kwargs)
+
+    def post(self, request, *args, **kwargs):
+        """
+        Handle POST requests: Delete Sub House Name Object
+        """
+        self.object = SubHouseNameModel.objects.get(pk=self.kwargs['subpk'])
+        messages.add_message(
+                self.request, 
+                messages.INFO,
+                f"{self.object} has been Deleted."
+            )
+        self.object.delete()
+
+        return HttpResponseRedirect(self.get_success_url())
+
+    def test_func(self):
+        if self.request.user.is_authenticated:
+            return True
+        return False
+    
+    def get_success_url(self):
+        return reverse('share:list_detail_sub_house_name', kwargs={'pk': self.kwargs['pk']})
+#############  END SOME LITTLE ADAPTATIONS VIEWS  #########################
+
+############  START INLINE FORMSETS VIEW WITH MODIFICATIONS  ###############################
 class SubHouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
     model = HouseNameModel
     template_name = 'houses/add/add_sub_house.html'
@@ -175,8 +218,8 @@ class SubHouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
     """Handle a Formset setting - Instansce get self.object which was set for HousesName by each user"""
     def get_form(self, form_class=None):
         formset = SubHouseNameFormset(**self.get_form_kwargs(), instance=self.object)
-        print(f'SubHouseNameFormView:\n {formset}')
-        print(f'*'*10)      
+        # print(f'SubHouseNameFormView:\n {formset}')
+        # print(f'*'*10)      
         return formset # inline FormSet
 
     def form_valid(self, form) :
@@ -241,7 +284,7 @@ class HouseBillFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
 
     """Handle a Formset setting - Instansce get self.object which was set for HousesName by each user"""
     def get_form(self, form_class=None):
-        formset = HouseBillFormset(**self.get_form_kwargs(), instance=self.object)        
+        formset = HouseBillFormset(**self.get_form_kwargs(), instance=self.object)
         return formset # inline FormSet
 
     def form_valid(self, form) :
@@ -265,7 +308,7 @@ class HouseBillFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
         print('Invalid Form')
         return super().form_invalid(form)
 
-class SubTenantsHouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
+class SubTenantsHouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormView, BaseInlineFormSet):
     model = SubHouseNameModel
     template_name = 'houses/add/add_sub_house_tenant.html'
     context_object_name = 'sub_tenants'
@@ -284,22 +327,39 @@ class SubTenantsHouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormVie
 
     """Handle a Formset setting - Instansce get self.object which was set for HousesName by each user"""
     def get_form(self, form_class=None):
-        formset = SubHouseTenantFormset(**self.get_form_kwargs(), instance=self.object)
-        print(f' SubTenantsHouse:\n {formset}')
-        print(f'*'*10) 
+        self.testpk = HouseNameModel.objects.get(pk=self.kwargs.get('pk'))
+        formset = SubHouseTenantFormset(**self.get_form_kwargs(), instance=self.object, )
+        # formset2 = SubHouseTenantFormset(**self.get_form_kwargs(), instance=self.testpk)
+
+        print(f' SubTenantsHouse:\n {self.get_form_kwargs()}')
+        print(f'*'*10)
         return formset # inline FormSet
     
+    def clean(self):
+        """Checks that no two articles have the same title."""
+        for form in self.forms:
+            
+            # print(form.cleaned_data)
+            main_tenant_FK = form.cleaned_data.get('main_tenant_FK')
+            sub_house_tenant_FK = form.cleaned_data.get('sub_house_tenant_FK')
+            s = HouseNameModel.objects.get()   
 
-    def form_valid(self, form) :
-        form.save()
+    def form_valid(self, form):
+        for eachform in form:
+            if eachform.cleaned_data['sub_house_tenant'] and eachform.cleaned_data['sub_start_date'] is not None:
+                eachform.instance.main_tenant_FK = HouseNameModel.objects.get(pk=self.kwargs['pk'])
+                eachform.instance.save()
+            if eachform.cleaned_data['DELETE']:
+                eachform.instance.delete()
+
         #I had to do this, because up to now, it was what a learned.
-        objs = SubTenantModel.objects.all().filter(sub_house_tenant_FK= self.object)
-        for obj in objs:
-            if not obj.main_tenant_FK:
-                obj.main_tenant_FK = HouseNameModel.objects.get(pk=self.kwargs['pk']) 
-                obj.save()
-            if obj.sub_house_tenant == None:
-                obj.delete()
+        # objs = SubTenantModel.objects.all().filter(sub_house_tenant_FK= self.object)
+        # for obj in objs:
+        #     if not obj.main_tenant_FK:
+        #         obj.main_tenant_FK = HouseNameModel.objects.get(pk=self.kwargs['pk']) 
+        #         obj.save()
+        #     if obj.sub_house_tenant == None:
+        #         obj.delete()
         #END
 
         messages.add_message(
@@ -397,3 +457,4 @@ class SubHouseKilowattsFormView(LoginRequiredMixin, SingleObjectMixin, FormView)
                                                             'pk': self.kwargs['pk'],
                                                             'subpk' : self.kwargs['subpk']
                                                             })
+############  END INLINE FORMSETS VIEW  ##########################

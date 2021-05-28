@@ -69,7 +69,8 @@
                 {% else %}
                     <button type="submit" value="Add Tenants" class="btn btn-primary w-100 mb-3" >Add Sub House Name</button>
                 {% endif %}
-                    <a href="{{ sub_houses.get_absolute_url }}" role="button" class="btn btn-secondary w-100">Back</a>
+                
+                    <a href="{% url 'share:list_detail_sub_house_name' sub_houses.id %}" role="button" class="btn btn-secondary w-100">Back</a>
                 </p>
             </form>
 

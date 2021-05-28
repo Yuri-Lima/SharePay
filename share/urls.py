@@ -22,6 +22,8 @@ from .views import (
 
     HouseNameUpdateView,
     HouseNameDeleteView,
+
+    SubHouseNameDeleteView,
 )
 
 app_name = 'share'
@@ -39,6 +41,8 @@ urlpatterns = [
     #Options Views in list
     path('update_house_name/update/<int:pk>/', HouseNameUpdateView.as_view(), name='update_house_name'),
     path('delete_house_name/<int:pk>/delete', HouseNameDeleteView.as_view(), name='delete_house_name'),
+
+    path('delete_sub_house_name/<int:pk>/delete/<int:subpk>/', SubHouseNameDeleteView.as_view(), name='delete_sub_house_name'),
     
     #Third View
     path('pre_detail_house_name/<int:pk>/', PreHouseNameDetailView.as_view(), name='pre_detail_house_name'),
