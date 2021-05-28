@@ -26,7 +26,7 @@ SECRET_KEY = config('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1','www.sharepay.app.br','sharepay.app.br', 'www.sharepay.com.br','sharepay.com.br']
 
 
 # Application definition
@@ -122,11 +122,19 @@ USE_L10N = True
 
 USE_TZ = True
 
+""" Security Session """
+# SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+# PREPEND_WWW = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+BASE_URL = "https://www.sharepay.app.br"
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-#Authetications Redirects
+"""A uthetications Redirects """
 LOGOUT_REDIRECT_URL = 'share:index'#After login they goes to home page
 LOGIN_REDIRECT_URL = 'share:index'#After login they goes to home page
 LOGIN_URL = 'users:login'#if the user is not logged in, they redirect to login page
