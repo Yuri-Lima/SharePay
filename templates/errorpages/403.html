@@ -1,0 +1,32 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="{% static 'css/error403.css' %}">
+
+  <title>403 Error Page</title>
+</head>
+
+<body>
+  <div class="scene">
+  <div class="overlay"></div>
+  <div class="overlay"></div>
+  <div class="overlay"></div>
+  <div class="overlay"></div>
+  <span class="bg-403">403</span>
+  <div class="text">
+    <span class="hero-text"></span>
+    <span class="msg">can't let <span>you</span> in.</span>
+    <span class="support">
+      <span>unexpected!</span>
+      <a href="{% url 'share:index' %}">Go Back Home</a>
+    </span>
+  </div>
+  <div class="lock"></div>
+</div>
+</body>
+</html>

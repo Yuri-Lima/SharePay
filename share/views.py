@@ -1,6 +1,6 @@
 from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
-from django.urls.base import reverse, reverse_lazy 
+from django.urls.base import reverse, reverse_lazy, set_urlconf 
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.list import MultipleObjectMixin
 from django.views.generic.edit import BaseDeleteView
@@ -458,3 +458,31 @@ class SubHouseKilowattsFormView(LoginRequiredMixin, SingleObjectMixin, FormView)
                                                             'subpk' : self.kwargs['subpk']
                                                             })
 ############  END INLINE FORMSETS VIEW  ##########################
+
+############  START ERROR VIEWS  ################################
+from django.http import HttpResponseForbidden
+
+def handle_page_not_found_404(request, exception, *args, **argv):
+    template_name = 'errorpages/404.html'
+    # content_type = 'text/css'
+    return render(request, 'errorpages/404.html', status=404)
+
+def handle_server_error_500(request, *args, **argv):
+    template_name = 'errorpages/500.html'
+    # content_type = 'text/javascript'
+    return render(request, template_name, status=500)
+
+def handle_permission_denied_403(request, exception, *args, **argv):
+    template_name = 'errorpages/403.html'
+    # content_type = 'text/html'
+    return render(request, template_name, status=403)
+
+def handle_bad_request_400(request, exception):
+    template_name = 'errorpages/400.html'
+    # content_type = 'text/html'
+    return render(request, template_name, status=400)
+
+def csrf_failure(request, reason="Error_403_csrf"):
+    template_name= 'errorpages/403_csrf.html'
+    return HttpResponseForbidden()
+############  END ERROR VIEWS  ################################

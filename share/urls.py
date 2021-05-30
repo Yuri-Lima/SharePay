@@ -62,3 +62,9 @@ urlpatterns = [
     path('add_sub_house_kwh/<int:pk>/subhouse/<int:subpk>/edit', SubHouseKilowattsFormView.as_view(), name='add_sub_house_kwh'),
     path('add_sub_tenant_name/<int:pk>/subtenant/<int:subpk>/edit/', SubTenantsHouseNameFormView.as_view(), name='add_sub_house_tenant_name'), 
 ]
+
+#Error Pages Paths >> ERROR PAGES <<
+handler404 = 'share.views.handle_page_not_found_404'
+handler500 = 'share.views.handle_server_error_500'
+handler403 = 'share.views.handle_permission_denied_403'
+handler400 = 'share.views.handle_bad_request_400'
