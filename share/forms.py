@@ -122,9 +122,9 @@ SubHouseNameFormset = inlineformset_factory(
     SubHouseNameModel,
     form=SubHouseNameModelForm,
     # fields=['sub_house_FK','sub_house_name', 'sub_meter', 'sub_main_house'], 
-    extra=1, 
+    extra=2, 
     min_num=1,
-    max_num=2,
+    max_num=3,
     can_delete=True,
     can_order=True
 )

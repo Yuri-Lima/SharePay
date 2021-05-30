@@ -223,8 +223,13 @@ class SubHouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
         return formset # inline FormSet
 
     def form_valid(self, form) :
-        # print(form)
-        form.save()
+        for eachform in form:
+            if eachform.cleaned_data['sub_house_name'] is not None:
+                # eachform.instance.main_tenant_FK = SubHouseNameModel.objects.get(pk=self.kwargs['subpk'])
+                eachform.instance.save()
+            if eachform.cleaned_data['DELETE']:
+                eachform.instance.delete()
+
         messages.add_message(
             self.request, 
             messages.INFO,
@@ -327,12 +332,12 @@ class SubTenantsHouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormVie
 
     """Handle a Formset setting - Instansce get self.object which was set for HousesName by each user"""
     def get_form(self, form_class=None):
-        self.testpk = HouseNameModel.objects.get(pk=self.kwargs.get('pk'))
+        # self.testpk = HouseNameModel.objects.get(pk=self.kwargs.get('pk'))
         formset = SubHouseTenantFormset(**self.get_form_kwargs(), instance=self.object, )
         # formset2 = SubHouseTenantFormset(**self.get_form_kwargs(), instance=self.testpk)
 
-        print(f' SubTenantsHouse:\n {self.get_form_kwargs()}')
-        print(f'*'*10)
+        # print(f' SubTenantsHouse:\n {self.get_form_kwargs()}')
+        # print(f'*'*10)
         return formset # inline FormSet
     
     def clean(self):

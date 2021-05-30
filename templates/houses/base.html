@@ -27,20 +27,16 @@
   <link href="https://fonts.googleapis.com/css?family=Merriweather:300,300i,400,400i,700,700i,900,900i" rel="stylesheet">
   <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
 
-  <!-- Fengyuan Chen's Datepicker -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.css" integrity="sha256-b88RdwbRJEzRx95nCuuva+hO5ExvXXnpX+78h8DjyOE=" crossorigin="anonymous" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/datepicker/0.6.5/datepicker.min.js" integrity="sha256-/7FLTdzP6CfC1VBAj/rsp3Rinuuu9leMRGd354hvk0k=" crossorigin="anonymous"></script>
-
   <!-- Custom styles for this template -->
   <link href="{% static 'css/coming-soon.min.css' %}" rel="stylesheet">
 </head>
 
 <body>
 
-
-  {% block content %}
+    {% block content %}
+    
+    {% endblock content %}
   
-  {% endblock content %}
 
   <!-- Dont remove anythong below -->
   <!-- Bootstrap core JavaScript -->
@@ -61,21 +57,6 @@
 
   <!-- Example starter JavaScript for disabling form submissions if there are invalid fields -->
   <script href="{% static 'js/signup_form.js' %}"></script>
-
-  <!-- Get DataPicker -->
-  <script>
-    $(function () {
-      $("#datepicker").datepicker();
-    });
-  </script>
-
-  <script>
-  $(function () {
-    $("#id_date").datepicker({
-      format:'dd/mm/yyyy',
-    });
-  });
-</script>
 
 </body>
 
