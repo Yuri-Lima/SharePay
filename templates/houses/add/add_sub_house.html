@@ -41,7 +41,7 @@
                     </div>
                 </div>
 
-                <div class="row">
+                {% comment %} <div class="row">
                     <div class="col">
                         <p class='text-white' >How many meters:</p>
                     </div>
@@ -51,7 +51,7 @@
                         <p>{{sub_house_form.sub_meter}}</p>
                         <p>{{sub_house_form.sub_meter.errors}}</p>
                     </div>
-                </div>
+                </div> {% endcomment %}
                 {% if form.can_delete and sub_house_form.instance.id %}
                   <div class="row">
                       <div class="col">

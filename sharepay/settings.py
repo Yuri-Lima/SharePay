@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 
 ALLOWED_HOSTS = [
@@ -92,18 +92,18 @@ WSGI_APPLICATION = 'sharepay.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'df4os2hk8b994q',
-        'USER': 'lrhgkiysjhvbnw',
-        'PASSWORD': '55377d5510c448026fd8dcec0eee404f170ac21247f19a91106453ea6a1ece47',
-        'HOST': 'ec2-54-216-185-51.eu-west-1.compute.amazonaws.com',
-        'PORT': '5432',
-    }
     # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': 'df4os2hk8b994q',
+    #     'USER': 'lrhgkiysjhvbnw',
+    #     'PASSWORD': '55377d5510c448026fd8dcec0eee404f170ac21247f19a91106453ea6a1ece47',
+    #     'HOST': 'ec2-54-216-185-51.eu-west-1.compute.amazonaws.com',
+    #     'PORT': '5432',
     # }
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
 }
 
 
