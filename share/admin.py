@@ -16,7 +16,7 @@ class HouseNameAdmin(admin.ModelAdmin):
 
 @admin.register(HouseTenantModel)
 class HouseTenantsAdmin(admin.ModelAdmin):
-    list_display = ['house_name_FK', 'house_tenant', 'last_updated_tenant']
+    list_display = ['house_name_FK', 'house_tenant', 'start_date', 'end_date','days', 'last_updated_tenant']
 
 @admin.register(HouseBillModel)
 class HouseBillAdmin(admin.ModelAdmin):
