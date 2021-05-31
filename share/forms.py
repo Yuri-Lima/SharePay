@@ -87,6 +87,7 @@ HouseBillFormset = inlineformset_factory(
     can_delete=True,
     can_order=True,
     widgets={
+        'amount_bill' : TextInput(attrs={'class': 'id_amount_bill'}),
         'start_date_bill': HouseNameDateInput(format=['%Y-%m-%d'],),
         'end_date_bill' : HouseNameDateInput(format=['%Y-%m-%d'],),
     },
