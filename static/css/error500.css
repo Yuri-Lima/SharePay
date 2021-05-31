@@ -1,172 +1,254 @@
-#particles-js {
-    position: absolute;
-    width: 100%;
-    height: 100%;
+html,
+body {
+  height: 100%;
+}
+body {
+  display: grid;
+  width: 100%;
+  font-family: Inconsolata, monospace;
+}
+body div#error {
+  position: relative;
+  margin: auto;
+  padding: 20px;
+  z-index: 2;
+}
+body div#error div#box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #000;
+}
+body div#error div#box:before,
+body div#error div#box:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  box-shadow: inset 0px 0px 0px 1px #000;
+  mix-blend-mode: multiply;
+  animation: dance 2s infinite steps(1);
+}
+body div#error div#box:before {
+  clip-path: polygon(0 0, 65% 0, 35% 100%, 0 100%);
+  box-shadow: inset 0px 0px 0px 1px currentColor;
+  color: #f0f;
+}
+body div#error div#box:after {
+  clip-path: polygon(65% 0, 100% 0, 100% 100%, 35% 100%);
+  animation-duration: 0.5s;
+  animation-direction: alternate;
+  box-shadow: inset 0px 0px 0px 1px currentColor;
+  color: #0ff;
+}
+body div#error h3 {
+  position: relative;
+  font-size: 5vw;
+  font-weight: 700;
+  text-transform: uppercase;
+  animation: blink 1.3s infinite steps(1);
+}
+body div#error h3:before,
+body div#error h3:after {
+  content: 'ERROR 500';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  mix-blend-mode: soft-light;
+  animation: dance 2s infinite steps(2);
+}
+body div#error h3:before {
+  clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%);
+  color: #f0f;
+  animation: shiftright 2s steps(2) infinite;
+}
+body div#error h3:after {
+  clip-path: polygon(0 100%, 100% 100%, 100% 50%, 0 50%);
+  color: #0ff;
+  animation: shiftleft 2s steps(2) infinite;
+}
+body div#error p {
+  position: relative;
+  margin-bottom: 8px;
+}
+body div#error p span {
+  position: relative;
+  display: inline-block;
+  font-weight: bold;
+  color: #000;
+  animation: blink 3s steps(1) infinite;
+}
+body div#error p span:before,
+body div#error p span:after {
+  content: 'unstable';
+  position: absolute;
+  top: -1px;
+  left: 0;
+  mix-blend-mode: multiply;
+}
+body div#error p span:before {
+  clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%);
+  color: #f0f;
+  animation: shiftright 1.5s steps(2) infinite;
+}
+body div#error p span:after {
+  clip-path: polygon(0 100%, 100% 100%, 100% 50%, 0 50%);
+  color: #0ff;
+  animation: shiftleft 1.7s steps(2) infinite;
+}
+@-moz-keyframes dance {
+  0%, 84%, 94% {
+    transform: skew(0deg);
   }
-  
-  body {
-    background: #97cfca;
-    overflow: hidden;
+  85% {
+    transform: skew(5deg);
   }
-  
-  .terminal-window {
-    text-align: left;
-    width: 37.5rem;
-    height: 22.5rem;
-    border-radius: .625rem;
-    margin: auto;
-    position: relative;
-    top: 10.5rem;
+  90% {
+    transform: skew(-5deg);
   }
-  
-  .terminal-window header {
-    background: #E0E8F0;
-    height: 1.875rem;
-    border-radius: .5rem .5rem 0 0;
-    padding-left: .625rem;
+  98% {
+    transform: skew(3deg);
   }
-  
-  .terminal-window header .button {
-    width: .75rem;
-    height: .75rem;
-    margin: .625rem .25rem 0 0;
-    display: inline-block;
-    border-radius: .5rem;
+}
+@-webkit-keyframes dance {
+  0%, 84%, 94% {
+    transform: skew(0deg);
   }
-  
-  .terminal-window header .button.green {
-    background: #3BB662;
+  85% {
+    transform: skew(5deg);
   }
-  
-  .terminal-window header .button.yellow {
-    background: #E5C30F;
+  90% {
+    transform: skew(-5deg);
   }
-  
-  .terminal-window header .button.red {
-    background: #E75448;
+  98% {
+    transform: skew(3deg);
   }
-  
-  .terminal-window section.terminal {
-    color: white;
-    font-family: Menlo, Monaco, "Consolas", "Courier New", "Courier";
-    font-size: 11pt;
-    background: #30353A;
-    padding: .625rem;
-    box-sizing: border-box;
-    position: absolute;
-    width: 100%;
-    top: 1.875rem;
-    bottom: 0;
-    overflow: auto;
+}
+@-o-keyframes dance {
+  0%, 84%, 94% {
+    transform: skew(0deg);
   }
-  
-  .terminal-window section.terminal .typed-cursor {
-      opacity: 1;
-      -webkit-animation: blink 0.7s infinite;
-      -moz-animation: blink 0.7s infinite;
-      animation: blink 0.7s infinite;
+  85% {
+    transform: skew(5deg);
   }
-  @keyframes blink{
-      0% { opacity:1; }
-      50% { opacity:0; }
-      100% { opacity:1; }
+  90% {
+    transform: skew(-5deg);
   }
-  @-webkit-keyframes blink{
-      0% { opacity:1; }
-      50% { opacity:0; }
-      100% { opacity:1; }
+  98% {
+    transform: skew(3deg);
   }
-  @-moz-keyframes blink{
-      0% { opacity:1; }
-      50% { opacity:0; }
-      100% { opacity:1; }
+}
+@keyframes dance {
+  0%, 84%, 94% {
+    transform: skew(0deg);
   }
-  
-  .terminal-data { display: none; }
-  .terminal-window .gray { color: gray; }
-  .terminal-window .green { color: green;}
-  
-  /*Media for mobile responsive viewing*/
-  @media only screen and (max-width: 600px) {
-  .terminal-window {
-    text-align: left;
-    width: 37.5vmin;
-    height: 22.5vmin;
-    border-radius: .625vmin;
-    margin: auto;
-    position: relative;
-    top: 30.5vmin;
+  85% {
+    transform: skew(5deg);
   }
+  90% {
+    transform: skew(-5deg);
   }
-  @media only screen and (max-width: 600px) {
-  .terminal-window header {
-    background: #E0E8F0;
-    height: 1.875vmin;
-    border-radius: .5vmin .5vmin 0 0;
-    padding-left: 1vmin;
+  98% {
+    transform: skew(3deg);
   }
+}
+@-moz-keyframes shiftleft {
+  0%, 87%, 100% {
+    transform: translate(0, 0) skew(0deg);
   }
-  @media only screen and (max-width: 600px) {
-  .terminal-window header .button {
-    width: .75vmin;
-    height: .75vmin;
-    margin: .625vmin .25vmin 0 0;
-    display: inline-block;
-    border-radius: .5vmin;
+  84%, 90% {
+    transform: translate(-8px, 0) skew(20deg);
   }
+}
+@-webkit-keyframes shiftleft {
+  0%, 87%, 100% {
+    transform: translate(0, 0) skew(0deg);
   }
-  @media only screen and (max-width: 600px) {
-  .terminal-window header .button.green {
-    background: #3BB662;
+  84%, 90% {
+    transform: translate(-8px, 0) skew(20deg);
   }
+}
+@-o-keyframes shiftleft {
+  0%, 87%, 100% {
+    transform: translate(0, 0) skew(0deg);
   }
-  @media only screen and (max-width: 600px) {
-  .terminal-window header .button.yellow {
-    background: #E5C30F;
+  84%, 90% {
+    transform: translate(-8px, 0) skew(20deg);
   }
+}
+@keyframes shiftleft {
+  0%, 87%, 100% {
+    transform: translate(0, 0) skew(0deg);
   }
-  @media only screen and (max-width: 600px) {
-  .terminal-window header .button.red {
-    background: #E75448;
+  84%, 90% {
+    transform: translate(-8px, 0) skew(20deg);
   }
+}
+@-moz-keyframes shiftright {
+  0%, 87%, 100% {
+    transform: translate(0, 0) skew(0deg);
   }
-  @media only screen and (max-width: 600px) {
-  .terminal-window section.terminal {
-    color: white;
-    font-family: Menlo, Monaco, "Consolas", "Courier New", "Courier";
-    font-size: .6875vmin;
-    background: #30353A;
-    padding: .625vmin;
-    box-sizing: border-box;
-    position: absolute;
-    width: 100%;
-    top: 1.875vmin;
-    bottom: 0;
-    overflow: auto;
+  84%, 90% {
+    transform: translate(8px, 0) skew(20deg);
   }
+}
+@-webkit-keyframes shiftright {
+  0%, 87%, 100% {
+    transform: translate(0, 0) skew(0deg);
   }
-  .terminal-window section.terminal .typed-cursor {
-      opacity: 1;
-      -webkit-animation: blink 0.7s infinite;
-      -moz-animation: blink 0.7s infinite;
-      animation: blink 0.7s infinite;
+  84%, 90% {
+    transform: translate(8px, 0) skew(20deg);
   }
-  @keyframes blink{
-      0% { opacity:1; }
-      50% { opacity:0; }
-      100% { opacity:1; }
+}
+@-o-keyframes shiftright {
+  0%, 87%, 100% {
+    transform: translate(0, 0) skew(0deg);
   }
-  @-webkit-keyframes blink{
-      0% { opacity:1; }
-      50% { opacity:0; }
-      100% { opacity:1; }
+  84%, 90% {
+    transform: translate(8px, 0) skew(20deg);
   }
-  @-moz-keyframes blink{
-      0% { opacity:1; }
-      50% { opacity:0; }
-      100% { opacity:1; }
+}
+@keyframes shiftright {
+  0%, 87%, 100% {
+    transform: translate(0, 0) skew(0deg);
   }
-  
-  .terminal-data { display: none; }
-  .terminal-window .gray { color: gray; }
-  .terminal-window .green { color: green;}
+  84%, 90% {
+    transform: translate(8px, 0) skew(20deg);
+  }
+}
+@-moz-keyframes blink {
+  0%, 50%, 85%, 100% {
+    color: #000;
+  }
+  87%, 95% {
+    color: transparent;
+  }
+}
+@-webkit-keyframes blink {
+  0%, 50%, 85%, 100% {
+    color: #000;
+  }
+  87%, 95% {
+    color: transparent;
+  }
+}
+@-o-keyframes blink {
+  0%, 50%, 85%, 100% {
+    color: #000;
+  }
+  87%, 95% {
+    color: transparent;
+  }
+}
+@keyframes blink {
+  0%, 50%, 85%, 100% {
+    color: #000;
+  }
+  87%, 95% {
+    color: transparent;
+  }
+}
