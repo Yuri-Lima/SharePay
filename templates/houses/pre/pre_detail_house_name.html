@@ -32,11 +32,14 @@
                     <a href="{% url 'share:detail_house_name' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Add Main House Details</a>
                   {% endif %}
                   
-                  {% if house.sub_house_related.all %}
-                    <a href="{% url 'share:list_detail_sub_house_name' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Edit Sub Houses Details</a>
-                  {% else %}
-                    <a href="{% url 'share:list_detail_sub_house_name' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Add Sub Houses Details</a>
+                  {% if house.house_bill_related.all %}
+                    {% if house.sub_house_related.all %}
+                      <a href="{% url 'share:list_detail_sub_house_name' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Edit Sub Houses Details</a>
+                    {% else %}
+                      <a href="{% url 'share:list_detail_sub_house_name' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Add Sub Houses Details</a>
+                    {% endif %}
                   {% endif %}
+
                 <p class="pt-2">
                     <a href="{% url 'share:list_house_name' %} " role="button" class="btn btn-secondary w-100 p-1">Back</a>
                 </p>
