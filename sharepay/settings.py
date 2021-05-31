@@ -24,15 +24,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'www.sharepay.app.br',
+    'https://www.sharepay.app.br',
     'sharepay.app.br',
-    'www.sharepay.com.br',
-    'sharepay.com.br',
     'https://sharepaybill.herokuapp.com/',
     'https://git.heroku.com/sharepaybill.git'
     ]
