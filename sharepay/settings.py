@@ -30,8 +30,6 @@ DEBUG = False
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'www.sharepay.app.br',
-    'https://www.sharepay.app.br',
-    'sharepay.app.br',
     'https://sharepaybill.herokuapp.com/',
     'https://git.heroku.com/sharepaybill.git'
     ]
@@ -139,12 +137,12 @@ USE_L10N = True
 USE_TZ = True
 
 """ Security Session """
-# SECURE_SSL_REDIRECT = True
-# SESSION_COOKIE_SECURE = True
-# CSRF_COOKIE_SECURE = True
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
 # PREPEND_WWW = True
-# SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-# BASE_URL = "https://www.sharepay.app.br"
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+BASE_URL = "https://www.sharepay.app.br"
 
 
 # Static files (CSS, JavaScript, Images)
