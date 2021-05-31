@@ -115,10 +115,11 @@ class HouseTenantModel(models.Model):
 
     def clean(self):
         if self.house_tenant:
-            # print(self.house_tenant)
-            self.house_tenant = self.house_tenant.capitalize()
+            concat_sliced_name=''
+            for sliced_name in self.house_tenant.split():
+                concat_sliced_name = concat_sliced_name + sliced_name.capitalize() + ' '
+            self.house_tenant =  concat_sliced_name.strip()
         else:
-            # print(self.house_tenant)
             raise ValidationError({
                     'house_tenant': _('This field is required.'),
                 })
@@ -210,8 +211,10 @@ class SubTenantModel(models.Model):
     class Meta:
         ordering = ['-sub_last_updated_tenant']
 
-    def __str__(self) -> str:
-        return self.sub_house_tenant
+    def __str__(self):
+        if self.sub_house_tenant:
+            return self.sub_house_tenant
+        return self
 
     def get_absolute_url(self, subpk):
         return reverse('share:detail_sub_house_name', kwargs={

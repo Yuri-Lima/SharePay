@@ -37,6 +37,8 @@ from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 from django.forms import BaseInlineFormSet
+from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
+from django.utils.translation import gettext_lazy as _
 
 #############  START NORMAL GENERICS VIEWS  WITHOUT MODIFICATIONS  #########################
 class IndexTemplateView(TemplateView):
@@ -65,7 +67,7 @@ class HouseNameListView(LoginRequiredMixin, ListView):
 class HouseNameCreateView(LoginRequiredMixin, CreateView):
     model = HouseNameModel
     template_name = 'houses/create_house_name.html'
-    fields = ['house_name', 'meter',]
+    fields = ['house_name',]
 
     def form_valid(self, form):
         #Set User
@@ -107,7 +109,7 @@ class SubHouseNameListDetailView(LoginRequiredMixin, DetailView, MultipleObjectM
 class HouseNameUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = HouseNameModel
     template_name = 'houses/update_house_name.html'
-    fields = ['house_name', 'meter',]
+    fields = ['house_name',]
     context_object_name = 'house'
 
     def test_func(self):
@@ -313,6 +315,8 @@ class HouseBillFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
         print('Invalid Form')
         return super().form_invalid(form)
 
+from functools import partial, partialmethod, wraps
+
 class SubTenantsHouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormView, BaseInlineFormSet):
     model = SubHouseNameModel
     template_name = 'houses/add/add_sub_house_tenant.html'
@@ -331,23 +335,16 @@ class SubTenantsHouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormVie
 
 
     """Handle a Formset setting - Instansce get self.object which was set for HousesName by each user"""
-    def get_form(self, form_class=None):
-        # self.testpk = HouseNameModel.objects.get(pk=self.kwargs.get('pk'))
-        formset = SubHouseTenantFormset(**self.get_form_kwargs(), instance=self.object, )
-        # formset2 = SubHouseTenantFormset(**self.get_form_kwargs(), instance=self.testpk)
 
-        # print(f' SubTenantsHouse:\n {self.get_form_kwargs()}')
-        # print(f'*'*10)
+    def get_form(self, form_class=None):
+        #Foi preciso fazer o envio de um extra kwarg, para o SubTenantModelForm realizar a comparacao de datas da bil que pertance
+        #a Cara Pai, eu estava com esse problema, pois era preciso o ID do Pai.
+        #https://stackoverflow.com/questions/38560344/how-to-use-the-new-form-kwargs-on-an-inline-formset
+        
+        pkform = self.kwargs['pk']
+        formset= SubHouseTenantFormset(**self.get_form_kwargs(), instance=self.object, form_kwargs={'pkform': pkform})
+        
         return formset # inline FormSet
-    
-    def clean(self):
-        """Checks that no two articles have the same title."""
-        for form in self.forms:
-            
-            # print(form.cleaned_data)
-            main_tenant_FK = form.cleaned_data.get('main_tenant_FK')
-            sub_house_tenant_FK = form.cleaned_data.get('sub_house_tenant_FK')
-            s = HouseNameModel.objects.get()   
 
     def form_valid(self, form):
         for eachform in form:
