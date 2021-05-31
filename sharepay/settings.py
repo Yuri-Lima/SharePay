@@ -30,6 +30,7 @@ DEBUG = False
 ALLOWED_HOSTS = [
     '127.0.0.1',
     'www.sharepay.app.br',
+    'www.sharepay.com.br',
     'https://sharepaybill.herokuapp.com/',
     'https://git.heroku.com/sharepaybill.git'
     ]

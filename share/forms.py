@@ -1,5 +1,6 @@
 from django.db.models.base import Model
 from django import forms
+from django.db.models.fields import CharField
 from django.forms.models import inlineformset_factory
 from django.forms import ModelForm, TextInput, DateInput, fields
 from pytz import NonExistentTimeError
@@ -14,7 +15,9 @@ from share.models import (
 )
 from django.forms import BaseInlineFormSet
 from django.core.exceptions import ValidationError
-
+from django.utils.translation import gettext_lazy as _
+from datetime import date
+from django.http import request
 
 """ CALENDAR """
 class HouseNameDateInput(DateInput):
@@ -28,10 +31,24 @@ class HouseNameModelForm(forms.ModelForm):
         model= HouseNameModel
         fields='__all__'
 
-# class HouseTenantModelForm(forms.ModelForm):
-#     class Meta:
-#         model= HouseTenantModel
-#         fields=['house_tenant', 'start_date', 'end_date']
+class HouseTenantModelForm(forms.ModelForm):
+    class Meta:
+        model= HouseTenantModel
+        fields=['house_tenant', 'start_date', 'end_date']
+    def clean(self):
+       #A data inicial do Tenant nao deve ser menor que a data inicial da bill
+       #A data final do Tenant nao deve ser maior que a data final da bill
+        obj_house_name=HouseNameModel.objects.get(pk=self.cleaned_data['house_name_FK'].id)
+        for obj_house_bill in obj_house_name.house_bill_related.all():
+            if date.fromisoformat(str(self.cleaned_data['start_date'])) < date.fromisoformat(str(obj_house_bill.start_date_bill)):
+                raise ValidationError({
+                    'start_date': _('Out of Range')
+                })
+            if date.fromisoformat(str(self.cleaned_data['end_date'])) > date.fromisoformat(str(obj_house_bill.end_date_bill)):
+                raise ValidationError({
+                    'end_date': _('Out of Range')
+                })
+        return super(HouseTenantModelForm, self).clean()
 
 class HouseBillModelForm(forms.ModelForm):
     class Meta:
@@ -57,13 +74,38 @@ class SubTenantNameModelForm(forms.ModelForm):
     class Meta:
         model= SubTenantModel
         fields=['main_tenant_FK', 'sub_house_tenant_FK', 'sub_house_tenant', 'sub_start_date', 'sub_end_date', 'sub_days']
+    
+    def __init__(self, *args, **kwargs):
+        self.pkform = kwargs.pop('pkform')
+        super(SubTenantNameModelForm, self).__init__(*args, **kwargs)
+        # self.fields['main_tenant_FK'].queryset = self.account
+        
+    def clean(self):
+        #Muito Dificil
+       #A data inicial do SubTenant nao deve ser menor que a data inicial da bill
+       #A data final do SubTenant nao deve ser maior que a data final da bill
+
+        obj_house_name=HouseNameModel.objects.get(pk=self.pkform)
+
+        for obj_house_bill in obj_house_name.house_bill_related.all():
+            if self.cleaned_data['sub_start_date']:
+                if date.fromisoformat(str(self.cleaned_data['sub_start_date'])) < date.fromisoformat(str(obj_house_bill.start_date_bill)):
+                    raise ValidationError({
+                        'sub_start_date': _('Out of Range')
+                    })
+            if self.cleaned_data['sub_end_date']:
+                if date.fromisoformat(str(self.cleaned_data['sub_end_date'])) > date.fromisoformat(str(obj_house_bill.end_date_bill)):
+                    raise ValidationError({
+                        'sub_end_date': _('Out of Range')
+                    })
+        return super(SubTenantNameModelForm, self).clean()
 
 HouseNameFormset = inlineformset_factory(
 
     HouseNameModel,
     HouseTenantModel,
-    form=HouseNameModelForm,
-    fields=['house_tenant', 'start_date', 'end_date'],
+    form=HouseTenantModelForm,
+    # fields=['house_tenant', 'start_date', 'end_date'],
     extra=1,
     min_num=1,
     max_num=10,
