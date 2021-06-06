@@ -36,7 +36,11 @@
                       </div>
                   {% endfor %}
                     <a href="{% url 'share:add_sub_house_kwh' pk=house.id subpk=subhouse.id %}" role="button" class="btn btn-primary w-100 mb-2">Edit Kilowatts</a>
-                  <!-- ==============ADD_TENANTS================== -->
+                {% else %}
+                  <a href="{% url 'share:add_sub_house_kwh' pk=house.id subpk=subhouse.id %}" role="button" class="btn btn-success w-100 mb-2">Add Kilowatts</a>
+                {% endif %}
+                <!-- ==============END_KILOWATTS================== -->
+                <!-- ==============ADD_TENANTS================== -->
                     {% if house.main_house_tenant_related.all %}
                       {% if object_list %}<!-- for Paginations -->
                         <span class="pe-2"><h6>Total Tenants: {{house.main_house_tenant_related.all.count}}</h6></span>
@@ -74,11 +78,7 @@
                     {% else %}
                       <a href="{% url 'share:add_sub_house_tenant_name' pk=house.id subpk=subhouse.id %}" role="button" class="btn btn-success w-100 mb-2">Add Sub Tenants</a>
                     {% endif %}
-                  <!-- ==============END_TENANTS================== -->
-                {% else %}
-                  <a href="{% url 'share:add_sub_house_kwh' pk=house.id subpk=subhouse.id %}" role="button" class="btn btn-success w-100 mb-2">Add Kilowatts</a>
-                {% endif %}
-                <!-- ==============END_KILOWATTS================== -->
+                    <!-- ==============END_TENANTS================== -->
 
 
 

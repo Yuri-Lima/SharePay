@@ -56,7 +56,7 @@
                       <a href="{% url 'share:add_house_tenant_name' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Add/Edit Tenant</a>
                       {% for name in object_list %}
                         {% comment %} <div class="small">Tenant Id: {{ name.id }}</div> {% endcomment %}
-                        <div>{{forloop.counter}} - <strong>Tenant's Name:</strong> {{ name.house_tenant }}</div>
+                        <div><strong>Tenant's Name:</strong> {{ name.house_tenant }}</div>
                         <div><b>{{name.days}} days</b> living at {{name.house_name_FK}}</div>  
                         <hr>
                       {% endfor %}
