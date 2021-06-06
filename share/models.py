@@ -59,9 +59,9 @@ class HouseBillModel(models.Model):
 class HouseKilowattModel(models.Model):
     house_kwh_FK = models.ForeignKey(HouseNameModel, null=True, blank=True, max_length=255,
                                 on_delete=models.CASCADE, related_name='house_kilowatt_related', verbose_name='House Name')
-    kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=2)
-    last_read_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=2)
-    read_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=2)
+    kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=0)
+    last_read_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=0)
+    read_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=0)
     last_updated_kwh = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     class Meta:
@@ -161,9 +161,9 @@ class SubKilowattModel(models.Model):
                                 on_delete=models.CASCADE, related_name='main_house_kilowatt_related', verbose_name='House Name')
     sub_house_kwh_FK = models.ForeignKey(SubHouseNameModel, null=True, blank=True, max_length=255,
                                 on_delete=models.CASCADE, related_name='sub_house_kilowatt_related', verbose_name='Sub House Name')              
-    sub_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=2)
-    sub_last_read_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=2)
-    sub_read_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=2)
+    sub_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=0, default=0)
+    sub_last_read_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=0, default=0)
+    sub_read_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=0, default=0)
     sub_last_updated_kwh = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     class Meta:

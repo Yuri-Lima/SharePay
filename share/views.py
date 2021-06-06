@@ -1,3 +1,7 @@
+from datetime import date
+from django import contrib
+from django.db.models.fields import DecimalField
+from django.db.models.query import QuerySet
 from django.http.response import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls.base import reverse, reverse_lazy, set_urlconf 
@@ -58,6 +62,7 @@ class HouseNameListView(LoginRequiredMixin, ListView):
     model = HouseNameModel
     template_name = 'houses/list_house_name.html'
 
+    
     def get_context_data(self, **kwargs):
         ctx = {
             'housesnames' : HouseNameModel.objects.all().filter(user_FK=self.request.user).order_by('-last_updated_house'), 
@@ -315,8 +320,6 @@ class HouseBillFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
         print('Invalid Form')
         return super().form_invalid(form)
 
-from functools import partial, partialmethod, wraps
-
 class SubTenantsHouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormView, BaseInlineFormSet):
     model = SubHouseNameModel
     template_name = 'houses/add/add_sub_house_tenant.html'
@@ -460,6 +463,57 @@ class SubHouseKilowattsFormView(LoginRequiredMixin, SingleObjectMixin, FormView)
                                                             'subpk' : self.kwargs['subpk']
                                                             })
 ############  END INLINE FORMSETS VIEW  ##########################
+
+from share.coresharepay import CoreSharePay
+############  START CALC HOUSES  AND SUBHOUSES ################################
+class CalcMainHouse(LoginRequiredMixin, TemplateView, MultipleObjectMixin, CoreSharePay):
+    template_name = 'houses/calc_bill/calc_main_house.html'
+    
+
+    def get(self, request, *args, **kwargs):
+
+        return super(CalcMainHouse, self).get(request, *args, **kwargs)
+        
+    def post(self, request, *args, **kwargs):
+
+        return super(CalcMainHouse, self).post(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        main_house = HouseNameModel.objects.filter(pk=self.kwargs['pk'])
+        kwargs = {
+            'Main_House': main_house,
+            'object_list': main_house,
+        }
+        core = CoreSharePay(self, **kwargs)
+        core.decimal_places_core_sharepay = 4
+        # print(core.create_range_date_by_tenant())
+        # print(core.get_tenants_by_day(self.request, get_date='2021/03/14')) 
+        # print(core.filter_all_tenant_from_bill_period()
+        # print(core.get_tenants_by_name())
+        # print(core.bill_divided_by_all_tenants_simple_case())
+        # print(core.check_same_period_tenant_from_bill())
+        print(core.calc_only_main_house())
+        return super(CalcMainHouse, self).get_context_data(**kwargs)
+
+class CalcMainHouseAndSubHouse(LoginRequiredMixin, TemplateView, MultipleObjectMixin, CoreSharePay):
+    template_name = 'houses/calc_bill/calc_main_house_sub_house.html'
+
+    def get(self, request, *args, **kwargs):
+
+        return super(CalcMainHouse, self).get(request, *args, **kwargs)
+        
+    def post(self, request, *args, **kwargs):
+
+        return super(CalcMainHouse, self).post(request, *args, **kwargs)
+    
+    def get_context_data(self, **kwargs):
+        kwargs = {
+            'obj': HouseNameModel.objects.get(pk=self.kwargs['pk'])
+        }
+        return super(CalcMainHouse, self).get_context_data(**kwargs)
+
+
+############  START CALC HOUSES  AND SUBHOUSES  ################################
 
 ############  START ERROR VIEWS  ################################
 from django.http import HttpResponseForbidden
