@@ -1,6 +1,7 @@
 <!-- Headings --> <!-- Strong --> <!-- Italics --> <!-- Blockquote --> <!-- Links --> <!-- UL --> <!-- OL --> <!-- Images --> <!-- Code Blocks --> <!-- Tables --> 
 <!-- Task Lists -->
-# WebSite Yuri Lima
+![SharePay Logo](https://raw.githubusercontent.com/Yuri-Lima/SharePay/master/static/logo/sharepay_facedog.png) 
+# SharePay
 ### About Us
 The idea of the application was to divide the energy costs of my house with the house next door as we have the same energy bill. However, the difference is that I have installed a meter in my house, to know exactly how much kilowatts I was spending monthly. Every month it was the job of entering the data into the spreadsheet, seeing if all the residents were still in the house, knowing the difference in kilowatts and doing the math. My greatest care and fear were always to know if the division was correct between everyone because there is nothing more annoying about you overpaying. With that, to end this stress, I decided to create this app to optimize both my life and the lives of other people.
 
