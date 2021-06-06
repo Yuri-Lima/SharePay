@@ -60,12 +60,13 @@ class CoreSharePay(object):
         #     print('There is a SubPK')
         # else:
         #     print('There is no SubPK')
-        self.data_dict_date = self.create_range_date_by_tenant()
+        self.data_dict_date = self.main_create_range_date_by_tenant()
+        self.data_dict_sub_date = self.sub_create_range_date_by_tenant()
 
         super(CoreSharePay, self).__init__()
 
 
-    def create_range_date_by_tenant(self, request=None, *args, **kwargs):
+    def main_create_range_date_by_tenant(self, request=None, *args, **kwargs):
         """
             Colocar o range(inicio ate o fim) de permanencia do morador em um dicionario do morador
             Insert a range(start to end) to a dictionary for each tenant
@@ -75,11 +76,25 @@ class CoreSharePay(object):
         """
         tenants = self.tenants_main_house
         data_dict_date_range_date_by_tenant = dict()
-
+        
         for t1 in tenants:
             data_dict_date_range_date_by_tenant[t1.house_tenant] = [t1.start_date + timedelta(days=x) for x in range(t1.days)]#Add day by day acording to t1.day
         
         return data_dict_date_range_date_by_tenant
+    
+    def sub_create_range_date_by_tenant(self, request=None, *args, **kwargs):
+        """
+            Thise functions does the same as main_create_range_date_by_tenant
+        """
+        sub_tenants = self.tenants_sub_house
+        data_dict_date_range_date_by_sub_tenant = dict()
+        #Condicao para incluir os sub tenants no calculo da main house, caso o kwh nao tenha sido preenchido
+        #Pois sera levado em consideracao que a Sub house nao tem medidor, por tanto, sera dividos como se morassem na main house
+        if not self.sub_kwh_sub_house:
+            for sub_t1 in sub_tenants:
+                data_dict_date_range_date_by_sub_tenant[sub_t1.sub_house_tenant] = [sub_t1.sub_start_date + timedelta(days=x) for x in range(sub_t1.sub_days)]#Add day by day acording to t1.day
+
+        return data_dict_date_range_date_by_sub_tenant
 
     def get_tenants_by_day(self,request=None, get_date= None, *args, **kwargs):
         """
@@ -188,12 +203,13 @@ class CoreSharePay(object):
         #Se sub house nao preencheu kwh pego todos os tenants da casa pai e filha
         """
         Step - 1. pegar o valor da bill e dividi pelo periodo da conta para saber o valor diario da conta
-        Step - 2. divir o valor diario pelo total de moradores que tem em cada dia da conta e guardar na variavel V
-        Step - 3. guardar o valor da variavel V em cada morador por dia
-        Step - 4. soma todos os valores que cada morador em um loop ate que todos os moradore tenham seus valores diarios somados em cada morador
-        Step - 5. pegar os valores de cada morador e somar e guardar em uma variavel total_bill
-        Step - 6. comparar o total_bill com amount_bill, para havera sobra --> left_over
-        Step - 7. se nao for igual, guardar o valor residual e anexar em alguma variavel
+        Step - 2. checar quantos moradores tem com cada morador se zero, coloca 1 para fazer a divisao correta
+        Step - 3. divir o valor diario pelo total de moradores que tem em cada dia da conta e guardar na variavel V
+        Step - 4. guardar o valor da variavel V em cada morador por dia
+        Step - 5. soma todos os valores que cada morador em um loop ate que todos os moradore tenham seus valores diarios somados em cada morador
+        Step - 6. pegar os valores de cada morador e somar e guardar em uma variavel total_bill
+        Step - 7. comparar o total_bill com amount_bill, para havera sobra --> left_over
+        Step - 8. se nao for igual, guardar o valor residual e anexar em alguma variavel
         """
         data_dict_tenant_with_value_day = dict()
         #fill some elements from all tenants from bill period
@@ -202,27 +218,31 @@ class CoreSharePay(object):
         #============== Start Calcs ======================================================
         #Step -1
         days_value_one_house_one_bill = self.value_by_day()
-        #Steds -2,3,4
+        #Steds -2,3,4,5,6
         total_by_each_tenant = dict()
         for t in self.tenants_main_house:
-            for enum, morador in enumerate(self.get_tenants_by_name(tenant_name=t.house_tenant).values(), 1):
+            for enum, tenant in enumerate(self.get_tenants_by_name(tenant_name=t.house_tenant).values(), 1):
                 #Step -2
-                v = round(days_value_one_house_one_bill / len(morador), self.decimal_places_core_sharepay)
+                check_zero = (1 if not len(tenant) else len(tenant))
                 #Step -3
-                step_3 = { key : v for key in morador }
+                v = round(days_value_one_house_one_bill / check_zero, self.decimal_places_core_sharepay)
                 #Step -4
+                step_3 = { key : v for key in tenant }
+                print(step_3)
+                #Step -5
                 total_by_each_tenant = Counter(step_3) + Counter(total_by_each_tenant)
-        #Step -5
-        total_bill = round(sum(total_by_each_tenant.values()),2)
-        total_by_each_tenant['total_bill'] = total_bill
-        
         #Step -6
+        total_bill = round(sum(total_by_each_tenant.values()),2)
+        
+        #Steps -7 , 8
         if int(total_bill) == int(amount_bill_main_house):
             print(f'Step -6 --> {total_bill} - {total_bill - amount_bill_main_house}')
             return dict(total_by_each_tenant)
         else:
             total_by_each_tenant['left_over'] = amount_bill_main_house - total_bill
-            print(f'Step -6 --> left_over {total_bill - amount_bill_main_house}')        
+            print(f'Step -6 --> left_over {total_bill - amount_bill_main_house}')
+        
+
                 
         return dict(total_by_each_tenant)
 
