@@ -10,7 +10,7 @@ from django.forms.widgets import DateTimeInput
 
 class HouseNameModel(models.Model):
     user_FK = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_related', null=False, verbose_name='User')
-    house_name = models.CharField(verbose_name="House Name",max_length=150, null=True, blank=True)
+    house_name = models.CharField(verbose_name="House Name",max_length=150, null=True, blank=True, unique=True)
     meter = models.IntegerField(default=1)
     # main_house = models.BooleanField(null=False, blank=False, help_text='Is the bill belongs this house typed above?')
     last_updated_house = models.DateTimeField(auto_now_add=True, null=True, blank=True)
@@ -98,7 +98,7 @@ class HouseKilowattModel(models.Model):
 class HouseTenantModel(models.Model):
     house_name_FK = models.ForeignKey(HouseNameModel, null=True, blank=True, max_length=255,
                             on_delete=models.CASCADE, related_name='house_tenant_related', verbose_name='Tenant Name')
-    house_tenant = models.CharField(max_length=150, null=True, blank=True)
+    house_tenant = models.CharField(max_length=150, null=True, blank=True, unique=True)
     start_date = models.DateField(null=False, blank=False)
     end_date = models.DateField(null=False, blank=False)
     days = models.IntegerField(default=0)
@@ -139,7 +139,7 @@ class HouseTenantModel(models.Model):
 class SubHouseNameModel(models.Model):
     sub_house_FK = models.ForeignKey(HouseNameModel, null=True, blank=True, max_length=255,
                                 on_delete=models.CASCADE, related_name='sub_house_related', verbose_name='House Name')
-    sub_house_name = models.CharField(verbose_name="Sub House Name",max_length=150, null=True, blank=True)
+    sub_house_name = models.CharField(verbose_name="Sub House Name",max_length=150, null=True, blank=True, unique=True)
     sub_meter = models.IntegerField(null=True, blank=True, default=1)
     sub_main_house = models.BooleanField(null=False, blank=False, help_text='Is the bill belongs this house typed above?')
     sub_last_updated_house = models.DateTimeField(auto_now_add=True, null=True, blank=True)
@@ -202,7 +202,7 @@ class SubTenantModel(models.Model):
                                 on_delete=models.CASCADE, related_name='main_house_tenant_related', verbose_name='House Name')
     sub_house_tenant_FK = models.ForeignKey(SubHouseNameModel, null=True, blank=True, max_length=255,
                                 on_delete=models.CASCADE, related_name='sub_house_tenant_related', verbose_name='Sub House Name')
-    sub_house_tenant = models.CharField(max_length=150, null=True, blank=True)
+    sub_house_tenant = models.CharField(max_length=150, null=True, blank=True, unique=True)
     sub_start_date = models.DateField(null=True, blank=True)
     sub_end_date = models.DateField(null=True, blank=True)
     sub_days = models.IntegerField(null=True, blank=True, default=0)

@@ -480,19 +480,20 @@ class CalcMainHouse(LoginRequiredMixin, TemplateView, MultipleObjectMixin, CoreS
     
     def get_context_data(self, **kwargs):
         main_house = HouseNameModel.objects.filter(pk=self.kwargs['pk'])
-        kwargs = {
-            'Main_House': main_house,
-            'object_list': main_house,
-        }
+        kwargs['object_list'] = main_house
+        kwargs['Main_House'] = main_house
+
         core = CoreSharePay(self, **kwargs)
         core.decimal_places_core_sharepay = 4
+        kwargs['cal_main_house'] = core.calc_only_main_house()
+
         # print(core.create_range_date_by_tenant())
         # print(core.get_tenants_by_day(self.request, get_date='2021/03/14')) 
         # print(core.filter_all_tenant_from_bill_period()
         # print(core.get_tenants_by_name())
         # print(core.bill_divided_by_all_tenants_simple_case())
         # print(core.check_same_period_tenant_from_bill())
-        print(core.calc_only_main_house())
+        # print(core.calc_only_main_house())
         return super(CalcMainHouse, self).get_context_data(**kwargs)
 
 class CalcMainHouseAndSubHouse(LoginRequiredMixin, TemplateView, MultipleObjectMixin, CoreSharePay):
