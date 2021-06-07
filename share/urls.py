@@ -24,6 +24,10 @@ from .views import (
     HouseNameDeleteView,
 
     SubHouseNameDeleteView,
+
+    CalcMainHouse,
+    CalcMainHouseAndSubHouse,
+    ReportsViews
 )
 
 app_name = 'share'
@@ -61,6 +65,13 @@ urlpatterns = [
     path('add_sub_house/<int:pk>/subhouse/edit/', SubHouseNameFormView.as_view(), name='add_sub_house'),
     path('add_sub_house_kwh/<int:pk>/subhouse/<int:subpk>/edit', SubHouseKilowattsFormView.as_view(), name='add_sub_house_kwh'),
     path('add_sub_tenant_name/<int:pk>/subtenant/<int:subpk>/edit/', SubTenantsHouseNameFormView.as_view(), name='add_sub_house_tenant_name'), 
+
+    #Calc View
+    path('calc_house/<int:pk>/', CalcMainHouse.as_view(), name='calc_house'),
+    path('calc_house/<int:pk>/calc_subhouse/<int:subpk>/', CalcMainHouseAndSubHouse.as_view(), name='calc_house_subhouse'),
+
+    #Reports Views
+    path('case_simple/<int:pk>/', ReportsViews.as_view(), name='reports_view'),
 ]
 
 #Error Pages Paths >> ERROR PAGES <<
