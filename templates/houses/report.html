@@ -1,0 +1,48 @@
+{% extends 'houses/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}SharePay - Report House {% endblock title %}
+
+{% block content %}
+  <div class="overlay"></div>
+  <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
+    <source src="{% static 'mp4/bg.mp4' %}" type="video/mp4">
+  </video>
+
+  <div class="masthead">
+    <div class="masthead-bg"></div>
+    <div class="container h-100">
+      <div class="row h-100">
+        <div class="col-12 my-auto">
+            <div class="masthead-content text-white py-5 py-md-0">
+                <!-- ================================ -->
+                  {% if messages %}
+                    <ul class="detail_messages">
+                        {% for message in messages %}
+                            <li>{{message}}</li>
+                        {% endfor %}
+                    </ul>
+                  {% endif %}
+                <!-- ================================ -->
+                <h3>Details from {{Main_House.first.house_name}}</h3>
+         
+                <a href="{% url 'share:calc_house' pk=Main_House.first.id %}" role="button" class="btn btn-primary w-100 mb-2">Calculate</a>
+                <a href="{% url 'share:list_house_name' %}" role="button" class="btn btn-secondary w-100 mb-2">All House's Name</a>
+                <a href="{% url 'share:pre_detail_house_name' pk=Main_House.first.id %} " role="button" class="btn btn-secondary w-100 mb-2">Back</a>
+                
+
+                {% if user.is_authenticated %}
+                <div class="input-group-append">
+                <a href="{% url 'users:logout' %}" type="button" class="btn btn-outline-warning btn-sm ">Log Out</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  {% include 'social_media/social_media.html' %}
+{% endblock content %}
+
