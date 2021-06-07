@@ -4,33 +4,38 @@
 
 {% block content %}
 <!-- ================================ -->
-                  {% if messages %}
-                    <ul class="detail_messages">
-                        {% for message in messages %}
-                            <li>{{message}}</li>
-                        {% endfor %}
-                    </ul>
-                  {% endif %}
+  {% if messages %}
+    <ul class="detail_messages">
+        {% for message in messages %}
+            <li>{{message}}</li>
+        {% endfor %}
+    </ul>
+  {% endif %}
 <!-- ================================ -->|
 
 <form action="">
     <h2>Share Pay</h2>
-
     {% for name, values in cal_main_house.items %}
-      <h4>Main House: {{name}}</h4> 
+      {% if Main_House.first.house_name == name %}
+        <h4>Main House: {{name}}</h4>
+      {% else %}
+        <h4>Sub House: {{name}}</h4>
+      {% endif %}
       <table>
-            <tr>
-              <th>Tenant's Name</th>
-              <th>Tenant's Period</th>
-              <th>Due Value</th>
-            </tr>
-          {% for name, value in values.items %}
-            <tr>
-              <td>{{name}}</td>
-              <td>{{value}}</td>
-              <td>Canada</td>
-            </tr>
-          {% endfor %}
+        <tr>
+          <th>Tenant's Name</th>
+          <th>Tenant's Period</th>
+          <th>Days</th>
+          <th>Due Value</th>
+        </tr>
+        {% for name, value in values.items %}
+          <tr>
+            <td>{{name}}</td>
+            <td>{{value.date}}</td>
+            <td>{{value.days}}</td>
+            <td>{{value.value}}</td>
+          </tr>
+        {% endfor %}
       </table>
     {% endfor %}
 </form>

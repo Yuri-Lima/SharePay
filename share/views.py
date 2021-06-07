@@ -465,7 +465,7 @@ class SubHouseKilowattsFormView(LoginRequiredMixin, SingleObjectMixin, FormView)
 ############  END INLINE FORMSETS VIEW  ##########################
 
 from share.coresharepay import CoreSharePay
-############  START CALC HOUSES  AND SUBHOUSES ################################
+############  START CALC MAIN HOUSES  AND SUBHOUSES ################################
 class CalcMainHouse(LoginRequiredMixin, TemplateView, MultipleObjectMixin, CoreSharePay):
     template_name = 'houses/calc_bill/calc_main_house.html'
     
@@ -488,8 +488,8 @@ class CalcMainHouse(LoginRequiredMixin, TemplateView, MultipleObjectMixin, CoreS
         kwargs['cal_main_house'] = core.calc_only_main_house()
 
         # print(core.create_range_date_by_tenant())
-        # print(core.get_tenants_by_day(self.request, get_date='2021/03/14')) 
-        # print(core.filter_all_tenant_from_bill_period()
+        # print(core.get_tenants_by_day()) 
+        # print(core.filter_all_tenant_from_bill_period())
         # print(core.get_tenants_by_name())
         # print(core.bill_divided_by_all_tenants_simple_case())
         # print(core.check_same_period_tenant_from_bill())
@@ -514,7 +514,20 @@ class CalcMainHouseAndSubHouse(LoginRequiredMixin, TemplateView, MultipleObjectM
         return super(CalcMainHouse, self).get_context_data(**kwargs)
 
 
-############  START CALC HOUSES  AND SUBHOUSES  ################################
+############  END CALC MAIN HOUSES  AND SUB HOUSES  ################################
+
+############  MAKE REPORTS for MAIN HOUSES AND SUB HOUSES ################################
+
+class ReportsViews(LoginRequiredMixin, TemplateView, MultipleObjectMixin):
+    
+    template_name = 'houses/report.html'
+    
+    def get_context_data(self, **kwargs):
+        main_house = HouseNameModel.objects.filter(pk=self.kwargs['pk'])
+        kwargs['object_list'] = main_house
+        kwargs['Main_House'] = main_house 
+        return super(ReportsViews, self).get_context_data(**kwargs)
+
 
 ############  START ERROR VIEWS  ################################
 from django.http import HttpResponseForbidden
