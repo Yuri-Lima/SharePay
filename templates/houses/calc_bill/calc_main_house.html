@@ -1,0 +1,48 @@
+{% extends 'houses/calc_bill/base_calc.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block content %}
+<!-- ================================ -->
+  {% if messages %}
+    <ul class="detail_messages">
+        {% for message in messages %}
+            <li>{{message}}</li>
+        {% endfor %}
+    </ul>
+  {% endif %}
+<!-- ================================ -->|
+
+<form action="">
+    <h2>Share Pay</h2>
+    {% for name, values in cal_main_house.items %}
+      {% if Main_House.first.house_name == name %}
+        <h4>Main House: {{name}}</h4>
+      {% else %}
+        <h4>Sub House: {{name}}</h4>
+      {% endif %}
+      <table>
+        <tr>
+          <th>Tenant's Name</th>
+          <th>Tenant's Period</th>
+          <th>Days</th>
+          <th>Due Value</th>
+        </tr>
+        {% for name, value in values.items %}
+          <tr>
+            <td>{{name}}</td>
+            <td>{{value.date}}</td>
+            <td>{{value.days}}</td>
+            <td>{{value.value}}</td>
+          </tr>
+        {% endfor %}
+      </table>
+    {% endfor %}
+</form>
+
+
+{% endblock content %} 
+
+{% block Scripts %}
+
+{% endblock Scripts %}
