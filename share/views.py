@@ -147,8 +147,8 @@ class SubHouseNameDetailView(LoginRequiredMixin, DetailView, MultipleObjectMixin
     def get_context_data(self, **kwargs):
         # print(f'kwargs: {self.kwargs["subpk"]}') 
         context = {
-            'object_list': SubTenantModel.objects.filter(main_tenant_FK=self.object.id),
-            'subhouse': SubHouseNameModel.objects.get(pk=self.kwargs['subpk'])
+            'object_list': SubTenantModel.objects.filter(sub_house_tenant_FK=self.kwargs['subpk']),
+            'subhouse': SubHouseNameModel.objects.filter(pk=self.kwargs['subpk'])
         }
         return super(SubHouseNameDetailView, self).get_context_data(**context)
 

@@ -16,26 +16,23 @@
 <form action="">
     <h2>Share Pay</h2>
 
-
-  {% for main in Main_House %}
-    <h4>Main House: {{main.house_name}}</h4>
-    <table>
-          <tr>
-            <th>Tenant's Name</th>
-            <th>Tenant's Period</th>
-            <th>Due Value</th>
-          </tr>
-        {% for name, value in cal_main_house.items %}
-          <tr>
-            <td>{{name}}</td>
-            <td>{{value}}</td>
-            <td>Canada</td>
-          </tr>
-        {% endfor %}
-
-
-    </table>
-  {% endfor %}
+    {% for name, values in cal_main_house.items %}
+      <h4>Main House: {{name}}</h4> 
+      <table>
+            <tr>
+              <th>Tenant's Name</th>
+              <th>Tenant's Period</th>
+              <th>Due Value</th>
+            </tr>
+          {% for name, value in values.items %}
+            <tr>
+              <td>{{name}}</td>
+              <td>{{value}}</td>
+              <td>Canada</td>
+            </tr>
+          {% endfor %}
+      </table>
+    {% endfor %}
 </form>
 
 
