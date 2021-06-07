@@ -26,6 +26,7 @@ from django.shortcuts import resolve_url
 from django.utils.translation import gettext_lazy as _
 from django.contrib import messages
 from collections import Counter
+from decimal import Decimal
 
 class CoreSharePay(object):
     decimal_places_core_sharepay = None
@@ -51,8 +52,11 @@ class CoreSharePay(object):
             self.kwh_main_house = d.house_kilowatt_related.first().kwh
             self.tenants_main_house = d.house_tenant_related.all()
             #Related of Sub House
+            self.sub_house_names = d.sub_house_related.all()
             self.tenants_sub_house = d.main_house_tenant_related.all()
             self.sub_kwh_sub_house = d.main_house_kilowatt_related.all()
+
+            self.create_range_date_by_tenant()
             
             
         #Calc for Sub House Name
@@ -60,13 +64,31 @@ class CoreSharePay(object):
         #     print('There is a SubPK')
         # else:
         #     print('There is no SubPK')
-        self.data_dict_date = self.main_create_range_date_by_tenant()
-        self.data_dict_sub_date = self.sub_create_range_date_by_tenant()
 
         super(CoreSharePay, self).__init__()
 
+    def check_if_which_sub_house_hasnt_kwh_filled(self, names=False, *args, **kwargs):
+        """
+            retorna o id de quem nao tem o sub kwh cadastrado
+        """
+        #=======xxxxx Sub xxxx===========
+        sub_tenants = self.tenants_sub_house
+        self.dict_date_range_for_sub_tenants = dict()
+        #Condicao para incluir os sub tenants no calculo da main house, caso o kwh nao tenha sido preenchido
+        #Pois sera levado em consideracao que a Sub house nao tem medidor, por tanto, sera dividos como se morassem na main house
+        subid=dict()
+        tenants_name = dict()
+        for obj in self.sub_house_names:#Todas as sub casas
+            if not obj.sub_house_name in [k.sub_house_kwh_FK.sub_house_name for k in self.sub_kwh_sub_house]:#verifica qual e a casa que nao tem kwh cadastrado
+                #print(sub_tenants.filter(sub_house_tenant_FK=obj.id))#pega apenas os tenants que pertencem a casa que nao tem kwh cadastrado
+                tenants_name[obj.sub_house_name]= sub_tenants.filter(sub_house_tenant_FK=obj.id)
+                subid[obj.sub_house_name]=obj.id
+        if names:
+            return tenants_name
+        return subid
 
-    def main_create_range_date_by_tenant(self, request=None, *args, **kwargs):
+
+    def create_range_date_by_tenant(self, request=None, *args, **kwargs):
         """
             Colocar o range(inicio ate o fim) de permanencia do morador em um dicionario do morador
             Insert a range(start to end) to a dictionary for each tenant
@@ -74,27 +96,22 @@ class CoreSharePay(object):
             Given data for Jonh--> start_date= 2021-05-01 end_date= 2021-05-30
             The range data for Jonh is -->2021-05-01, 2021-05-02, 2021-05-03,....,2021-05-30
         """
+        #=======xxxxx Main xxxx===========
         tenants = self.tenants_main_house
-        data_dict_date_range_date_by_tenant = dict()
+        self.dict_date_range_for_tenants = dict()
         
         for t1 in tenants:
-            data_dict_date_range_date_by_tenant[t1.house_tenant] = [t1.start_date + timedelta(days=x) for x in range(t1.days)]#Add day by day acording to t1.day
+            self.dict_date_range_for_tenants[t1.house_tenant] = [t1.start_date + timedelta(days=x) for x in range(t1.days)]#Add day by day acording to t1.day
         
-        return data_dict_date_range_date_by_tenant
-    
-    def sub_create_range_date_by_tenant(self, request=None, *args, **kwargs):
-        """
-            Thise functions does the same as main_create_range_date_by_tenant
-        """
+        #=======xxxxx Sub xxxx===========
         sub_tenants = self.tenants_sub_house
-        data_dict_date_range_date_by_sub_tenant = dict()
-        #Condicao para incluir os sub tenants no calculo da main house, caso o kwh nao tenha sido preenchido
-        #Pois sera levado em consideracao que a Sub house nao tem medidor, por tanto, sera dividos como se morassem na main house
-        if not self.sub_kwh_sub_house:
-            for sub_t1 in sub_tenants:
-                data_dict_date_range_date_by_sub_tenant[sub_t1.sub_house_tenant] = [sub_t1.sub_start_date + timedelta(days=x) for x in range(sub_t1.sub_days)]#Add day by day acording to t1.day
+        subids = self.check_if_which_sub_house_hasnt_kwh_filled()
+        for name, subid in subids.items():
+            for sub_t1 in sub_tenants.filter(sub_house_tenant_FK=subid):
+                self.dict_date_range_for_tenants[sub_t1] = [sub_t1.sub_start_date + timedelta(days=x) for x in range(sub_t1.sub_days)]#Add day by day acording to t1.day
+        
+        # return self
 
-        return data_dict_date_range_date_by_sub_tenant
 
     def get_tenants_by_day(self,request=None, get_date= None, *args, **kwargs):
         """
@@ -113,7 +130,7 @@ class CoreSharePay(object):
         #         raise ValueError('Date Format is incorret, try: YYY-MM-DD')
 
         date_bill_verification_by_day= get_date if get_date else self.start_date_bill_main_house
-        data_dict_date_by_day = self.data_dict_date
+        data_dict_date_by_day = self.dict_date_range_for_tenants
         data_set_tenants_by_day = set()
         data_set_date_by_day = dict()
         new_dict = set()
@@ -220,6 +237,8 @@ class CoreSharePay(object):
         days_value_one_house_one_bill = self.value_by_day()
         #Steds -2,3,4,5,6
         total_by_each_tenant = dict()
+        total_by_each_tenant_converted =  dict()
+        
         for t in self.tenants_main_house:
             for enum, tenant in enumerate(self.get_tenants_by_name(tenant_name=t.house_tenant).values(), 1):
                 #Step -2
@@ -227,22 +246,32 @@ class CoreSharePay(object):
                 #Step -3
                 v = round(days_value_one_house_one_bill / check_zero, self.decimal_places_core_sharepay)
                 #Step -4
-                step_3 = { key : v for key in tenant }
-                print(step_3)
+                step_3 = { key : v for key in tenant } 
                 #Step -5
                 total_by_each_tenant = Counter(step_3) + Counter(total_by_each_tenant)
+                total_by_each_tenant_converted[str(t.house_name_FK)] = {c: float(v) for c, v in total_by_each_tenant.items()}#tiver que converter, pois v estava em Decimal Class
+
+        #=================================
+        sub_tenants_filtered = self.check_if_which_sub_house_hasnt_kwh_filled(names=True)
+        for name, x in sub_tenants_filtered.items():
+            total_by_each_tenant_converted[name] = {str(c) : total_by_each_tenant_converted[str(self.house_name_main_house)].pop(c) for c in x }
+            
+        #=================================
+        print(total_by_each_tenant_converted)
+        # for c in total_by_each_tenant_converted:
+        #     pass
+
         #Step -6
         total_bill = round(sum(total_by_each_tenant.values()),2)
         
         #Steps -7 , 8
         if int(total_bill) == int(amount_bill_main_house):
             print(f'Step -6 --> {total_bill} - {total_bill - amount_bill_main_house}')
-            return dict(total_by_each_tenant)
+            return dict(total_by_each_tenant_converted)
         else:
             total_by_each_tenant['left_over'] = amount_bill_main_house - total_bill
             print(f'Step -6 --> left_over {total_bill - amount_bill_main_house}')
         
-
-                
-        return dict(total_by_each_tenant)
+   
+        return dict(total_by_each_tenant_converted)
 
