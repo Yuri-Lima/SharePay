@@ -37,6 +37,9 @@
       <div class="row h-100">
         <div class="col-12 my-auto">
           <div class="masthead-content text-white py-5 py-md-0">
+          {% comment %} LOGO {% endcomment %}
+          {% include 'houses/logo.html' %}
+          
           {% if user.is_authenticated %}
             {% if houses %}
               <h1 class="mb-3">Welcome Back, {{ user|capfirst }}!</h1>
