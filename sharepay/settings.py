@@ -90,14 +90,6 @@ WSGI_APPLICATION = 'sharepay.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql',
-    #     'NAME': 'df4os2hk8b994q',
-    #     'USER': 'lrhgkiysjhvbnw',
-    #     'PASSWORD': '55377d5510c448026fd8dcec0eee404f170ac21247f19a91106453ea6a1ece47',
-    #     'HOST': 'ec2-54-216-185-51.eu-west-1.compute.amazonaws.com',
-    #     'PORT': '5432',
-    # }
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
@@ -138,12 +130,13 @@ USE_L10N = True
 USE_TZ = True
 
 """ Security Session """
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-# PREPEND_WWW = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-BASE_URL = "https://www.sharepay.app.br"
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    # PREPEND_WWW = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    BASE_URL = "https://www.sharepay.app.br"
 
 
 # Static files (CSS, JavaScript, Images)
