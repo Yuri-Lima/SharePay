@@ -39,6 +39,7 @@ class CoreSharePay(object):
             if you're in Sub Houses Pages.
         """
         self.data = kwargs
+        
 
         #Set variables for Main House Name
         for d in self.data['Main_House']:
@@ -56,9 +57,20 @@ class CoreSharePay(object):
             self.tenants_sub_house = d.main_house_tenant_related.all()
             self.sub_kwh_sub_house = d.main_house_kilowatt_related.all()
 
+            #Related of get_tenants_by_day
+            self._empty_days = 0
+
+            self._check_if_there_is_day_without_tenants()
             self.create_range_date_by_tenant()
 
         super(CoreSharePay, self).__init__()
+
+    def _check_if_there_is_day_without_tenants(self, *args, **kwargs):
+        # print(type(self.tenants_main_house))
+        # self.tenants_sub_house 
+        pass
+        
+
     
     def create_range_date_by_tenant(self, request=None, *args, **kwargs):
         """
@@ -81,7 +93,6 @@ class CoreSharePay(object):
         for name, subid in subids.items():
             for sub_t1 in sub_tenants.filter(sub_house_tenant_FK=subid):
                 self.dict_date_range_for_tenants[sub_t1] = [sub_t1.sub_start_date + timedelta(days=x) for x in range(sub_t1.sub_days)]#Add day by day acording to t1.sub_day
-
 
     def check_if_which_sub_house_hasnt_kwh_filled(self, names=False, *args, **kwargs):
         """
@@ -109,6 +120,7 @@ class CoreSharePay(object):
         """
             Retorna e Filtra quais sao os tenants que estao na casa de acordo com a data enviada
             Return and Filter which tenants how is in the house by date sent.
+            Return data like this --> {datetime.date(2021, 3, 14): {'Daiane', 'Nathalia', 'Eugenio', 'Elizagela', 'Ellen', 'José'}}
         """
 
         date_bill_verification_by_day= get_date if get_date else self.start_date_bill_main_house
@@ -117,12 +129,17 @@ class CoreSharePay(object):
         data_set_date_by_day = dict()
         
         for name, date in data_dict_date_by_day.items():
-            for d1 in date:
-                if d1 == date_bill_verification_by_day:
-                    data_set_tenants_by_day.add(str(name))
+            if date_bill_verification_by_day in date:
+                data_set_tenants_by_day.add(str(name))
+
+
         data_set_date_by_day[date_bill_verification_by_day] = data_set_tenants_by_day
 
-        #{datetime.date(2021, 3, 14): {'Daiane', 'Nathalia', 'Eugenio', 'Elizagela', 'Ellen', 'José'}}
+        if not data_set_date_by_day[date_bill_verification_by_day]:
+            self._empty_days =  self._empty_days + 1
+            data_set_date_by_day[date_bill_verification_by_day] = {'Left'}
+        
+        
         return data_set_date_by_day
 
     
@@ -202,17 +219,23 @@ class CoreSharePay(object):
         days_value_value_by_day = round(bills_value_by_day/days_bill_value_by_day, self.decimal_places_core_sharepay)
         return days_value_value_by_day
     
-    def calc_only_main_house(self, request=None, *args, **kwargs):
+    def calc_1(self, request=None, *args, **kwargs):
         #Se sub house nao preencheu kwh pego todos os tenants da casa pai e filha
         """
         Step - 1. pegar o valor da bill e dividi pelo periodo da conta para saber o valor diario da conta
-        Step - 2. checar quantos moradores tem com cada morador, se zero, coloca 1 para fazer a divisao correta
+        Step - 2. checar quantos inquilinos moram com o mesmo, se nenhum(zero), coloca 1 para fazer a divisao correta
         Step - 3. divir o valor diario pelo total de moradores que tem em cada dia da conta e guardar na variavel V
         Step - 4. guardar o valor da variavel V em cada morador por dia
         Step - 5. soma todos os valores que cada morador em um loop ate que todos os moradore tenham seus valores diarios somados em cada morador
-        Step - 6. pegar os valores de cada morador e somar e guardar em uma variavel total_bill
-        Step - 7. comparar o total_bill com amount_bill, para havera sobra --> left_over
-        Step - 8. se nao for igual, guardar o valor residual e anexar em alguma variavel
+        Step - 6. logo apos a soma converter os valores v de Decimal Class to Float
+        Step - 7. verifica se tem left_over se tem coloca em sua proria dict
+        Step - 8. pegar todos os moradores das sub houses que nao possuem kwh preenchidos, pois se nao tem, o calculo da divisao sera feito junto com a casa principal
+        Step - 9.
+            --> cria um novo dicionario dentro de total_by_each_tenant_converted, definindo chaves e valores, 
+            para identificar quem sao subhouses e seus atributos e quem e a casa principal e seus atributos.
+            dict[casa]={dict[nome_do_morador]:{valor: , data:  , dia:  ,}}
+        Step - 10. soma todos os valors por morador gerando o total de cada morador
+        Step - 11. validations
         """
         data_dict_tenant_with_value_day = dict()
         #fill some elements from all tenants from bill period
@@ -227,56 +250,79 @@ class CoreSharePay(object):
         total_by_each_tenant_converted =  dict()
         
         house_name_main_house = str(self.house_name_main_house)
-        getcontext().prec = 7 #Precision durante a somaoria, dentro de Counter, esta especificado que todos sao Decimal class
-
+        getcontext().prec = 9 #manter alta precisao, pois no somatorio sera necessario.
         
-        for day_number, date_1 in self.filter_all_tenant_from_bill_period().items():
-            for date_2, names in date_1.items():
-                # print(names)
+        for day_number, date_1 in filter_all_tenant_from_bill_period.items():# day_number: {date_1):{names}}
+            for date_2, names in date_1.items(): #{date_2):{names}}
                 #Step -2
                 check_zero = (1 if not len(names) else len(names))
                 #Step -3
-                v = round(days_value_one_house_one_bill / check_zero, self.decimal_places_core_sharepay)
+                v = round(days_value_one_house_one_bill / check_zero, getcontext().prec - 1)
                 #Step -4
                 step_3 = { key : v for key in names }
                 #Step -5
                 total_by_each_tenant = Counter(step_3) + Counter(total_by_each_tenant)
-                total_by_each_tenant_converted[house_name_main_house] = {c : float(v) for c, v in total_by_each_tenant.items()}#tiver que converter, pois v estava em Decimal Class
-    
-        #=================================
-
-
-        sub_tenants_filtered = self.check_if_which_sub_house_hasnt_kwh_filled(names=True) 
-
-        for sub_house_name, sub_house_names in sub_tenants_filtered.items():
-            total_by_each_tenant_converted[sub_house_name] = {
+                #Step -6
+                total_by_each_tenant_converted['all'] = {key : float(value) for key, value in total_by_each_tenant.items() if key != 'Left'}#tiver que converter, pois v estava em Decimal Class
+                total_by_each_tenant_converted['Left_Over'] = {key : float(value) for key, value in total_by_each_tenant.items() if key == 'Left'}
+                #Step -7
+        
+        #================================= 
+        #Step -8
+        sub_tenants_filtered = self.check_if_which_sub_house_hasnt_kwh_filled(names=True)
+        #Step -9
+         #--> Main Houses Data <---
+        total_by_each_tenant_converted['main_house'] = {
+            str(house_name_main_house) : {
                 str(each_name) : {
-                    str('value'): total_by_each_tenant_converted[house_name_main_house].pop(str(each_name)),
+                    str('value'): total_by_each_tenant_converted['all'].pop(str(each_name)),
+                    str('date'): f'{each_name.start_date} to {each_name.end_date}',
+                    str('days'): f'{each_name.days}',
+                }for each_name in tenants_main_house
+            }#there is no another main house, because there is just one by each views(one PK)
+        }
+        #--> Sub Houses Data <---
+        
+        total_by_each_tenant_converted['sub_house'] = {
+            str(sub_house_name) : {
+                str(each_name) : {
+                    str('value'): total_by_each_tenant_converted['all'].pop(str(each_name)),
                     str('date'): f'{each_name.sub_start_date} to {each_name.sub_end_date}',
                     str('days'): f'{each_name.sub_days}',
-                    } for each_name in sub_house_names }
+                    }for each_name in sub_tenants_names#should be all sub tenants
+                }for sub_house_name, sub_tenants_names in sub_tenants_filtered.items()#should be only sub_houses_name
+            }#there are some possibilities which we can have multiple sub house it means multiples sub_pk's
 
-        total_by_each_tenant_converted[house_name_main_house] = {
-            str(each_name) : {
-                str('value'): total_by_each_tenant_converted[house_name_main_house].pop(str(each_name)),
-                str('date'): f'{each_name.start_date} to {each_name.end_date}',
-                str('days'): f'{each_name.days}',
-                } for each_name in tenants_main_house }
+        #--> Left Houses Data <---
+        if total_by_each_tenant_converted['Left_Over']:
+            total_by_each_tenant_converted['left_over'] = {
+                str('Left_Over') : {
+                    str('description') : 'This is a value which no one was living as a tenant.',
+                    str('left_over') : total_by_each_tenant_converted['Left_Over']['Left'],
+                    str('days_left_over') : f'{self._empty_days}',
+                }
+            }
+            total_by_each_tenant_converted.pop('Left_Over')
 
-        
-        #Step -6
-        getcontext().prec = 5 #Precision
+        total_by_each_tenant_converted.pop('all')
+
+        #Step -10
+        total_by_each_tenant_converted['kwh'] = self.kwh_main_house
+        total_by_each_tenant_converted['bill_value'] = self.amount_bill_main_house
+        total_by_each_tenant_converted['period_bill'] = f'{self.start_date_bill_main_house} to {self.end_date_bill_main_house}'
+        total_by_each_tenant_converted['user'] = self.user_main_house
+
+        #Step -10
+        getcontext().prec = 5 #Reduz a precisao um pouco pois nao sera mais necessario, uma vez que os valores ja teve sua alta precisao
         total_bill = Decimal(sum(total_by_each_tenant.values()))
+        print(total_bill)
+
 
         #Validations
-        #Steps -7 , 8
-        if int(total_bill) == int(amount_bill_main_house):
-            print(f'Step -6 --> {total_bill} - {total_bill - amount_bill_main_house}')
-            return total_by_each_tenant_converted
-        else:
-            total_by_each_tenant['left_over'] = amount_bill_main_house - total_bill
-            print(f'Step -6 --> left_over {total_bill - amount_bill_main_house}')
-        
+        """
+            Reminds: Create validations
+        """
+        #Steps -11
    
         return total_by_each_tenant_converted
 
