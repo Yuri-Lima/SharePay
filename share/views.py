@@ -485,10 +485,10 @@ class CalcMainHouse(LoginRequiredMixin, TemplateView, MultipleObjectMixin, CoreS
 
         core = CoreSharePay(self, **kwargs)
         core.decimal_places_core_sharepay = 4
-        kwargs['cal_main_house'] = core.calc_only_main_house()
+        kwargs['calc_1'] = core.calc_1()
 
         # print(core.create_range_date_by_tenant())
-        # print(core.get_tenants_by_day()) 
+        # print(core.get_tenants_by_day(get_date='2021-03-15')) 
         # print(core.filter_all_tenant_from_bill_period())
         # print(core.get_tenants_by_name())
         # print(core.bill_divided_by_all_tenants_simple_case())
