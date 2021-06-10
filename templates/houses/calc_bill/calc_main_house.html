@@ -3,21 +3,10 @@
 {% load humanize %}
 
 {% block content %}
-<!-- ================================ -->
-  {% if messages %}
-    <ul class="detail_messages">
-        {% for message in messages %}
-            <li>{{message}}</li>
-        {% endfor %}
-    </ul>
-  {% endif %}
-<!-- ================================ -->|
-
 {% comment %} LOGO {% endcomment %}
 {% include 'houses/logo.html' %}
-{% comment %} INFOR {% endcomment %}
-<p class="text-justify">-- Bill Details --</p>
 
+{% comment %} START INFOR BILL {% endcomment %}
 <table class="table table-sm">
   <thead class="bg-info text-white">
     <tr>
@@ -36,6 +25,7 @@
     </tr>
   </tbody>
 </table>
+{% comment %} END INFOR BILL {% endcomment %}
 
 {% comment %} START TABLE MAIN HOUSE {% endcomment %}
 <div class="table-responsive">
@@ -105,7 +95,7 @@
 {% if  calc_1.left_over %}
 <div class="table-responsive">
     <table class="table table-hover">
-      <caption>List of main_house</caption>
+      <caption>List of left_over</caption>
       {% for left_name, v in calc_1.left_over.items %}
         <h3>{{left_name}}</h3>
           <thead class="thead-dark">

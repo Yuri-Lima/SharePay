@@ -28,6 +28,7 @@
                   {% endif %}
                 <!-- ================================ -->
                 <h3>Details from {{house.house_name}}</h3>
+                <a href="{% url 'share:update_house_name' pk=house.id %}" role="button" class="btn btn-outline-primary text-white w-100 mb-2">Edit House Name</a>
                 {% if house.house_bill_related.all %}
                     {% for bill in  house.house_bill_related.all %}
                         <div class="d-flex d-flex-inline">

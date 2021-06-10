@@ -70,8 +70,7 @@ class CoreSharePay(object):
         # self.tenants_sub_house 
         pass
         
-
-    
+  
     def create_range_date_by_tenant(self, request=None, *args, **kwargs):
         """
             Colocar o range(inicio ate o fim) de permanencia do morador em um dicionario do morador
@@ -199,11 +198,7 @@ class CoreSharePay(object):
             return False
         return True
 
-    """
-        --> Simple Case <--
-        1 - Valor da Conta / Moradores
-        1 - Bill's Value / Tenant
-    """
+
     def bill_divided_by_all_tenants_simple_case(self, request= None, *args, **kwargs):
         decimal_simple_case = 4
         decimal_places_simple_case = self.decimal_places_core_sharepay if self.decimal_places_core_sharepay else decimal_simple_case
@@ -220,7 +215,7 @@ class CoreSharePay(object):
         return days_value_value_by_day
     
     def calc_1(self, request=None, *args, **kwargs):
-        #Se sub house nao preencheu kwh pego todos os tenants da casa pai e filha
+        #Se sub house nao preencheu kwh pego todos os tenants da casa pai e filhos(Nao se pega pai'S' somente todos os filhos)
         """
         Step - 1. pegar o valor da bill e dividi pelo periodo da conta para saber o valor diario da conta
         Step - 2. checar quantos inquilinos moram com o mesmo, se nenhum(zero), coloca 1 para fazer a divisao correta
@@ -240,7 +235,6 @@ class CoreSharePay(object):
         data_dict_tenant_with_value_day = dict()
         #fill some elements from all tenants from bill period
         filter_all_tenant_from_bill_period = self.filter_all_tenant_from_bill_period()
-        amount_bill_main_house = self.amount_bill_main_house
         #============== Start Calcs ======================================================
         #Step -1
         days_value_one_house_one_bill = self.value_by_day()
@@ -249,7 +243,7 @@ class CoreSharePay(object):
         total_by_each_tenant = dict()
         total_by_each_tenant_converted =  dict()
         
-        house_name_main_house = str(self.house_name_main_house)
+        house_name_main_house = self.house_name_main_house
         getcontext().prec = 9 #manter alta precisao, pois no somatorio sera necessario.
         
         for day_number, date_1 in filter_all_tenant_from_bill_period.items():# day_number: {date_1):{names}}
@@ -275,18 +269,17 @@ class CoreSharePay(object):
         total_by_each_tenant_converted['main_house'] = {
             str(house_name_main_house) : {
                 str(each_name) : {
-                    str('value'): total_by_each_tenant_converted['all'].pop(str(each_name)),
+                    str('value'): round(total_by_each_tenant_converted['all'].pop(str(each_name)),2),
                     str('date'): f'{each_name.start_date} to {each_name.end_date}',
                     str('days'): f'{each_name.days}',
                 }for each_name in tenants_main_house
             }#there is no another main house, because there is just one by each views(one PK)
         }
-        #--> Sub Houses Data <---
-        
+        #--> Sub Houses Data <---        
         total_by_each_tenant_converted['sub_house'] = {
             str(sub_house_name) : {
                 str(each_name) : {
-                    str('value'): total_by_each_tenant_converted['all'].pop(str(each_name)),
+                    str('value'): f'€{round(total_by_each_tenant_converted["all"].pop(str(each_name)),2)}',
                     str('date'): f'{each_name.sub_start_date} to {each_name.sub_end_date}',
                     str('days'): f'{each_name.sub_days}',
                     }for each_name in sub_tenants_names#should be all sub tenants
@@ -298,7 +291,7 @@ class CoreSharePay(object):
             total_by_each_tenant_converted['left_over'] = {
                 str('Left_Over') : {
                     str('description') : 'This is a value which no one was living as a tenant.',
-                    str('left_over') : total_by_each_tenant_converted['Left_Over']['Left'],
+                    str('left_over') : round(total_by_each_tenant_converted['Left_Over']['Left'],2),
                     str('days_left_over') : f'{self._empty_days}',
                 }
             }
