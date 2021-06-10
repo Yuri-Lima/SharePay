@@ -466,17 +466,17 @@ class SubHouseKilowattsFormView(LoginRequiredMixin, SingleObjectMixin, FormView)
 
 from share.coresharepay import CoreSharePay
 ############  START CALC MAIN HOUSES  AND SUBHOUSES ################################
-class CalcMainHouse(LoginRequiredMixin, TemplateView, MultipleObjectMixin, CoreSharePay):
+class CalcHouseView(LoginRequiredMixin, TemplateView, MultipleObjectMixin, CoreSharePay):
     template_name = 'houses/calc_bill/calc_main_house.html'
     
 
     def get(self, request, *args, **kwargs):
 
-        return super(CalcMainHouse, self).get(request, *args, **kwargs)
+        return super(CalcHouseView, self).get(request, *args, **kwargs)
         
     def post(self, request, *args, **kwargs):
 
-        return super(CalcMainHouse, self).post(request, *args, **kwargs)
+        return super(CalcHouseView, self).post(request, *args, **kwargs)
     
     def get_context_data(self, **kwargs):
         main_house = HouseNameModel.objects.filter(pk=self.kwargs['pk'])
@@ -487,32 +487,7 @@ class CalcMainHouse(LoginRequiredMixin, TemplateView, MultipleObjectMixin, CoreS
         core.decimal_places_core_sharepay = 4
         kwargs['calc_1'] = core.calc_1()
 
-        # print(core.create_range_date_by_tenant())
-        # print(core.get_tenants_by_day(get_date='2021-03-15')) 
-        # print(core.filter_all_tenant_from_bill_period())
-        # print(core.get_tenants_by_name())
-        # print(core.bill_divided_by_all_tenants_simple_case())
-        # print(core.check_same_period_tenant_from_bill())
-        # print(core.calc_only_main_house())
-        return super(CalcMainHouse, self).get_context_data(**kwargs)
-
-class CalcMainHouseAndSubHouse(LoginRequiredMixin, TemplateView, MultipleObjectMixin, CoreSharePay):
-    template_name = 'houses/calc_bill/calc_main_house_sub_house.html'
-
-    def get(self, request, *args, **kwargs):
-
-        return super(CalcMainHouse, self).get(request, *args, **kwargs)
-        
-    def post(self, request, *args, **kwargs):
-
-        return super(CalcMainHouse, self).post(request, *args, **kwargs)
-    
-    def get_context_data(self, **kwargs):
-        kwargs = {
-            'obj': HouseNameModel.objects.get(pk=self.kwargs['pk'])
-        }
-        return super(CalcMainHouse, self).get_context_data(**kwargs)
-
+        return super(CalcHouseView, self).get_context_data(**kwargs)
 
 ############  END CALC MAIN HOUSES  AND SUB HOUSES  ################################
 

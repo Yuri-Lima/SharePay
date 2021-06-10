@@ -54,7 +54,7 @@
                         <p>{{form.main_house.errors}}</p>
                     </div>
                 </div> {% endcomment %}
-                <div class="row">
+                {% comment %} <div class="row">
                     <div class="col py-2">
                         <p class='mb-1'>How many Meters have you installed:</p>
                     </div>
@@ -64,11 +64,11 @@
                         <p>{{form.meter}}</p>
                         <p>{{form.meter.errors}}</p>
                     </div>
-                </div>
+                </div> {% endcomment %}
               </div> 
                 <p class="pt-2">
                     <button type="submit" class="btn btn-primary w-100 mb-2" >Update House Name</button>
-                    <a href="{% url 'share:list_house_name' %}" role="button" class="btn btn-secondary w-100">Back</a>
+                    <a href="{% url 'share:detail_house_name' pk=house.id %}" role="button" class="btn btn-secondary w-100">Back</a>
                 </p>
           </form>
           
