@@ -25,8 +25,7 @@ from .views import (
 
     SubHouseNameDeleteView,
 
-    CalcMainHouse,
-    CalcMainHouseAndSubHouse,
+    CalcHouseView,
     ReportsViews
 )
 
@@ -67,8 +66,7 @@ urlpatterns = [
     path('add_sub_tenant_name/<int:pk>/subtenant/<int:subpk>/edit/', SubTenantsHouseNameFormView.as_view(), name='add_sub_house_tenant_name'), 
 
     #Calc View
-    path('calc_house/<int:pk>/', CalcMainHouse.as_view(), name='calc_house'),
-    path('calc_house/<int:pk>/calc_subhouse/<int:subpk>/', CalcMainHouseAndSubHouse.as_view(), name='calc_house_subhouse'),
+    path('calc_house/<int:pk>/', CalcHouseView.as_view(), name='calc_house'), 
 
     #Reports Views
     path('case_simple/<int:pk>/', ReportsViews.as_view(), name='reports_view'),
