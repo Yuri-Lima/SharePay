@@ -6,6 +6,7 @@ from django.urls import reverse
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
 from django.utils.translation import gettext_lazy as _
 from django.forms.widgets import DateTimeInput
+from decimal import *
 
 
 class HouseNameModel(models.Model):
@@ -19,7 +20,7 @@ class HouseNameModel(models.Model):
         return self.house_name
     
     def get_absolute_url(self):
-        return reverse('share:pre_detail_house_name', kwargs={'pk': self.pk})
+        return reverse('share:detail_house_name', kwargs={'pk': self.pk})
 
     class Meta:
         ordering = ['-last_updated_house']
@@ -27,7 +28,7 @@ class HouseNameModel(models.Model):
 class HouseBillModel(models.Model):
     house_bill_FK = models.ForeignKey(HouseNameModel, null=True, blank=True, max_length=255,
                                 on_delete=models.CASCADE, related_name='house_bill_related', verbose_name='House Bill')
-    amount_bill = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=2)
+    amount_bill = models.CharField(null=True, blank= True, max_length=22)
     start_date_bill = models.DateField(null=False, blank=False)
     end_date_bill = models.DateField(null=False, blank=False)
     days_bill = models.IntegerField(default=0)
@@ -48,10 +49,12 @@ class HouseBillModel(models.Model):
                     'start_date_bill': _('Is that start date correct?'),
                     'end_date_bill': _('This field should be older!')
                 })
-            if self.amount_bill < 0:
-                raise ValidationError({
-                    'amount_bill': _('Should be a positive number!'),
-                })
+
+        self.amount_bill = Decimal(self.amount_bill.replace(',',''))
+        if self.amount_bill < 0:
+            raise ValidationError({
+                'amount_bill': _('Should be a positive number!'),
+            })
     
     def get_absolute_url(self):
         return reverse('share:detail_house_name', kwargs={'pk': self.pk})
