@@ -219,7 +219,7 @@ class CoreSharePay(object):
         days_value_value_by_day = round(bills_value_by_day/days_bill_value_by_day, self.decimal_places_core_sharepay)
         return days_value_value_by_day
     
-    def calc_only_main_house(self, request=None, *args, **kwargs):
+    def calc_1(self, request=None, *args, **kwargs):
         #Se sub house nao preencheu kwh pego todos os tenants da casa pai e filha
         """
         Step - 1. pegar o valor da bill e dividi pelo periodo da conta para saber o valor diario da conta
