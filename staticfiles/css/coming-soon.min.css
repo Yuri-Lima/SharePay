@@ -11,7 +11,7 @@ body
 {
     height:100%;
     min-height:35rem;
-    position:relative;
+    position:sticky;
     font-family:'Source Sans Pro';
     font-weight:300
     
@@ -38,7 +38,7 @@ video
 {
     body
     {
-        background: #002e66;
+        background: #002e66 repeat center center scroll;
         /* #002e66 no-repeat center center scroll */
         background-size:cover
     }
@@ -53,31 +53,36 @@ video
     top:0;
     left:0;
     height:120%;
-    width:120%;
+    width:100%;
     background-color:#cd9557;
-    opacity:.7;
+    opacity:.4;
     z-index:1
 }
 .masthead
 {
     position:relative;
-    overflow:hidden;
+    overflow:visible;
     padding-bottom:3rem;
     z-index:2
 }
 .masthead .masthead-bg
-{
+{   
+    
+    
+
     position:absolute;
     top:0;
-    bottom:0;
+    bottom:auto;
     right:0;
     left:0;
-    width:120%;
+    width:100%;
     min-height:35rem;
     height:120%;
     background-color:rgba(0,46,102,.8);
     transform:skewY(4deg);
+    /* transform:skewX(-8deg); */
     transform-origin:bottom right
+    /* transform-origin:top right */
 }
 .masthead-bg{
     background-color:rgba(0,46,102,.8);

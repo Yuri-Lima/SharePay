@@ -35,17 +35,17 @@
              <h2 class="h3 p-1">Houses</h2>
             {% if housesnames %}
               {% for housename in housesnames %}
-                        <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
-                          <div class="btn-group mr-2" role="group" aria-label="First group">
-                            <a type="button" class="btn btn-outline-primary text-white mb-2" href="#">{{housename.house_name}}</a>
-                          </div>
-                          <div class="btn-group mr-2" role="group" aria-label="Second group">
-                            <a type="button" class="btn btn-outline-success text-white mb-2" href="{% url 'share:update_house_name' pk=housename.id %}">Edit</a>
-                          </div>
-                          <div class="btn-group" role="group" aria-label="Third group">
-                            <a type="button" class="btn btn-outline-warning text-white mb-2" href="{% url 'share:delete_house_name' pk=housename.id %}">Delete</a>
-                          </div>
-                        </div>
+                <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                  <div class="btn-group mr-2" role="group" aria-label="First group">
+                    <a type="button" class="btn btn-outline-primary text-white mb-2" href="#">{{housename.house_name}}</a>
+                  </div>
+                  <div class="btn-group mr-2" role="group" aria-label="Second group">
+                    <a type="button" class="btn btn-outline-success text-white mb-2" href="{% url 'share:detail_house_name' pk=housename.id %}">Edit</a>
+                  </div>
+                  <div class="btn-group" role="group" aria-label="Third group">
+                    <a type="button" class="btn btn-outline-warning text-white mb-2" href="{% url 'share:delete_house_name' pk=housename.id %}">Delete</a>
+                  </div>
+                </div>
                     {% endfor %}
             {%else %}
               <p>There is no House to display</p>

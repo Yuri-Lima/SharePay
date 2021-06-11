@@ -31,33 +31,34 @@
                 <h3 class='p-2'>Sub Houses Details from {{house.house_name}}</h3>
                 {% comment %} Is there Sub House Name? {% endcomment %}
                 {% if house.sub_house_related.all %}
-                  <ul class="list-group">
                     {% for detail_house_name in house.sub_house_related.all %}
-                      <div class="list-group ">
-                        <div class="d-flex flex-row">
-                          <a href="{% url 'share:detail_sub_house_name' pk=house.id subpk=detail_house_name.id %}" class="list-group-item list-group-item-action list-group-item-primary flex-column align-items-start p-2 col-7">
-                              {% comment %} {% url 'share:detail_sub_house_name' pk=house.id subpk=detail_house_name.id %} {% endcomment %}
-                              <div class="d-flex w-100 justify-content-between">
-                                  <h6 class="mb-1">{{detail_house_name.sub_house_name}}</h6>
-                              </div>
-                          </a>
-                          {% comment %} {% url 'share:detail_sub_house_name' pk=house.id subpk=detail_house_name.id %} {% endcomment %}
-                          {% comment %} <a href="" class="list-group-item list-group-item-action list-group-item-success flex-column align-items-start p-1 "><b>Update</b></a> {% endcomment %}
-                          {% comment %} {% url 'share:detail_sub_house_name' pk=house.id subpk=detail_house_name.id %} {% endcomment %}
-                          <a href="{% url 'share:delete_sub_house_name' pk=house.id subpk=detail_house_name.id %}" class="list-group-item list-group-item-action list-group-item-danger flex-column align-items-start p-1 ">Delete</a>
-                        </div>
-                      </div> 
+                    <div class="btn-toolbar" role="toolbar" aria-label="Toolbar with button groups">
+                      <div class="btn-group mr-2" role="group" aria-label="First group">
+                        <a type="button" class="btn btn-outline-primary text-white mb-2" href="#">{{detail_house_name.sub_house_name}}</a>
+                      </div>
+                      <div class="btn-group mr-2" role="group" aria-label="Second group">
+                        <a type="button" class="btn btn-outline-success text-white mb-2" href="{% url 'share:detail_sub_house_name' pk=house.id subpk=detail_house_name.id %}">Edit</a>
+                      </div>
+                      <div class="btn-group" role="group" aria-label="Third group">
+                        <a type="button" class="btn btn-outline-warning text-white mb-2" href="{% url 'share:delete_sub_house_name' pk=house.id subpk=detail_house_name.id %}">Delete</a>
+                      </div>
+                    </div>
                     {% endfor %}
-                  </ul>
-                  {% if house.sub_house_related.all.count == 2 %}
-                    <a href="{% url 'share:add_sub_house' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Edit Sub Houses</a>
+                    
+                  {% if house.sub_house_related.all.count == 3 %}
+                    <p class="pt-2">
+                      <p>The limit of 3 Sub House has been registered.</p>
+                      <p>You can edit or delete one of them.</p>
+                    </p>
                   {% else %}
-                    <a href="{% url 'share:add_sub_house' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Add/Edit Sub Houses</a>
+                  <p class="pt-2">
+                      <a href="{% url 'share:add_sub_house' pk=house.id %}" role="button" class="btn btn-secondary w-100 p-1 mb-2">Add Sub House</a>
+                      <a href="{% url 'share:pre_detail_house_name' pk=house.id %}" role="button" class="btn btn-secondary w-100 p-1 mb-2">Back</a>
+                    </p>
                   {% endif %}
-                    <a href="{% url 'share:pre_detail_house_name' pk=house.id %} " role="button" class="btn btn-secondary w-100 mb-2">Back</a>
                 {% else %}
                   <a href="{% url 'share:add_sub_house' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Add Sub Houses</a>
-                  <a href="{% url 'share:pre_detail_house_name' pk=house.id %} " role="button" class="btn btn-secondary w-100 mb-2">Back</a>
+                  <a href="{% url 'share:pre_detail_house_name' pk=house.id %}" role="button" class="btn btn-secondary w-100 mb-2">Back</a>
                 {% endif %}
                 
                 {% if user.is_authenticated %}
