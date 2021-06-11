@@ -3,9 +3,12 @@
 {% load humanize %}
 
 {% block content %}
-{% comment %} LOGO {% endcomment %}
-{% include 'houses/logo.html' %}
 
+{% comment %} LOGO {% endcomment %}
+{% include 'houses/logo_report.html' %}
+<a type="button" class="close" aria-label="Close" href="{% url 'share:reports_view' pk=Main_House.first.id %}">
+      <small><span aria-hidden="true">Back to Reports</span> </small>
+</a>
 {% comment %} START INFOR BILL {% endcomment %}
 <table class="table table-sm">
   <thead class="bg-info text-white">
@@ -118,7 +121,11 @@
     </table>
   </div>
 {% endif %}
-        {% comment %} END TABLE LEFT OVER {% endcomment %}
+{% comment %} END TABLE LEFT OVER {% endcomment %}
+
+<a type="button" class="close" aria-label="Close" href="{% url 'share:reports_view' pk=Main_House.first.id %}">
+      <small><span aria-hidden="true">Back to Reports</span></small>
+</a>
 
 {% endblock content %} 
 
