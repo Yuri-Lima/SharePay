@@ -3,7 +3,6 @@
 {% load humanize %}
 
 {% block content %}
-
 {% comment %} LOGO {% endcomment %}
 {% include 'houses/logo_report.html' %}
 <a type="button" class="close" aria-label="Close" href="{% url 'share:reports_view' pk=Main_House.first.id %}">
@@ -86,7 +85,6 @@
                   <td>{{v.value}}</td>
               </tr>
             </tbody>
-
           {% endfor %} 
       
     </table>
