@@ -29,9 +29,11 @@
         <link rel="stylesheet" href="{% static 'css/login.css' %}" >
     </head>
     <body >
-        {% block content %}
-
-        {% endblock content %}
+        {% autoescape on %}
+            {% block content %}
+            
+            {% endblock content %}
+        {% endautoescape %}
 
         <!-- Bootstrap core JavaScript
         ================================================== -->
