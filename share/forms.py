@@ -63,7 +63,20 @@ class HouseKilowattModelForm(forms.ModelForm):
 class SubHouseNameModelForm(forms.ModelForm):
     class Meta:
         model= SubHouseNameModel
-        fields='__all__'
+        fields= '__all__'
+    
+    # def __init__(self, *args, **kwargs):
+    #     print(kwargs)
+    #     super(SubTenantNameModelForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        sub_house_name = self.cleaned_data['sub_house_name']
+        lenght_name = len(sub_house_name) if sub_house_name else None
+        if sub_house_name:
+                if lenght_name > 25:
+                    raise ValidationError({
+                        'sub_house_name': _(f'Ensure House Name has max 25 characters (it has {lenght_name}).'),
+                    })
 
 class SubKilowattModelForm(forms.ModelForm):
     class Meta:

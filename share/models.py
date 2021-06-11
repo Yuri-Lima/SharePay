@@ -169,17 +169,6 @@ class SubHouseNameModel(models.Model):
 
     class Meta:
         ordering = ['-sub_last_updated_house']
-    
-    def clean(self):
-        if self.sub_house_name != None:
-            if len(self.sub_house_name) > 25:
-                raise ValidationError({
-                    'sub_house_name': _(f'Ensure Sub House Name has max 25 characters (it has {len(self.sub_house_name)}).'),
-                })
-        else:
-            raise ValidationError({
-                'sub_house_name': _('You must provide a Sub House Name (up to 25 letters).'),
-            })
 
 class SubKilowattModel(models.Model):
     main_house_kwh_FK = models.ForeignKey(HouseNameModel, null=True, blank=True, max_length=255,
