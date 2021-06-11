@@ -29,7 +29,8 @@
                 <!-- ==============END_MESSAGES================== -->
 
                 <h3>Details from {{subhouse.first}}</h3>
-
+                <!-- ==============Edit_Sub_House================== -->
+                <a href="{% url 'share:add_sub_house' pk=house.id %}" role="button" class="btn btn-outline-primary w-100 p-1 mb-2">Edit Sub House</a>
                 <!-- ==============ADD_KILOWATTS================== -->
                 {% if subhouse.first.sub_house_kilowatt_related.all %}
                   {% for kwh in  subhouse.first.sub_house_kilowatt_related.all %}
@@ -76,6 +77,8 @@
                         {% endif %}
                       {% endif %} 
                   {% endif %}
+                  <!-- ============== Reports ================== -->
+                  <a href="{% url 'share:reports_view' pk=house.id  %}" role="button" class="btn btn-success w-100 mb-2">Reports</a>
                 
                 {% else %}
                   <a href="{% url 'share:add_sub_house_tenant_name' pk=house.id subpk=subhouse.first.id %}" role="button" class="btn btn-success w-100 mb-2">Add Sub Tenants</a>

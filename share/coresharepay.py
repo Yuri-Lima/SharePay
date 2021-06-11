@@ -208,7 +208,7 @@ class CoreSharePay(object):
         return round(bills_value_simple_case / (tenants_simple_case + sub_tenants_simple_case), decimal_places_simple_case)
 
     def value_by_day(self,*args, **kwargs):
-        bills_value_by_day = self.amount_bill_main_house
+        bills_value_by_day = float(self.amount_bill_main_house)
         days_bill_value_by_day = self.days_bill_main_house
         days_value_value_by_day = round(bills_value_by_day/days_bill_value_by_day, self.decimal_places_core_sharepay)
         return days_value_value_by_day
@@ -269,7 +269,7 @@ class CoreSharePay(object):
         total_by_each_tenant_converted['main_house'] = {
             str(house_name_main_house) : {
                 str(each_name) : {
-                    str('value'): round(total_by_each_tenant_converted['all'].pop(str(each_name)),2),
+                    str('value'): f"€{round(total_by_each_tenant_converted['all'].pop(str(each_name)),2)}",
                     str('date'): f'{each_name.start_date} to {each_name.end_date}',
                     str('days'): f'{each_name.days}',
                 }for each_name in tenants_main_house
@@ -291,7 +291,7 @@ class CoreSharePay(object):
             total_by_each_tenant_converted['left_over'] = {
                 str('Left_Over') : {
                     str('description') : 'This is a value which no one was living as a tenant.',
-                    str('left_over') : round(total_by_each_tenant_converted['Left_Over']['Left'],2),
+                    str('left_over') : f'€{round(total_by_each_tenant_converted["Left_Over"]["Left"],2)}',
                     str('days_left_over') : f'{self._empty_days}',
                 }
             }
@@ -307,9 +307,8 @@ class CoreSharePay(object):
 
         #Step -10
         getcontext().prec = 5 #Reduz a precisao um pouco pois nao sera mais necessario, uma vez que os valores ja teve sua alta precisao
-        total_bill = Decimal(sum(total_by_each_tenant.values()))
-        print(total_bill)
-
+        # total_bill = Decimal(sum(total_by_each_tenant.values()))
+        # print(total_bill)
 
         #Validations
         """
