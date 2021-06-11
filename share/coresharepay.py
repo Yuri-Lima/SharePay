@@ -70,7 +70,6 @@ class CoreSharePay(object):
         # self.tenants_sub_house 
         pass
         
-  
     def create_range_date_by_tenant(self, request=None, *args, **kwargs):
         """
             Colocar o range(inicio ate o fim) de permanencia do morador em um dicionario do morador
@@ -216,6 +215,7 @@ class CoreSharePay(object):
     
     def calc_1(self, request=None, *args, **kwargs):
         #Se sub house nao preencheu kwh pego todos os tenants da casa pai e filhos(Nao se pega pai'S' somente todos os filhos)
+
         """
         Step - 1. pegar o valor da bill e dividi pelo periodo da conta para saber o valor diario da conta
         Step - 2. checar quantos inquilinos moram com o mesmo, se nenhum(zero), coloca 1 para fazer a divisao correta
@@ -309,7 +309,6 @@ class CoreSharePay(object):
         getcontext().prec = 5 #Reduz a precisao um pouco pois nao sera mais necessario, uma vez que os valores ja teve sua alta precisao
         # total_bill = Decimal(sum(total_by_each_tenant.values()))
         # print(total_bill)
-
 
         #Validations
         """
