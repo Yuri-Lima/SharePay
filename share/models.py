@@ -112,10 +112,10 @@ class HouseKilowattModel(models.Model):
 class HouseTenantModel(models.Model):
     house_name_FK = models.ForeignKey(HouseNameModel, null=True, blank=True, max_length=255,
                             on_delete=models.CASCADE, related_name='house_tenant_related', verbose_name='Tenant Name')
-    house_tenant = models.CharField(max_length=150, null=True, blank=True, unique=True, error_messages={'unique':'Tenant Name has already been created! Try some diferent one.'})
+    house_tenant = models.CharField(max_length=150, null=True, blank=True,)
     start_date = models.DateField(null=False, blank=False)
     end_date = models.DateField(null=False, blank=False)
-    days = models.IntegerField(default=0)
+    days = models.IntegerField(null=True, blank=True, default=0)
     last_updated_tenant = models.DateField(auto_now=True, null=True, blank=True)
     
     def __str__(self) -> str:
@@ -137,15 +137,6 @@ class HouseTenantModel(models.Model):
             raise ValidationError({
                     'house_tenant': _('This field is required.'),
                 })
-        if self.start_date and self.end_date:
-            self.days = int((self.end_date - self.start_date).days)
-            if self.days < 0:
-                raise ValidationError({
-                    'start_date': _('Is that start date correct?'),
-                    'end_date': _('This field should be older!')
-                })
-        else:
-            self.days = 30
             
     class Meta:
         ordering = ['-last_updated_tenant']
@@ -216,7 +207,7 @@ class SubTenantModel(models.Model):
                                 on_delete=models.CASCADE, related_name='main_house_tenant_related', verbose_name='House Name')
     sub_house_tenant_FK = models.ForeignKey(SubHouseNameModel, null=True, blank=True, max_length=255,
                                 on_delete=models.CASCADE, related_name='sub_house_tenant_related', verbose_name='Sub House Name')
-    sub_house_tenant = models.CharField(max_length=150, null=True, blank=True, unique=True, error_messages={'unique':'Sub Tenant Name has already been created! Try some diferent one.'})
+    sub_house_tenant = models.CharField(max_length=150, null=True, blank=True,)
     sub_start_date = models.DateField(null=True, blank=True)
     sub_end_date = models.DateField(null=True, blank=True)
     sub_days = models.IntegerField(null=True, blank=True, default=0)

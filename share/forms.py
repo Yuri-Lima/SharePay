@@ -2,7 +2,7 @@ from django.db.models.base import Model
 from django import forms
 from django.db.models.fields import CharField
 from django.forms.models import inlineformset_factory
-from django.forms import ModelForm, TextInput, DateInput, fields
+from django.forms import ModelForm, TextInput, DateInput, fields, BaseModelFormSet
 from pytz import NonExistentTimeError
 from share.models import (
     HouseNameModel,
@@ -34,20 +34,37 @@ class HouseNameModelForm(forms.ModelForm):
 class HouseTenantModelForm(forms.ModelForm):
     class Meta:
         model= HouseTenantModel
-        fields=['house_tenant', 'start_date', 'end_date']
+        fields='__all__'
+
     def clean(self):
-       #A data inicial do Tenant nao deve ser menor que a data inicial da bill
-       #A data final do Tenant nao deve ser maior que a data final da bill
+        """
+            A data inicial do Tenant nao deve ser menor que a data inicial da bill
+            A data final do Tenant nao deve ser maior que a data final da bill
+        """
+        #First Validation
+        #Data Range Validation
         obj_house_name=HouseNameModel.objects.get(pk=self.cleaned_data['house_name_FK'].id)
+        start_date, end_date = False, False
         for obj_house_bill in obj_house_name.house_bill_related.all():
             if date.fromisoformat(str(self.cleaned_data['start_date'])) < date.fromisoformat(str(obj_house_bill.start_date_bill)):
-                raise ValidationError({
-                    'start_date': _('Out of Range')
-                })
+                start_date = True
             if date.fromisoformat(str(self.cleaned_data['end_date'])) > date.fromisoformat(str(obj_house_bill.end_date_bill)):
+                end_date = True
+            if start_date and end_date:
                 raise ValidationError({
-                    'end_date': _('Out of Range')
+                    'start_date': _(f'Out of Range - {obj_house_bill.start_date_bill}'),
+                    'end_date': _(f'Out of Range - {obj_house_bill.end_date_bill}')
                 })
+            elif start_date:
+                raise ValidationError({
+                    'start_date': _(f'Out of Range - {obj_house_bill.start_date_bill}')
+                })
+            elif end_date:
+                raise ValidationError({
+                    'end_date': _(f'Out of Range - {obj_house_bill.end_date_bill}')
+                })
+        
+        self.cleaned_data['days'] = int((self.cleaned_data['end_date'] - self.cleaned_data['start_date']).days)
         return super(HouseTenantModelForm, self).clean()
 
 class HouseBillModelForm(forms.ModelForm):
@@ -113,20 +130,58 @@ class SubTenantNameModelForm(forms.ModelForm):
                     })
         return super(SubTenantNameModelForm, self).clean()
 
+# class CustomFormSetBase_HouseNameFormset(BaseModelFormSet):
+        
+#     def add_fields(self, form, index):
+#         super().add_fields(form, index)
+#         if 'DELETE' in form.fields and form.instance.pk: # check if have instance
+#             form.fields['DELETE'] = forms.BooleanField(
+#                 label=_('Delete'),
+#                 widget=forms.CheckboxInput(
+#                     attrs={
+#                         'class': 'form-check-input'
+#                     }
+#                 ),
+#                 required=False
+#             )
+#         else:
+#             form.fields.pop('DELETE', None)
 HouseNameFormset = inlineformset_factory(
 
     HouseNameModel,
     HouseTenantModel,
     form=HouseTenantModelForm,
+    # formset=CustomFormSetBase_HouseNameFormset,
     # fields=['house_tenant', 'start_date', 'end_date'],
-    extra=1,
+    extra=0,
     min_num=1,
-    max_num=10,
+    max_num=20,
     can_delete=True,
     can_order=True,
     widgets={
-        'start_date': HouseNameDateInput(format=['%Y-%m-%d'],),
-        'end_date' : HouseNameDateInput(format=['%Y-%m-%d'],),
+        'house_tenant': TextInput(attrs={
+            'autofocus': True,
+            'class': 'form-control',
+            'placeholder': 'Enter Tenant Name...',
+            'aria-label': 'Enter Tenant Name...',
+            'aria-describedby':'submit-button',
+            'id': 'inputName',
+            'type':'text',
+        }),
+        'start_date': HouseNameDateInput(format=['%Y-%m-%d'],
+            attrs={
+                'class': 'form-control',
+                'id': 'inputStartDay',
+                'type':'date',
+                'required':'True',
+            }),
+        'end_date' : HouseNameDateInput(format=['%Y-%m-%d'],
+            attrs={
+                'class': 'form-control',
+                'id': 'inputEndDay',
+                'type':'date',
+                'required':'True',
+            }),
     },
 )
 
