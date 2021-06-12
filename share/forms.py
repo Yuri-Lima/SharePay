@@ -116,18 +116,27 @@ class SubTenantNameModelForm(forms.ModelForm):
        #A data final do SubTenant nao deve ser maior que a data final da bill
 
         obj_house_name=HouseNameModel.objects.get(pk=self.pkform)
-
+        start_date, end_date = False, False
         for obj_house_bill in obj_house_name.house_bill_related.all():
-            if self.cleaned_data['sub_start_date']:
-                if date.fromisoformat(str(self.cleaned_data['sub_start_date'])) < date.fromisoformat(str(obj_house_bill.start_date_bill)):
-                    raise ValidationError({
-                        'sub_start_date': _('Out of Range')
-                    })
-            if self.cleaned_data['sub_end_date']:
-                if date.fromisoformat(str(self.cleaned_data['sub_end_date'])) > date.fromisoformat(str(obj_house_bill.end_date_bill)):
-                    raise ValidationError({
-                        'sub_end_date': _('Out of Range')
-                    })
+            if date.fromisoformat(str(self.cleaned_data['sub_start_date'])) < date.fromisoformat(str(obj_house_bill.start_date_bill)):
+                start_date = True
+            if date.fromisoformat(str(self.cleaned_data['sub_end_date'])) > date.fromisoformat(str(obj_house_bill.end_date_bill)):
+                end_date = True
+            if start_date and end_date:
+                raise ValidationError({
+                    'sub_start_date': _(f'Out of Range- {obj_house_bill.start_date_bill}'),
+                    'sub_end_date': _(f'Out of Range- {obj_house_bill.end_date_bill}')
+                })
+            elif start_date:
+                raise ValidationError({
+                    'sub_start_date': _(f'Out of Range- {obj_house_bill.start_date_bill}'),
+                })
+            elif end_date:
+                raise ValidationError({
+                    'sub_end_date': _(f'Out of Range- {obj_house_bill.end_date_bill}')
+                })
+
+        self.cleaned_data['sub_days'] = int((self.cleaned_data['sub_end_date'] - self.cleaned_data['sub_start_date']).days)
         return super(SubTenantNameModelForm, self).clean()
 
 # class CustomFormSetBase_HouseNameFormset(BaseModelFormSet):
@@ -265,7 +274,27 @@ SubHouseTenantFormset = inlineformset_factory(
     can_delete=True,
     can_order=True,
     widgets={
-        'sub_start_date': HouseNameDateInput(format=['%Y-%m-%d'],),
-        'sub_end_date' : HouseNameDateInput(format=['%Y-%m-%d'],), 
+        'sub_house_tenant': TextInput(attrs={
+            'autofocus': True,
+            'class': 'form-control',
+            'placeholder': 'Enter Sub Tenant Name...',
+            'aria-label': 'Enter Sub Tenant Name...',
+            'id': 'inputSubName',
+            'type':'text',
+        }),
+        'sub_start_date': HouseNameDateInput(format=['%Y-%m-%d'],
+            attrs={
+                    'class': 'form-control',
+                    'id': 'inputSubStartDay',
+                    'type':'date',
+                    'required':'True',
+                }),
+        'sub_end_date' : HouseNameDateInput(format=['%Y-%m-%d'],
+            attrs={
+                'class': 'form-control',
+                'id': 'inputSubEndDay',
+                'type':'date',
+                'required':'True',
+            }), 
     },
 )
