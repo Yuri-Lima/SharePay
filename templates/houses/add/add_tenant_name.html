@@ -37,6 +37,7 @@
         {% csrf_token %}
         {{ form.management_form }}
         {{ form.non_form_erros }}
+        {{ form.non_filed_errors }}
         
         {% for hidden_field in name_form.hidden_fields %}
         {{ hidden_field.erros }}

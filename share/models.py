@@ -233,17 +233,3 @@ class SubTenantModel(models.Model):
             for sliced_name in self.sub_house_tenant.split():
                 concat_sliced_name = concat_sliced_name + sliced_name.capitalize() + ' '
             self.sub_house_tenant =  concat_sliced_name.strip()
-        # else:
-        #     print(self.sub_house_tenant)
-        #     raise ValidationError({
-        #             'sub_house_tenant': _('This field is required.'),
-        #         })
-        if self.sub_start_date and self.sub_end_date:
-            self.sub_days = int((self.sub_end_date - self.sub_start_date).days)
-            if self.sub_days < 0:
-                raise ValidationError({
-                    'sub_start_date': _('Is that start date correct?'),
-                    'sub_end_date': _('This field should be older!')
-                })
-        else:
-            self.sub_days = 30
