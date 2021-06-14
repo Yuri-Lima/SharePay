@@ -142,14 +142,17 @@ class HouseTenantModel(models.Model):
         ordering = ['-last_updated_tenant']
 
 class SubHouseNameModel(models.Model):
+    """
+        'unique_test': Source--> https://docs.djangoproject.com/en/3.2/ref/models/constraints/#django.db.models.UniqueConstraint
+    """
     sub_house_FK = models.ForeignKey(HouseNameModel, null=True, blank=True, max_length=255,
                                 on_delete=models.CASCADE, related_name='sub_house_related', verbose_name='House Name')
-    sub_house_name = models.CharField(verbose_name="Sub House Name",max_length=100, null=True, blank=True, unique=True)
+    sub_house_name = models.CharField(verbose_name="Sub House Name",max_length=100, null=True, blank=True, unique=True, error_messages={'unique':'Sub House Name has already been created! Try some diferent one.'})
     sub_meter = models.IntegerField(null=True, blank=True, default=1)
     sub_main_house = models.BooleanField(null=False, blank=False, help_text='Is the bill belongs this house typed above?')
     sub_last_updated_house = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     unique_test = models.UniqueConstraint(fields= ['sub_house_FK','sub_house_name'], name='unique_sub_house')
-
+    
     def __str__(self) -> str:
         return self.sub_house_name
 
@@ -168,6 +171,7 @@ class SubKilowattModel(models.Model):
     sub_house_kwh_FK = models.ForeignKey(SubHouseNameModel, null=True, blank=True, max_length=255,
                                 on_delete=models.CASCADE, related_name='sub_house_kilowatt_related', verbose_name='Sub House Name')              
     sub_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=0, default=0)
+    sub_amount_bill = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=0, default=0)
     sub_last_read_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=0, default=0)
     sub_read_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=0, default=0)
     sub_last_updated_kwh = models.DateTimeField(auto_now=True, null=True, blank=True)
