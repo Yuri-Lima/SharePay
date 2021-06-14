@@ -23,7 +23,7 @@ class HouseNameModel(models.Model):
         return reverse('share:detail_house_name', kwargs={'pk': self.pk})
 
     class Meta:
-        ordering = ['-last_updated_house']
+        ordering = ['-last_updated_house', 'house_name']
     
     def clean(self):
         if self.house_name != None:
@@ -144,22 +144,23 @@ class HouseTenantModel(models.Model):
 class SubHouseNameModel(models.Model):
     sub_house_FK = models.ForeignKey(HouseNameModel, null=True, blank=True, max_length=255,
                                 on_delete=models.CASCADE, related_name='sub_house_related', verbose_name='House Name')
-    sub_house_name = models.CharField(verbose_name="Sub House Name",max_length=100, null=True, blank=True, unique=True,)
+    sub_house_name = models.CharField(verbose_name="Sub House Name",max_length=100, null=True, blank=True, unique=True)
     sub_meter = models.IntegerField(null=True, blank=True, default=1)
     sub_main_house = models.BooleanField(null=False, blank=False, help_text='Is the bill belongs this house typed above?')
     sub_last_updated_house = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    unique_test = models.UniqueConstraint(fields= ['sub_house_FK','sub_house_name'], name='unique_sub_house')
 
     def __str__(self) -> str:
         return self.sub_house_name
 
-    def get_absolute_url(self, subpk):
+    def get_absolute_url(self, subpk): 
         return reverse('share:add_sub_house_kwh', kwargs={
                                                         'pk': self.pk,
                                                         'subpk': self.subpk,
                                                         })
 
     class Meta:
-        ordering = ['-sub_last_updated_house']
+        ordering = ['-sub_last_updated_house', 'sub_house_name']
 
 class SubKilowattModel(models.Model):
     main_house_kwh_FK = models.ForeignKey(HouseNameModel, null=True, blank=True, max_length=255,
@@ -235,3 +236,6 @@ class SubTenantModel(models.Model):
             self.sub_house_tenant =  concat_sliced_name.strip()
 
 # error_messages={'unique':'Sub House Name has already been created! Try some diferent one.'}
+
+#https://docs.djangoproject.com/en/3.2/ref/models/fields/#unique
+# If you don’t want multiple associations between the same instances, add a UniqueConstraint including the from and to fields. Django’s automatically generated many-to-many tables include such a constraint.
