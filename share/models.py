@@ -23,7 +23,7 @@ class HouseNameModel(models.Model):
         return reverse('share:detail_house_name', kwargs={'pk': self.pk})
 
     class Meta:
-        ordering = ['-last_updated_house', 'house_name']
+        ordering = ['-last_updated_house']
     
     def clean(self):
         if self.house_name != None:
@@ -160,7 +160,7 @@ class SubHouseNameModel(models.Model):
                                                         })
 
     class Meta:
-        ordering = ['-sub_last_updated_house', 'sub_house_name']
+        ordering = ['-sub_last_updated_house']
 
 class SubKilowattModel(models.Model):
     main_house_kwh_FK = models.ForeignKey(HouseNameModel, null=True, blank=True, max_length=255,
