@@ -11,7 +11,7 @@ from decimal import *
 
 class HouseNameModel(models.Model):
     user_FK = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_related', null=False, verbose_name='User')
-    house_name = models.CharField(verbose_name="House Name",max_length=100, null=True, blank=True, unique=True, error_messages={'unique':'House Name has already been created! Try some diferent one.'})
+    house_name = models.CharField(verbose_name="House Name",max_length=100, null=True, blank=True, unique=True,)
     meter = models.IntegerField(default=1)
     # main_house = models.BooleanField(null=False, blank=False, help_text='Is the bill belongs this house typed above?')
     last_updated_house = models.DateTimeField(auto_now_add=True, null=True, blank=True)
@@ -144,7 +144,7 @@ class HouseTenantModel(models.Model):
 class SubHouseNameModel(models.Model):
     sub_house_FK = models.ForeignKey(HouseNameModel, null=True, blank=True, max_length=255,
                                 on_delete=models.CASCADE, related_name='sub_house_related', verbose_name='House Name')
-    sub_house_name = models.CharField(verbose_name="Sub House Name",max_length=100, null=True, blank=True, unique=True, error_messages={'unique':'Sub House Name has already been created! Try some diferent one.'})
+    sub_house_name = models.CharField(verbose_name="Sub House Name",max_length=100, null=True, blank=True, unique=True,)
     sub_meter = models.IntegerField(null=True, blank=True, default=1)
     sub_main_house = models.BooleanField(null=False, blank=False, help_text='Is the bill belongs this house typed above?')
     sub_last_updated_house = models.DateTimeField(auto_now_add=True, null=True, blank=True)
@@ -233,3 +233,5 @@ class SubTenantModel(models.Model):
             for sliced_name in self.sub_house_tenant.split():
                 concat_sliced_name = concat_sliced_name + sliced_name.capitalize() + ' '
             self.sub_house_tenant =  concat_sliced_name.strip()
+
+# error_messages={'unique':'Sub House Name has already been created! Try some diferent one.'}
