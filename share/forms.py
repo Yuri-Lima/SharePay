@@ -81,8 +81,9 @@ class SubHouseNameModelForm(forms.ModelForm):
     class Meta:
         model= SubHouseNameModel
         fields= '__all__'
-    
 
+    
+    #Overriding
     def clean(self):
         #Size Validation
         sub_house_name = self.cleaned_data['sub_house_name']
@@ -92,11 +93,12 @@ class SubHouseNameModelForm(forms.ModelForm):
                     raise ValidationError({
                         'sub_house_name': _(f'Ensure House Name has max 25 characters (it has {lenght_name}).'),
                     })
+        return super(SubHouseNameModelForm, self).clean()
 
 class SubKilowattModelForm(forms.ModelForm):
     class Meta:
         model= SubKilowattModel
-        fields=['sub_house_kwh_FK', 'sub_kwh', 'sub_last_read_kwh', 'sub_read_kwh']
+        fields=['sub_house_kwh_FK', 'sub_kwh', 'sub_amount_bill','sub_last_read_kwh', 'sub_read_kwh']
 
 class SubTenantNameModelForm(forms.ModelForm):
     class Meta:
@@ -112,7 +114,6 @@ class SubTenantNameModelForm(forms.ModelForm):
         #Muito Dificil
        #A data inicial do SubTenant nao deve ser menor que a data inicial da bill
        #A data final do SubTenant nao deve ser maior que a data final da bill
-        print(self.cleaned_data) 
 
         obj_house_name=HouseNameModel.objects.get(pk=self.pkform)
         start_date, end_date = False, False
