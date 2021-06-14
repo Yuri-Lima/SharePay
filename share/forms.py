@@ -2,7 +2,7 @@ from django.db.models.base import Model
 from django import forms
 from django.db.models.fields import CharField
 from django.forms.models import inlineformset_factory
-from django.forms import ModelForm, TextInput, DateInput, fields, BaseModelFormSet
+from django.forms import ModelForm, TextInput, DateInput, fields, BaseModelFormSet, Field
 from pytz import NonExistentTimeError
 from share.models import (
     HouseNameModel,
@@ -82,11 +82,9 @@ class SubHouseNameModelForm(forms.ModelForm):
         model= SubHouseNameModel
         fields= '__all__'
     
-    # def __init__(self, *args, **kwargs):
-    #     print(kwargs)
-    #     super(SubTenantNameModelForm, self).__init__(*args, **kwargs)
 
     def clean(self):
+        #Size Validation
         sub_house_name = self.cleaned_data['sub_house_name']
         lenght_name = len(sub_house_name) if sub_house_name else None
         if sub_house_name:
@@ -114,6 +112,7 @@ class SubTenantNameModelForm(forms.ModelForm):
         #Muito Dificil
        #A data inicial do SubTenant nao deve ser menor que a data inicial da bill
        #A data final do SubTenant nao deve ser maior que a data final da bill
+        print(self.cleaned_data) 
 
         obj_house_name=HouseNameModel.objects.get(pk=self.pkform)
         start_date, end_date = False, False
@@ -151,6 +150,9 @@ HouseNameFormset = inlineformset_factory(
     max_num=20,
     can_delete=True,
     can_order=True,
+    error_messages={
+        'unique': ('TESTE1'),
+    },
     widgets={
         'house_tenant': TextInput(attrs={
             'autofocus': True,
@@ -230,7 +232,10 @@ SubHouseNameFormset = inlineformset_factory(
     min_num=1,
     max_num=3,
     can_delete=True,
-    can_order=True
+    can_order=True,
+    error_messages={
+        'unique': ('TESTE2'),
+    },
 )
 
 SubHouseKilowattFormset = inlineformset_factory(
@@ -252,7 +257,7 @@ SubHouseTenantFormset = inlineformset_factory(
     SubTenantModel,
     form=SubTenantNameModelForm,
     # fields=['main_tenant_FK', 'sub_house_tenant_FK', 'sub_house_tenant', 'sub_start_date', 'sub_end_date', 'sub_days'],
-    extra=1,
+    extra=0,
     min_num=1,
     max_num=10,
     can_delete=True,
