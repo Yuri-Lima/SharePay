@@ -60,14 +60,18 @@ class CoreSharePay(object):
             #Related of get_tenants_by_day
             self._empty_days = 0
 
-            self._check_if_there_is_day_without_tenants()
+            self.split_bill()
             self.create_range_date_by_tenant()
 
         super(CoreSharePay, self).__init__()
 
-    def _check_if_there_is_day_without_tenants(self, *args, **kwargs):
-        # print(type(self.tenants_main_house))
-        # self.tenants_sub_house 
+    def split_bill(self, *args, **kwargs):
+        print(f'--->>{self.sub_kwh_sub_house}')
+        
+        """
+        amount --- kwh
+          x    --- kwh
+        """
         pass
         
   
@@ -88,12 +92,12 @@ class CoreSharePay(object):
         
         #=======xxxxx Sub xxxx===========
         sub_tenants = self.tenants_sub_house
-        subids = self.check_if_which_sub_house_hasnt_kwh_filled()
+        subids = self.check_if_which_sub_house_hasnt_kwh_filled(_subid=True) 
         for name, subid in subids.items():
             for sub_t1 in sub_tenants.filter(sub_house_tenant_FK=subid):
                 self.dict_date_range_for_tenants[sub_t1] = [sub_t1.sub_start_date + timedelta(days=x) for x in range(sub_t1.sub_days)]#Add day by day acording to t1.sub_day
 
-    def check_if_which_sub_house_hasnt_kwh_filled(self, kilowatts= False, names=False, *args, **kwargs):
+    def check_if_which_sub_house_hasnt_kwh_filled(self, _kilowatts= None, _names=None, _subid=None, *args, **kwargs):
         """
             retorna o id de quem nao tem o sub kwh cadastrado
         """
@@ -102,20 +106,30 @@ class CoreSharePay(object):
         self.dict_date_range_for_sub_tenants = dict()
         #Condicao para incluir os sub tenants no calculo da main house, caso o kwh nao tenha sido preenchido
         #Pois sera levado em consideracao que a Sub house nao tem medidor, por tanto, sera dividos como se morassem na main house
-        subid=dict()
-        tenants_name = dict()
+        self.subid=dict()
+        self.tenants_name_without_kwh = dict()
+        self.tenants_name_with_kwh = dict()
         for obj in self.sub_house_names:#Todas as sub casas
             if not obj.sub_house_name in [k.sub_house_kwh_FK.sub_house_name for k in self.sub_kwh_sub_house]:#verifica qual e a casa que nao tem kwh cadastrado
                 #print(sub_tenants.filter(sub_house_tenant_FK=obj.id))#pega apenas os tenants que pertencem a casa que nao tem kwh cadastrado
-                tenants_name[obj.sub_house_name]= sub_tenants.filter(sub_house_tenant_FK=obj.id)
-                subid[obj.sub_house_name]=obj.id
-            # else:#casas com kilowatts preenchidos
-            #     print(obj.sub_house_name)
+                self.tenants_name_without_kwh[obj.sub_house_name]= sub_tenants.filter(sub_house_tenant_FK=obj.id)
+                self.subid[obj.sub_house_name]=obj.id
+            else:#casas com kilowatts preenchidos
+                self.tenants_name_with_kwh[obj.sub_house_name]= sub_tenants.filter(sub_house_tenant_FK=obj.id)
+                
+        # print(f'Test--> {self.tenants_name_with_kwh}')
 
-        #if names and kilowatts are true
-        if names:
-            return tenants_name
-        return subid
+        #Retorne sub tenants
+        if _names:
+            return self.tenants_name_without_kwh
+
+        #if names and kilowatts are true--> Retorne Sub Tenants da subhouse com kwh cadastrado
+        if _names and _kilowatts:
+            return self.tenants_name_with_kwh
+
+        if _subid:
+            return self.subid
+
 
 
     def get_tenants_by_day(self,request=None, get_date= None, *args, **kwargs):
@@ -266,7 +280,12 @@ class CoreSharePay(object):
         
         #================================= 
         #Step -8
-        sub_tenants_filtered = self.check_if_which_sub_house_hasnt_kwh_filled(names=True)
+        sub_tenants_filtered_without_kwh= self.tenants_name_without_kwh
+
+        #New Feature
+        sub_tenants_filtered_with_kwh  = self.tenants_name_with_kwh 
+        # print(type(sub_tenants_filtered_with_kwh))
+
         #Step -9
          #--> Main Houses Data <---
         total_by_each_tenant_converted['main_house'] = {
@@ -286,7 +305,7 @@ class CoreSharePay(object):
                     str('date'): f'{each_name.sub_start_date} to {each_name.sub_end_date}',
                     str('days'): f'{each_name.sub_days}',
                     }for each_name in sub_tenants_names#should be all sub tenants
-                }for sub_house_name, sub_tenants_names in sub_tenants_filtered.items()#should be only sub_houses_name
+                }for sub_house_name, sub_tenants_names in sub_tenants_filtered_without_kwh.items()#should be only sub_houses_name
             }#there are some possibilities which we can have multiple sub house it means multiples sub_pk's
 
         #--> Left Houses Data <---

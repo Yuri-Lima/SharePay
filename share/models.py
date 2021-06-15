@@ -11,7 +11,7 @@ from decimal import *
 
 class HouseNameModel(models.Model):
     user_FK = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_related', null=False, verbose_name='User')
-    house_name = models.CharField(verbose_name="House Name",max_length=100, null=True, blank=True, unique=True,)
+    house_name = models.CharField(verbose_name="House Name",max_length=100, null=True, blank=True, unique=True,  error_messages={'unique':'Sub House Name has already been created! Try some diferent one.'})
     meter = models.IntegerField(default=1)
     # main_house = models.BooleanField(null=False, blank=False, help_text='Is the bill belongs this house typed above?')
     last_updated_house = models.DateTimeField(auto_now_add=True, null=True, blank=True)
