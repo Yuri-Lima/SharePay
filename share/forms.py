@@ -139,6 +139,13 @@ class SubTenantNameModelForm(forms.ModelForm):
                 })
 
         self.cleaned_data['sub_days'] = int((self.cleaned_data['sub_end_date'] - self.cleaned_data['sub_start_date']).days)
+        if self.cleaned_data['sub_days'] < 0:
+            raise ValidationError({
+                'sub_start_date': _('Start_Date has to be smaller than End_date'),
+                'sub_end_date': _('End_Date has to be bigger than Start_date')
+            })
+
+        # self.cleaned_data['sub_days'] = int((self.cleaned_data['sub_end_date'] - self.cleaned_data['sub_start_date']).days)
         return super(SubTenantNameModelForm, self).clean()
 
 # class CustomFormSetBase_HouseNameFormset(BaseModelFormSet):
