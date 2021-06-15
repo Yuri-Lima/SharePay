@@ -14,6 +14,15 @@
       <div class="row h-100">
         <div class="col-12 my-auto">
           <div class="masthead-content py-5 py-md-0">
+          <!-- ================================ -->
+          {% if messages %}
+            <ul class="detail_messages">
+                {% for message in messages %}
+                    <li>{{message}}</li>
+                {% endfor %}
+            </ul>
+          {% endif %}
+          <!-- ================================ -->
           {% comment %} LOGO {% endcomment %}
         {% include 'houses/logo.html' %}
             <form action="" method="POST", enctype="multipart/form-data">
@@ -26,7 +35,7 @@
 
                 {{ form.management_form }}
                 {{ form.non_form_errors }}
-                {% comment %} {{ form.non_filed_errors }} {% endcomment %}
+                {{ form.non_filed_errors }}
                 
 
                 <h3 class='text-white'>Add Sub Houses</h3>

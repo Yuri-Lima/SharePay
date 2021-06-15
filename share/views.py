@@ -355,16 +355,6 @@ class SubTenantsHouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormVie
             if eachform.cleaned_data['DELETE']:
                 eachform.instance.delete()
 
-        #I had to do this, because up to now, it was what a learned.
-        # objs = SubTenantModel.objects.all().filter(sub_house_tenant_FK= self.object)
-        # for obj in objs:
-        #     if not obj.main_tenant_FK:
-        #         obj.main_tenant_FK = HouseNameModel.objects.get(pk=self.kwargs['pk']) 
-        #         obj.save()
-        #     if obj.sub_house_tenant == None:
-        #         obj.delete()
-        #END
-
         messages.add_message(
             self.request, 
             messages.INFO,
@@ -484,6 +474,7 @@ class CalcHouseView(LoginRequiredMixin, TemplateView, MultipleObjectMixin, CoreS
         core = CoreSharePay(self, **kwargs)
         core.decimal_places_core_sharepay = 4
         kwargs['calc_1'] = core.calc_1()
+        # print(core.check_if_which_sub_house_hasnt_kwh_filled())
 
         return super(CalcHouseView, self).get_context_data(**kwargs)
 

@@ -94,7 +94,7 @@
 
                 {% if house.house_tenant_related.all %}
                   {% if house.sub_house_related.all %}
-                    <a href="{% url 'share:add_sub_house' pk=house.id %}" role="button" class="btn btn-info w-100 mb-2">Edit Sub Houses</a>
+                    <a href="{% url 'share:list_detail_sub_house_name' pk=house.id %}" role="button" class="btn btn-info w-100 mb-2">Edit Sub Houses</a>
                   {% else %}
                     <a href="{% url 'share:add_sub_house' pk=house.id %}" role="button" class="btn btn-success w-100 mb-2">Add Sub Houses</a>
                   {% endif %}
