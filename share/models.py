@@ -51,21 +51,7 @@ class HouseBillModel(models.Model):
     def __str__(self):
         if self.house_bill_FK and self.amount_bill:
             return str(self.house_bill_FK) + ' - ' + '€' + str(self.amount_bill)
-    
-    def clean(self):
-        if self.start_date_bill and self.end_date_bill:
-            self.days_bill = int((self.end_date_bill - self.start_date_bill).days)
-            if self.days_bill < 0:
-                raise ValidationError({
-                    'start_date_bill': _('Is that start date correct?'),
-                    'end_date_bill': _('This field should be older!')
-                })
-
-        self.amount_bill = Decimal(self.amount_bill.replace(',',''))
-        if self.amount_bill < 0:
-            raise ValidationError({
-                'amount_bill': _('Should be a positive number!'),
-            })
+        else self
     
     def get_absolute_url(self):
         return reverse('share:detail_house_name', kwargs={'pk': self.pk})
