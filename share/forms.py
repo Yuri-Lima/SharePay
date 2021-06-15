@@ -31,6 +31,18 @@ class HouseNameModelForm(forms.ModelForm):
         model= HouseNameModel
         fields='__all__'
 
+    def clean(self):
+        if self.cleaned_data['house_name'] != None:
+            if len(self.cleaned_data['house_name']) > 25:
+                raise ValidationError({
+                    'house_name': _(f'Ensure House Name has max 25 characters (it has {len(self.house_name)}).'),
+                })
+        else:
+            raise ValidationError({
+                'house_name': _('You must provide a House Name (up to 25 letters).'),
+            })
+        return super(HouseNameModelForm, self).clean() 
+
 class HouseTenantModelForm(forms.ModelForm):
     class Meta:
         model= HouseTenantModel
@@ -75,8 +87,9 @@ class HouseBillModelForm(forms.ModelForm):
     
     def clean(self):
         """
-           'Val-1--> Convert Masked Text to Decimal and check if it is a positive number.
-           'Val-2--> Set total bill's day and check if the start ou end dates are inverted. 
+           'Val-1'--> Convert Masked Text to Decimal and check if it is a positive number.
+                This check will be removed soon, it is just in case. Once we are using Mask Js.
+           'Val-2'--> Set total bill's day and check if the start ou end dates are inverted. 
         """
         #Val -1
         self.cleaned_data['amount_bill'] = Decimal(self.cleaned_data['amount_bill'].replace(',',''))
