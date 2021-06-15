@@ -93,7 +93,7 @@ class CoreSharePay(object):
             for sub_t1 in sub_tenants.filter(sub_house_tenant_FK=subid):
                 self.dict_date_range_for_tenants[sub_t1] = [sub_t1.sub_start_date + timedelta(days=x) for x in range(sub_t1.sub_days)]#Add day by day acording to t1.sub_day
 
-    def check_if_which_sub_house_hasnt_kwh_filled(self, names=False, *args, **kwargs):
+    def check_if_which_sub_house_hasnt_kwh_filled(self, kilowatts= False, names=False, *args, **kwargs):
         """
             retorna o id de quem nao tem o sub kwh cadastrado
         """
@@ -109,7 +109,10 @@ class CoreSharePay(object):
                 #print(sub_tenants.filter(sub_house_tenant_FK=obj.id))#pega apenas os tenants que pertencem a casa que nao tem kwh cadastrado
                 tenants_name[obj.sub_house_name]= sub_tenants.filter(sub_house_tenant_FK=obj.id)
                 subid[obj.sub_house_name]=obj.id
-        
+            # else:#casas com kilowatts preenchidos
+            #     print(obj.sub_house_name)
+
+        #if names and kilowatts are true
         if names:
             return tenants_name
         return subid

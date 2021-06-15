@@ -11,7 +11,7 @@ from decimal import *
 
 class HouseNameModel(models.Model):
     user_FK = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_related', null=False, verbose_name='User')
-    house_name = models.CharField(verbose_name="House Name",max_length=100, null=True, blank=True, unique=True, error_messages={'unique':'House Name has already been created! Try some diferent one.'})
+    house_name = models.CharField(verbose_name="House Name",max_length=100, null=True, blank=True, unique=True,)
     meter = models.IntegerField(default=1)
     # main_house = models.BooleanField(null=False, blank=False, help_text='Is the bill belongs this house typed above?')
     last_updated_house = models.DateTimeField(auto_now_add=True, null=True, blank=True)
@@ -142,17 +142,21 @@ class HouseTenantModel(models.Model):
         ordering = ['-last_updated_tenant']
 
 class SubHouseNameModel(models.Model):
+    """
+        'unique_test': Source--> https://docs.djangoproject.com/en/3.2/ref/models/constraints/#django.db.models.UniqueConstraint
+    """
     sub_house_FK = models.ForeignKey(HouseNameModel, null=True, blank=True, max_length=255,
                                 on_delete=models.CASCADE, related_name='sub_house_related', verbose_name='House Name')
     sub_house_name = models.CharField(verbose_name="Sub House Name",max_length=100, null=True, blank=True, unique=True, error_messages={'unique':'Sub House Name has already been created! Try some diferent one.'})
     sub_meter = models.IntegerField(null=True, blank=True, default=1)
     sub_main_house = models.BooleanField(null=False, blank=False, help_text='Is the bill belongs this house typed above?')
     sub_last_updated_house = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-
+    unique_test = models.UniqueConstraint(fields= ['sub_house_FK','sub_house_name'], name='unique_sub_house')
+    
     def __str__(self) -> str:
         return self.sub_house_name
 
-    def get_absolute_url(self, subpk):
+    def get_absolute_url(self, subpk): 
         return reverse('share:add_sub_house_kwh', kwargs={
                                                         'pk': self.pk,
                                                         'subpk': self.subpk,
@@ -167,6 +171,7 @@ class SubKilowattModel(models.Model):
     sub_house_kwh_FK = models.ForeignKey(SubHouseNameModel, null=True, blank=True, max_length=255,
                                 on_delete=models.CASCADE, related_name='sub_house_kilowatt_related', verbose_name='Sub House Name')              
     sub_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=0, default=0)
+    sub_amount_bill = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=0, default=0)
     sub_last_read_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=0, default=0)
     sub_read_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=0, default=0)
     sub_last_updated_kwh = models.DateTimeField(auto_now=True, null=True, blank=True)
@@ -233,3 +238,10 @@ class SubTenantModel(models.Model):
             for sliced_name in self.sub_house_tenant.split():
                 concat_sliced_name = concat_sliced_name + sliced_name.capitalize() + ' '
             self.sub_house_tenant =  concat_sliced_name.strip()
+
+# error_messages={'unique':'Sub House Name has already been created! Try some diferent one.'}
+
+#https://docs.djangoproject.com/en/3.2/ref/models/fields/#unique
+# If you don’t want multiple associations between the same instances, add a UniqueConstraint including the from and to fields. Django’s automatically generated many-to-many tables include such a constraint.
+
+
