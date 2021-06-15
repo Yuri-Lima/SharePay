@@ -3,7 +3,6 @@ from django import forms
 from django.db.models.fields import CharField
 from django.forms.models import inlineformset_factory
 from django.forms import ModelForm, TextInput, DateInput, fields, BaseModelFormSet, Field
-
 from pytz import NonExistentTimeError
 from share.models import (
     HouseNameModel,
