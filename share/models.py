@@ -243,3 +243,5 @@ class SubTenantModel(models.Model):
 
 #https://docs.djangoproject.com/en/3.2/ref/models/fields/#unique
 # If you don’t want multiple associations between the same instances, add a UniqueConstraint including the from and to fields. Django’s automatically generated many-to-many tables include such a constraint.
+
+

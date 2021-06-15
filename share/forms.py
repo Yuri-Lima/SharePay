@@ -3,6 +3,7 @@ from django import forms
 from django.db.models.fields import CharField
 from django.forms.models import inlineformset_factory
 from django.forms import ModelForm, TextInput, DateInput, fields, BaseModelFormSet, Field
+
 from pytz import NonExistentTimeError
 from share.models import (
     HouseNameModel,
@@ -139,6 +140,22 @@ class SubTenantNameModelForm(forms.ModelForm):
         self.cleaned_data['sub_days'] = int((self.cleaned_data['sub_end_date'] - self.cleaned_data['sub_start_date']).days)
         return super(SubTenantNameModelForm, self).clean()
 
+# class CustomFormSetBase_HouseNameFormset(BaseModelFormSet):
+        
+#     def add_fields(self, form, index):
+#         super().add_fields(form, index)
+#         if 'DELETE' in form.fields and form.instance.pk: # check if have instance
+#             form.fields['DELETE'] = forms.BooleanField(
+#                 label=_('Delete'),
+#                 widget=forms.CheckboxInput(
+#                     attrs={
+#                         'class': 'form-check-input'
+#                     }
+#                 ),
+#                 required=False
+#             )
+#         else:
+#             form.fields.pop('DELETE', None)
 HouseNameFormset = inlineformset_factory(
 
     HouseNameModel,
