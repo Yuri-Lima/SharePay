@@ -318,7 +318,7 @@ class HouseBillFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
 
 class SubTenantsHouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormView, BaseInlineFormSet):
     model = SubHouseNameModel
-    template_name = 'houses/add/add_sub_house_tenant.html'
+    template_name = 'houses/add/add_sub_tenant_name.html'
     context_object_name = 'sub_tenants'
     
     """Handle GET requests: instantiate a blank version of the form."""
@@ -332,6 +332,10 @@ class SubTenantsHouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormVie
         # print(self.object)
         return super(SubTenantsHouseNameFormView, self).post(request, *args, **kwargs)
 
+    def get_context_data(self, **kwargs):
+        kwargs["bills"] = HouseNameModel.objects.filter(pk=self.kwargs['pk'])
+        return super(SubTenantsHouseNameFormView, self).get_context_data(**kwargs)
+    
 
     """Handle a Formset setting - Instansce get self.object which was set for HousesName by each user"""
 
