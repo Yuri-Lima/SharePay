@@ -71,7 +71,28 @@ class HouseTenantModelForm(forms.ModelForm):
 class HouseBillModelForm(forms.ModelForm):
     class Meta:
         model= HouseBillModel
-        fields=['house_bill_FK', 'amount_bill', 'start_date_bill', 'end_date_bill']
+        fields=['house_bill_FK', 'amount_bill', 'start_date_bill', 'end_date_bill', 'days_bill']
+    
+    def clean(self):
+        """
+           'Val-1--> Convert Masked Text to Decimal and check if it is a positive number.
+           'Val-2--> Set total bill's day and check if the start ou end dates are inverted. 
+        """
+        #Val -1
+        self.cleaned_data['amount_bill'] = Decimal(self.cleaned_data['amount_bill'].replace(',',''))
+        if self.cleaned_data['amount_bill'] < 0:
+            raise ValidationError({
+                'amount_bill': _('Should be a positive number!'),
+            })
+        #Val -2
+        self.cleaned_data['days_bill'] = int((self.cleaned_data['end_date_bill'] - self.cleaned_data['start_date_bill']).days)
+        if self.cleaned_data['days_bill'] < 0:
+            raise ValidationError({
+                'start_date_bill': _('Start_Date has to be smaller than End_date'),
+                'end_date_bill': _('End_Date has to be bigger than Start_date')
+            })
+
+        return super(HouseBillModelForm, self).clean()
 
 class HouseKilowattModelForm(forms.ModelForm):
     class Meta:
@@ -148,22 +169,6 @@ class SubTenantNameModelForm(forms.ModelForm):
         # self.cleaned_data['sub_days'] = int((self.cleaned_data['sub_end_date'] - self.cleaned_data['sub_start_date']).days)
         return super(SubTenantNameModelForm, self).clean()
 
-# class CustomFormSetBase_HouseNameFormset(BaseModelFormSet):
-        
-#     def add_fields(self, form, index):
-#         super().add_fields(form, index)
-#         if 'DELETE' in form.fields and form.instance.pk: # check if have instance
-#             form.fields['DELETE'] = forms.BooleanField(
-#                 label=_('Delete'),
-#                 widget=forms.CheckboxInput(
-#                     attrs={
-#                         'class': 'form-check-input'
-#                     }
-#                 ),
-#                 required=False
-#             )
-#         else:
-#             form.fields.pop('DELETE', None)
 HouseNameFormset = inlineformset_factory(
 
     HouseNameModel,

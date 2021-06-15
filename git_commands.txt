@@ -1,0 +1,3 @@
+
+## When you forgot to commit somethong
+git commit --amend –C HEAD
