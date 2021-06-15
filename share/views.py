@@ -472,6 +472,7 @@ class CalcHouseView(LoginRequiredMixin, TemplateView, MultipleObjectMixin, CoreS
         core = CoreSharePay(self, **kwargs)
         core.decimal_places_core_sharepay = 4
         kwargs['calc_1'] = core.calc_1()
+        # print(core.check_if_which_sub_house_hasnt_kwh_filled())
 
         return super(CalcHouseView, self).get_context_data(**kwargs)
 

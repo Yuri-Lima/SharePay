@@ -67,7 +67,7 @@ class CoreSharePay(object):
 
     def split_bill(self, *args, **kwargs):
         print(f'--->>{self.sub_kwh_sub_house}')
-        
+
         """
         amount --- kwh
           x    --- kwh
