@@ -26,7 +26,7 @@
             <h1>Tenants - {{sub_tenants.sub_house_tenant_related.all.count }}</h>
         </div>
         <div class="p-2">
-            <p>Bill Period - {{sub_tenants.main_house_tenant_related.first.start_date_bill }} to {{sub_tenants.house_bill_related.first.end_date_bill }}</p>
+            <p>Bill Period - {{bills.first.house_bill_related.first.start_date_bill}} to {{bills.first.house_bill_related.first.end_date_bill}}</p>
         </div>
     </div>
     <form action="" method="POST", enctype="multipart/form-data">
