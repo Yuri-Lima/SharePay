@@ -46,9 +46,9 @@ class HouseTenantModelForm(forms.ModelForm):
         obj_house_name=HouseNameModel.objects.get(pk=self.cleaned_data['house_name_FK'].id)
         start_date, end_date = False, False
         for obj_house_bill in obj_house_name.house_bill_related.all():
-            if date.fromisoformat(str(self.cleaned_data['start_date'])) > date.fromisoformat(str(obj_house_bill.start_date_bill)):
+            if date.fromisoformat(str(self.cleaned_data['start_date'])) < date.fromisoformat(str(obj_house_bill.start_date_bill)):
                 start_date = True
-            if date.fromisoformat(str(self.cleaned_data['end_date'])) < date.fromisoformat(str(obj_house_bill.end_date_bill)):
+            if date.fromisoformat(str(self.cleaned_data['end_date'])) > date.fromisoformat(str(obj_house_bill.end_date_bill)):
                 end_date = True
 
             if start_date and end_date:
@@ -119,10 +119,9 @@ class SubTenantNameModelForm(forms.ModelForm):
         obj_house_name=HouseNameModel.objects.get(pk=self.pkform)
         start_date, end_date = False, False
         for obj_house_bill in obj_house_name.house_bill_related.all():
-            if date.fromisoformat(str(self.cleaned_data['sub_start_date'])) > date.fromisoformat(str(obj_house_bill.start_date_bill)):
+            if date.fromisoformat(str(self.cleaned_data['sub_start_date'])) < date.fromisoformat(str(obj_house_bill.start_date_bill)):
                 start_date = True
-                print('TESTE')
-            if date.fromisoformat(str(self.cleaned_data['sub_end_date'])) < date.fromisoformat(str(obj_house_bill.end_date_bill)):
+            if date.fromisoformat(str(self.cleaned_data['sub_end_date'])) > date.fromisoformat(str(obj_house_bill.end_date_bill)):
                 end_date = True
 
             if start_date and end_date:
