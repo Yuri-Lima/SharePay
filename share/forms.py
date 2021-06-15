@@ -29,19 +29,7 @@ class HouseNameDateInput(DateInput):
 class HouseNameModelForm(forms.ModelForm):
     class Meta:
         model= HouseNameModel
-        fields='__all__'
-
-    def clean(self):
-        if self.cleaned_data['house_name'] != None:
-            if len(self.cleaned_data['house_name']) > 25:
-                raise ValidationError({
-                    'house_name': _(f'Ensure House Name has max 25 characters (it has {len(self.house_name)}).'),
-                })
-        else:
-            raise ValidationError({
-                'house_name': _('You must provide a House Name (up to 25 letters).'),
-            })
-        return super(HouseNameModelForm, self).clean() 
+        fields='__all__'  
 
 class HouseTenantModelForm(forms.ModelForm):
     class Meta:
@@ -76,8 +64,13 @@ class HouseTenantModelForm(forms.ModelForm):
                 raise ValidationError({
                     'end_date': _(f'Out of Range - {obj_house_bill.end_date_bill}')
                 })
-        
+
         self.cleaned_data['days'] = int((self.cleaned_data['end_date'] - self.cleaned_data['start_date']).days)
+        if self.cleaned_data['days'] < 0:
+            raise ValidationError({
+                'start_date': _('Start_Date has to be smaller than End_date'),
+                'end_date': _('End_Date has to be bigger than Start_date')
+            })
         return super(HouseTenantModelForm, self).clean()
 
 class HouseBillModelForm(forms.ModelForm):
