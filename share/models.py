@@ -70,25 +70,6 @@ class HouseKilowattModel(models.Model):
     def __str__(self):
         return str(self.house_kwh_FK) + ' - ' + str(self.kwh) + 'kwh'
 
-    #https://docs.djangoproject.com/en/3.2/ref/models/instances/
-    def clean(self):
-        if self.last_read_kwh and self.read_kwh:
-            if (self.last_read_kwh > self.read_kwh):
-                raise ValidationError({
-                    'read_kwh': _('Should be greatter than previous Kw/h read')
-                    })
-            else:
-                self.kwh = self.read_kwh - self.last_read_kwh
-            return self.kwh
-        elif self.kwh:
-            return self.kwh
-        else:
-            raise ValidationError({
-                        'kwh': _('Fill up at least one option!'),
-                        'last_read_kwh': _('Fill up at least one option!'),
-                        # 'read_kwh' : _('Only Numbers'),
-                        })
-
     def get_absolute_url(self):
         return reverse('share:detail_house_name', kwargs={
                                                         'pk': self.pk,
@@ -156,10 +137,10 @@ class SubKilowattModel(models.Model):
                                 on_delete=models.CASCADE, related_name='main_house_kilowatt_related', verbose_name='House Name')
     sub_house_kwh_FK = models.ForeignKey(SubHouseNameModel, null=True, blank=True, max_length=255,
                                 on_delete=models.CASCADE, related_name='sub_house_kilowatt_related', verbose_name='Sub House Name')              
-    sub_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=0, default=0)
-    sub_amount_bill = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=0, default=0)
-    sub_last_read_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=0, default=0)
-    sub_read_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=0, default=0)
+    sub_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=0,)
+    sub_amount_bill = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=0,)
+    sub_last_read_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=0,)
+    sub_read_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=0,)
     sub_last_updated_kwh = models.DateTimeField(auto_now=True, null=True, blank=True)
 
     class Meta:
