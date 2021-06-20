@@ -18,6 +18,7 @@ from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from datetime import date
 from django.http import request
+from decimal import Decimal
 
 """ CALENDAR """
 class HouseNameDateInput(DateInput):
@@ -85,7 +86,7 @@ class HouseBillModelForm(forms.ModelForm):
            'Val-2'--> Set total bill's day and check if the start ou end dates are inverted. 
         """
         #Val -1
-        self.cleaned_data['amount_bill'] = Decimal(self.cleaned_data['amount_bill'].replace(',',''))
+        self.cleaned_data['amount_bill'] = float(self.cleaned_data['amount_bill'].replace(',',''))
         if self.cleaned_data['amount_bill'] < 0:
             raise ValidationError({
                 'amount_bill': _('Should be a positive number!'),
@@ -127,6 +128,9 @@ class SubKilowattModelForm(forms.ModelForm):
     class Meta:
         model= SubKilowattModel
         fields=['sub_house_kwh_FK', 'sub_kwh', 'sub_amount_bill','sub_last_read_kwh', 'sub_read_kwh']
+
+    def clean(self):
+        return super(SubKilowattModelForm, self).clean()
 
 class SubTenantNameModelForm(forms.ModelForm):
     class Meta:
@@ -229,9 +233,28 @@ HouseBillFormset = inlineformset_factory(
     can_delete=True,
     can_order=True,
     widgets={
-        'amount_bill' : TextInput(attrs={'class': 'id_amount_bill'}),
-        'start_date_bill': HouseNameDateInput(format=['%Y-%m-%d'],),
-        'end_date_bill' : HouseNameDateInput(format=['%Y-%m-%d'],),
+        'amount_bill' : TextInput(
+            attrs={
+                'autofocus': True,
+                'class': 'id_amount_bill',
+                'id': 'inputAmountBill',
+                'placeholder': 'Enter Amount...',
+                'aria-label': 'Enter Amount...',
+                'type':'text',
+                'required':'True',
+                }),
+        'start_date_bill': HouseNameDateInput(format=['%Y-%m-%d'],
+            attrs={
+                'id': 'inputStartDayBill',
+                'type':'date',
+                'required':'True',
+            }),
+        'end_date_bill' : HouseNameDateInput(format=['%Y-%m-%d'],
+            attrs={
+                'id': 'inputEndDayBill',
+                'type':'date',
+                'required':'True',
+            }),
     },
 )
 
