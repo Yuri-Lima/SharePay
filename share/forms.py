@@ -276,14 +276,14 @@ HouseBillFormset = inlineformset_factory(
     can_delete=True,
     can_order=True,
     widgets={
-        'amount_bill' : TextInput(
+        'amount_bill' : NumberInput(
             attrs={
                 'autofocus': True,
                 'class': 'id_amount_bill',
                 'id': 'inputAmountBill',
                 'placeholder': 'Enter Amount...',
                 'aria-label': 'Enter Amount...',
-                'type':'text',
+                'type':'number',
                 'required':'True',
                 }),
         'start_date_bill': HouseNameDateInput(format=['%Y-%m-%d'],
