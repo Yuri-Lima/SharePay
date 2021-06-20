@@ -75,9 +75,11 @@ class HouseTenantModelForm(forms.ModelForm):
         return super(HouseTenantModelForm, self).clean()
 
 class HouseBillModelForm(forms.ModelForm):
+    days_bill = forms.IntegerField(required=False)
+    
     class Meta:
         model= HouseBillModel
-        fields=['house_bill_FK', 'amount_bill', 'start_date_bill', 'end_date_bill']
+        fields=['house_bill_FK', 'amount_bill', 'start_date_bill', 'end_date_bill', 'days_bill'] 
     
     def clean(self):
         """
@@ -114,13 +116,14 @@ class HouseKilowattModelForm(forms.ModelForm):
                     })
             else:
                 self.cleaned_data['kwh'] = self.cleaned_data['read_kwh'] - self.cleaned_data['last_read_kwh']
-        elif self.cleaned_data['kwh'] < 0:
-            raise ValidationError({
-                    'kwh': _('Only Positive Number!')
-                    })
-            return super(SubKilowattModelForm, self).clean()
-        elif self.cleaned_data['kwh'] >= 0:
-            return super(HouseKilowattModelForm, self).clean()
+        elif self.cleaned_data['kwh']:
+            if self.cleaned_data['kwh'] < 0:
+                raise ValidationError({
+                        'kwh': _('Only Positive Number!')
+                        })
+                return super(SubKilowattModelForm, self).clean()
+            elif self.cleaned_data['kwh'] >= 0:
+                return super(HouseKilowattModelForm, self).clean()
         else:
             raise ValidationError({
                 'kwh': _('Fill up at least one option!'),
@@ -160,13 +163,14 @@ class SubKilowattModelForm(forms.ModelForm):
                     })
             else:
                 self.cleaned_data['sub_kwh'] = self.cleaned_data['sub_read_kwh'] - self.cleaned_data['sub_last_read_kwh']
-        elif self.cleaned_data['sub_kwh'] < 0:
-            raise ValidationError({
-                    'sub_kwh': _('Only Positive Number!')
-                    })
-            return super(SubKilowattModelForm, self).clean()
-        elif self.cleaned_data['sub_kwh'] >= 0:
-            return super(SubKilowattModelForm, self).clean()
+        elif self.cleaned_data['sub_kwh']:
+            if self.cleaned_data['sub_kwh'] < 0:
+                raise ValidationError({
+                        'sub_kwh': _('Only Positive Number!')
+                        })
+                return super(SubKilowattModelForm, self).clean()
+            elif self.cleaned_data['sub_kwh'] >= 0:
+                return super(SubKilowattModelForm, self).clean()
         else:
             raise ValidationError({
                 'sub_kwh': _('Fill up at least one option!'),
@@ -318,7 +322,7 @@ HouseKilowattsFormset = inlineformset_factory(
     # fields=['kwh', 'last_read_kwh', 'read_kwh'], 
     extra=0, 
     min_num=1,
-    max_num=2,
+    max_num=1,
     can_delete=True,
     can_order=True,
     widgets={
@@ -364,7 +368,7 @@ SubHouseKilowattFormset = inlineformset_factory(
     # fields=['main_house_kwh_FK','sub_house_kwh_FK', 'sub_kwh', 'sub_last_read_kwh', 'sub_read_kwh'],
     extra=0,
     min_num=1,
-    max_num=2,
+    max_num=1,
     can_delete=True,
     can_order=True,
     widgets={
