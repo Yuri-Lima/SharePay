@@ -106,6 +106,29 @@ class HouseKilowattModelForm(forms.ModelForm):
         model= HouseKilowattModel
         fields=['kwh', 'last_read_kwh', 'read_kwh']
 
+    def clean(self):
+        if self.cleaned_data['last_read_kwh'] and self.cleaned_data['read_kwh']:
+            if (self.cleaned_data['last_read_kwh'] > self.cleaned_data['read_kwh']):
+                raise ValidationError({
+                    'read_kwh': _('Should be greatter than previous Kw/h read')
+                    })
+            else:
+                self.cleaned_data['kwh'] = self.cleaned_data['read_kwh'] - self.cleaned_data['last_read_kwh']
+        elif self.cleaned_data['kwh'] < 0:
+            raise ValidationError({
+                    'kwh': _('Only Positive Number!')
+                    })
+            return super(SubKilowattModelForm, self).clean()
+        elif self.cleaned_data['kwh'] >= 0:
+            return super(HouseKilowattModelForm, self).clean()
+        else:
+            raise ValidationError({
+                'kwh': _('Fill up at least one option!'),
+                'last_read_kwh': _('Fill up at least one option!'),
+                # 'read_kwh' : _('Only Numbers'),
+                })
+        return super(HouseKilowattModelForm, self).clean()
+
 class SubHouseNameModelForm(forms.ModelForm):
     class Meta:
         model= SubHouseNameModel
@@ -130,6 +153,26 @@ class SubKilowattModelForm(forms.ModelForm):
         fields=['sub_house_kwh_FK', 'sub_kwh', 'sub_amount_bill','sub_last_read_kwh', 'sub_read_kwh']
 
     def clean(self):
+        if self.cleaned_data['sub_last_read_kwh'] and self.cleaned_data['sub_read_kwh']:
+            if (self.cleaned_data['sub_last_read_kwh'] > self.cleaned_data['sub_read_kwh']):
+                raise ValidationError({
+                    'sub_read_kwh': _('Should be greatter than previous Kw/h read')
+                    })
+            else:
+                self.cleaned_data['sub_kwh'] = self.cleaned_data['sub_read_kwh'] - self.cleaned_data['sub_last_read_kwh']
+        elif self.cleaned_data['sub_kwh'] < 0:
+            raise ValidationError({
+                    'sub_kwh': _('Only Positive Number!')
+                    })
+            return super(SubKilowattModelForm, self).clean()
+        elif self.cleaned_data['sub_kwh'] >= 0:
+            return super(SubKilowattModelForm, self).clean()
+        else:
+            raise ValidationError({
+                'sub_kwh': _('Fill up at least one option!'),
+                'sub_last_read_kwh': _('Fill up at least one option!'),
+                # 'read_kwh' : _('Only Numbers'),
+                })
         return super(SubKilowattModelForm, self).clean()
 
 class SubTenantNameModelForm(forms.ModelForm):
@@ -276,14 +319,20 @@ HouseKilowattsFormset = inlineformset_factory(
     can_delete=True,
     can_order=True,
     widgets={
-        'kwh': TextInput(attrs={
-            'placeholder': 'Units Kilowatts...',  
+        'kwh': NumberInput(attrs={
+            'placeholder': 'Units Kilowatts...',
+            'id': 'inputKwh',
+            'type':'number',
         }),
-        'last_read_kwh' : TextInput(attrs={
+        'last_read_kwh' : NumberInput(attrs={
             'placeholder': 'Previous read...',
+            'id': 'inputPreviousKwh',
+            'type':'number',
         }),
-        'read_kwh' : TextInput(attrs={
+        'read_kwh' : NumberInput(attrs={
             'placeholder': 'Present read...',
+            'id': 'inputPresentKwh',
+            'type':'number',
         }),
     },
 )
@@ -315,6 +364,23 @@ SubHouseKilowattFormset = inlineformset_factory(
     max_num=2,
     can_delete=True,
     can_order=True,
+    widgets={
+        'sub_kwh': NumberInput(attrs={
+            'placeholder': 'Units Kilowatts...',
+            'id': 'inputSubKwh',
+            'type':'number',
+        }),
+        'sub_last_read_kwh' : NumberInput(attrs={
+            'placeholder': 'Previous read...',
+            'id': 'inputSubPreviousKwh',
+            'type':'number',
+        }),
+        'sub_read_kwh' : NumberInput(attrs={
+            'placeholder': 'Present read...',
+            'id': 'inputSubPresentKwh',
+            'type':'number',
+        }),
+    },
 )
 
 SubHouseTenantFormset = inlineformset_factory(
