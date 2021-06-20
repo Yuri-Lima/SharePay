@@ -278,15 +278,14 @@ HouseBillFormset = inlineformset_factory(
     widgets={
         'amount_bill' : NumberInput(
             attrs={
-                'autofocus': True,
                 'class': 'id_amount_bill',
                 'id': 'inputAmountBill',
                 'placeholder': 'Enter Amount...',
                 'aria-label': 'Enter Amount...',
-                'type':'number',
+                'type':'text',
                 'step':'0.01',
-                'min' : '0.00',
-                'max' : '500000',
+                'min' : '5.00',
+                'max' : '500000.00', 
                 'inputmode' : "decimal",
                 'required':'True',
                 }),
