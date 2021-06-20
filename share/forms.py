@@ -2,7 +2,7 @@ from django.db.models.base import Model
 from django import forms
 from django.db.models.fields import CharField
 from django.forms.models import inlineformset_factory
-from django.forms import ModelForm, TextInput, DateInput, fields, BaseModelFormSet, Field
+from django.forms import TextInput, DateInput, NumberInput
 from pytz import NonExistentTimeError
 from share.models import (
     HouseNameModel,
@@ -77,7 +77,7 @@ class HouseTenantModelForm(forms.ModelForm):
 class HouseBillModelForm(forms.ModelForm):
     class Meta:
         model= HouseBillModel
-        fields=['house_bill_FK', 'amount_bill', 'start_date_bill', 'end_date_bill', 'days_bill']
+        fields=['house_bill_FK', 'amount_bill', 'start_date_bill', 'end_date_bill']
     
     def clean(self):
         """
@@ -226,7 +226,7 @@ HouseBillFormset = inlineformset_factory(
     HouseNameModel, 
     HouseBillModel,
     form=HouseBillModelForm,
-    # fields=['house_bill_FK', 'amount_bill', 'start_date_bill', 'end_date_bill'], 
+    # fields=['house_bill_FK', 'amount_bill', 'start_date_bill', 'end_date_bill', 'days_bill], 
     extra=0, 
     min_num=1,
     max_num=2,
@@ -254,6 +254,12 @@ HouseBillFormset = inlineformset_factory(
                 'id': 'inputEndDayBill',
                 'type':'date',
                 'required':'True',
+            }),
+        'days_bill' : NumberInput(
+            attrs={
+                'id': 'inpuDaysBill',
+                'type':'number',
+                'required':'False',
             }),
     },
 )
