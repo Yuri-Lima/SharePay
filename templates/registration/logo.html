@@ -1,0 +1,9 @@
+{% load static %}
+{% comment %} <img src="{% static 'logo/sharepay_dog_text.png' %}" alt="main_logo" width="192" height="192" srcset="" class='img-responsive'> {% endcomment %}
+<a href="{% url 'share:index' %}">
+    <picture>
+        <source media="(min-width:650px)" srcset="{% static 'logo/sharepay_dogao_text.png' %}">
+        <source media="(min-width:465px)" srcset="{% static 'logo/sharepay_dogao_text.png' %}">
+        <img class="img-fluid py-2 mx-auto d-block" src="{% static 'logo/sharepay_dog_text.png' %}" alt="SharePay" max-width: "100%" width="250" height="auto">
+    </picture>
+</a>
