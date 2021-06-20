@@ -283,7 +283,7 @@ HouseBillFormset = inlineformset_factory(
                 'id': 'inputAmountBill',
                 'placeholder': 'Enter Amount...',
                 'aria-label': 'Enter Amount...',
-                'type':'number',
+                'type':'text',
                 'required':'True',
                 }),
         'start_date_bill': HouseNameDateInput(format=['%Y-%m-%d'],
