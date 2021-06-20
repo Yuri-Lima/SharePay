@@ -36,7 +36,7 @@
                 {{ form.management_form }}
                 {{ form.non_form_erros }}
 
-                <h3>Add a Value of Bill</h3>
+                <h3>Insert Total Value of The Bill</h3>
                 {% for bill_form in form.forms %}
                     <hr>
                 {% for hidden_field in bill_form.hidden_fields %}
@@ -44,7 +44,7 @@
                 {% endfor %}
                 <div class="row">
                     <div class="col">
-                        <p>What is the value's bill:</p>
+                        <p>Total value of bill:</p>
                         <p>{{bill_form.amount_bill}}</p>
                         <p>{{bill_form.amount_bill.errors}}</p>
                     </div>
@@ -54,12 +54,12 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <p>What is the bill's period?</p>
+                        <p>Select period of the bill:</p>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
-                        <p>From:</p>
+                        <p>Start:</p>
                     </div>
                     <div class="col">
                         <p>{{ bill_form.start_date_bill }}</p>
