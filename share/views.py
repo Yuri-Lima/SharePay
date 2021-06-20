@@ -322,7 +322,7 @@ class HouseBillFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
         return reverse('share:detail_house_name', kwargs={'pk': self.object.pk})
 
     def form_invalid(self, form):
-        print('Invalid Form')
+        print(f'Invalid Form--> {form.errors}')
         return super().form_invalid(form)
 
 class SubTenantsHouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormView, BaseInlineFormSet):
