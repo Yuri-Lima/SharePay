@@ -91,7 +91,16 @@ class HouseNameDetailView(LoginRequiredMixin, DetailView, MultipleObjectMixin):
     context_object_name = 'house'
     paginate_by = 2
 
+    def help(self, *args, **kwargs):
+        self.has_sub_kwh = dict()
+        try:
+            a = SubKilowattModel.objects.all()
+            print(f'Has--->{a}')
+        except:
+            return None
+
     def get_context_data(self, **kwargs):
+        # print(f'Has--->{self.help()}')
         # print(f'OBJECT:{self.object}') 
         object_list = HouseTenantModel.objects.filter(house_name_FK=self.object)
         context = super(HouseNameDetailView, self).get_context_data(object_list= object_list, **kwargs)

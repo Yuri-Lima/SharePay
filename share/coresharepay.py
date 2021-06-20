@@ -66,14 +66,15 @@ class CoreSharePay(object):
         super(CoreSharePay, self).__init__()
 
     def split_bill(self, *args, **kwargs):
-        print(f'--->>{self.sub_kwh_sub_house}')
+        for each_kwh in self.sub_kwh_sub_house:
+            print(f'--->>{each_kwh.sub_kwh}') 
+            each_kwh.sub_kwh = 100
 
         """
         amount --- kwh
           x    --- kwh
         """
         pass
-        
   
     def create_range_date_by_tenant(self, request=None, *args, **kwargs):
         """
@@ -130,8 +131,6 @@ class CoreSharePay(object):
         if _subid:
             return self.subid
 
-
-
     def get_tenants_by_day(self,request=None, get_date= None, *args, **kwargs):
         """
             Retorna e Filtra quais sao os tenants que estao na casa de acordo com a data enviada
@@ -158,7 +157,6 @@ class CoreSharePay(object):
         
         return data_set_date_by_day
 
-    
     def get_tenants_by_name(self, tenant_name=None, request=None, *args, **kwargs): 
         """
         #Retorna e Filtra quais foram os tenants que estavam com o Tenant enviado e returna todos eles mostrando em que data ele esteve junto.
@@ -198,8 +196,6 @@ class CoreSharePay(object):
         #57: {datetime.date(2021, 5, 9): {'Daiane', 'Elizagela', 'José', 'Ellen', 'Nathalia', 'Eugenio'}}
         return data_dict_from_bill_period
 
-    ############ START CALCS FOR EACH HOUSE'S CONDITION ############
-
     def check_same_period_tenant_from_bill(self, request= None, *args, **kwargs):
         """
             Check if all tenant's day are the same.
@@ -214,7 +210,6 @@ class CoreSharePay(object):
         if len(check_same) > 1:#Should has just one date from the Bill
             return False
         return True
-
 
     def bill_divided_by_all_tenants_simple_case(self, request= None, *args, **kwargs):
         decimal_simple_case = 4
