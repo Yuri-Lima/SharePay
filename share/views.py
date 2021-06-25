@@ -432,8 +432,7 @@ class SubHouseKilowattsFormView(LoginRequiredMixin, SingleObjectMixin, FormView)
 
     # """Handle a Formset setting - Instansce get self.object which was set for HousesName by each user"""
     def get_form(self, form_class=None):
-        pkform = self.kwargs['pk']
-        formset = SubHouseKilowattFormset(**self.get_form_kwargs(), instance=self.object, form_kwargs={'pkform': pkform})
+        formset = SubHouseKilowattFormset(**self.get_form_kwargs(), instance=self.object)
         # print(f' SubHouseKilowattsFormView:\n {formset}')
         # print(f'*'*10) 
         return formset # inline FormSet
@@ -486,7 +485,7 @@ class CalcHouseView(LoginRequiredMixin, TemplateView, MultipleObjectMixin, CoreS
         core = CoreSharePay(self, **kwargs)
         core.decimal_places_core_sharepay = 4
         kwargs['calc_1'] = core.calc_1()
-        kwargs['calc_2'] = core.calc_2()
+        # print(core.check_if_which_sub_house_hasnt_kwh_filled())
 
         return super(CalcHouseView, self).get_context_data(**kwargs)
 
