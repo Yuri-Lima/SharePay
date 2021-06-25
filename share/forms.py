@@ -166,24 +166,11 @@ class SubKilowattModelForm(forms.ModelForm):
         sum_sub_kilowatts = int()
         for each in all_sub_kwh:
             sum_sub_kilowatts = sum_sub_kilowatts + each.sub_kwh
-        
-        if self.cleaned_data['sub_last_read_kwh'] and self.cleaned_data['sub_read_kwh']:
-            if (self.cleaned_data['sub_last_read_kwh'] > self.cleaned_data['sub_read_kwh']):
-                raise ValidationError({
-                    'sub_read_kwh': _('Should be greatter than previous Kw/h read')
-                    })
-            else:
-                self.cleaned_data['sub_kwh'] = self.cleaned_data['sub_read_kwh'] - self.cleaned_data['sub_last_read_kwh']
                 sum_sub_kilowatts = sum_sub_kilowatts + self.cleaned_data['sub_kwh']
                 if sum_sub_kilowatts > main.kwh:
                     raise ValidationError({
                             'sub_read_kwh': _(f'The total of the Sum is {sum_sub_kilowatts} kwh, it cannot be greatter than kilowatts from the bill. Registreded: Max{main.kwh} kwh')
                             })
-        elif self.cleaned_data['sub_kwh']:
-            if self.cleaned_data['sub_kwh'] < 0:
-                raise ValidationError({
-                        'sub_kwh': _('Only Positive Number!')
-                        })
             elif self.cleaned_data['sub_kwh'] >= 0:
                 sum_sub_kilowatts = sum_sub_kilowatts + self.cleaned_data['sub_kwh']
                 if sum_sub_kilowatts > main.kwh:
@@ -197,7 +184,6 @@ class SubKilowattModelForm(forms.ModelForm):
                 'sub_last_read_kwh': _('Fill up at least one option!'),
 
                 })
-
         return super(SubKilowattModelForm, self).clean()
 
 class SubTenantNameModelForm(forms.ModelForm):
