@@ -153,7 +153,11 @@ class SubHouseNameModelForm(forms.ModelForm):
 class SubKilowattModelForm(forms.ModelForm):
     class Meta:
         model= SubKilowattModel
-        fields=['sub_house_kwh_FK', 'sub_kwh', 'sub_amount_bill','sub_last_read_kwh', 'sub_read_kwh']
+        fields=['main_house_kwh_FK', 'sub_house_kwh_FK', 'sub_kwh', 'sub_amount_bill','sub_last_read_kwh', 'sub_read_kwh']
+
+    def __init__(self, *args, **kwargs):
+        self.pkform = kwargs.pop('pkform')
+        super(SubKilowattModelForm, self).__init__(*args, **kwargs)
 
     def clean(self):
         all_obj = HouseNameModel.objects.get(pk=self.pkform)
@@ -162,6 +166,7 @@ class SubKilowattModelForm(forms.ModelForm):
         sum_sub_kilowatts = int()
         for each in all_sub_kwh:
             sum_sub_kilowatts = sum_sub_kilowatts + each.sub_kwh
+        
         if self.cleaned_data['sub_last_read_kwh'] and self.cleaned_data['sub_read_kwh']:
             if (self.cleaned_data['sub_last_read_kwh'] > self.cleaned_data['sub_read_kwh']):
                 raise ValidationError({
@@ -179,14 +184,18 @@ class SubKilowattModelForm(forms.ModelForm):
                 raise ValidationError({
                         'sub_kwh': _('Only Positive Number!')
                         })
-                return super(SubKilowattModelForm, self).clean()
             elif self.cleaned_data['sub_kwh'] >= 0:
+                sum_sub_kilowatts = sum_sub_kilowatts + self.cleaned_data['sub_kwh']
+                if sum_sub_kilowatts > main.kwh:
+                    raise ValidationError({
+                            'sub_kwh': _(f'The total of the Sum is {sum_sub_kilowatts} kwh, it cannot be greatter than kilowatts from the bill. Registreded: Max{main.kwh} kwh')
+                            })
                 return super(SubKilowattModelForm, self).clean()
-        else:
+        elif (self.cleaned_data['sub_kwh'] and self.cleaned_data['sub_last_read_kwh'] and self.cleaned_data['sub_read_kwh']):
             raise ValidationError({
                 'sub_kwh': _('Fill up at least one option!'),
                 'sub_last_read_kwh': _('Fill up at least one option!'),
-                # 'read_kwh' : _('Only Numbers'),
+
                 })
         return super(SubKilowattModelForm, self).clean()
 
@@ -198,7 +207,6 @@ class SubTenantNameModelForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         self.pkform = kwargs.pop('pkform')
         super(SubTenantNameModelForm, self).__init__(*args, **kwargs)
-        # self.fields['main_tenant_FK'].queryset = self.account
         
     def clean(self):
         #Muito Dificil
