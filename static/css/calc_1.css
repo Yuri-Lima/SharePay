@@ -13,3 +13,10 @@ table {
   tr:nth-child(even) {
     background-color: #dddddd;
   }
+  /* from https://bootstrapcreative.com/can-adjust-text-size-bootstrap-responsive-design/ */
+  .text-responsive {
+    font-size: calc(90% + 1vw + 1vh);
+  }
+  .text-responsive2 {
+    font-size: calc(50% + 1vw + 1vh);
+  }
