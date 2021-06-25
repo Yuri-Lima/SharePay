@@ -197,7 +197,6 @@ class SubKilowattModelForm(forms.ModelForm):
                 'sub_last_read_kwh': _('Fill up at least one option!'),
 
                 })
-
         return super(SubKilowattModelForm, self).clean()
 
 class SubTenantNameModelForm(forms.ModelForm):
