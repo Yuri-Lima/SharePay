@@ -8,6 +8,7 @@
 <a type="button" class="close" aria-label="Close" href="{% url 'share:reports_view' pk=Main_House.first.id %}">
       <small><span aria-hidden="true">Back to Reports</span> </small>
 </a>
+
 {% comment %} START INFOR BILL {% endcomment %}
 <table class="table table-sm">
   <thead class="bg-info text-white">
@@ -32,9 +33,11 @@
 {% comment %} START TABLE MAIN HOUSE {% endcomment %}
 <div class="table-responsive">
   <table class="table table-hover">
-    <caption>List of main_house</caption>
     {% for main_name, values in calc_1.main_house.items %}
-      <h3>{{main_name}}</h3>
+    <caption>Main House</caption>
+      <h3 class='text-responsive2'>{{main_name}}</h3>
+      <div><strong>Kilowatts:</strong> {{calc_1.new_main_kwh}} kwh</div>
+      <div><strong>Bill Value:</strong> {{calc_1.new_amount}}</div>
         <thead class="thead-dark">
           <tr>
             <th scope="col">#</th>
@@ -44,9 +47,10 @@
             <th scope="col">Due Value</th>
           </tr>
         </thead>
+
         {% for main_tenant_name,v in values.items %}
         <tbody>
-          <tr>
+          <tr class="table-success">
               <th scope="row">{{forloop.counter}}</th>
               <td>{{main_tenant_name}}</td>
               <td>{{v.date}}</td>
@@ -61,11 +65,11 @@
 {% comment %} END TABLE MAIN HOUSE {% endcomment %}
 
 {% comment %} START TABLE SUB HOUSE {% endcomment %}
-{% for subs_house_name, c in calc_1.sub_house.items %}
+{% for subs_house_name, c in calc_1.sub_house_without.items %}
   <div class="table-responsive">
     <table class="table table-hover">
-      <caption>List of sub_houses</caption>
-        <h3>{{subs_house_name}}</h3>
+      <caption>Sub House Without Kilowatts</caption>
+        <h3 class='text-responsive2'>{{subs_house_name}}</h3>
         <thead class="thead-dark">
             <tr>
               <th scope="col">#</th>
@@ -77,7 +81,7 @@
           </thead>
           {% for sub_tenant_name, v in c.items %}
             <tbody>
-              <tr>
+              <tr class="table-success">
                   <th scope="row">{{forloop.counter}}</th>
                   <td>{{sub_tenant_name}}</td>
                   <td>{{v.date}}</td>
@@ -91,14 +95,14 @@
   </div>
 {% endfor %}
 {% comment %} END TABLE SUB HOUSE {% endcomment %}
-<hr>
+
 {% comment %} START TABLE LEFT OVER {% endcomment %}
-{% if  calc_1.left_over %}
+{% if  calc_1.left_over1 %}
 <div class="table-responsive">
     <table class="table table-hover">
       <caption>List of left_over</caption>
-      {% for left_name, v in calc_1.left_over.items %}
-        <h3>{{left_name}}</h3>
+      {% for left_name, v in calc_1.left_over1.items %}
+        <h3 class='text-responsive2'>Left_Over</h3>
           <thead class="thead-dark">
             <tr>
               <th scope="col">#</th>
@@ -108,11 +112,11 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
+            <tr class="table-success">
                 <th scope="row">{{forloop.counter}}</th>
                 <td>{{v.description}}</td>
                 <td>{{v.days_left_over}}</td>
-                <td>{{v.left_over}}</td>
+                <td>{{v.left_over1}}</td>
             </tr>
           </tbody>
       {% endfor %}
@@ -120,6 +124,11 @@
   </div>
 {% endif %}
 {% comment %} END TABLE LEFT OVER {% endcomment %}
+
+{% comment %} START all With Kilowatts {% endcomment %}
+{% include 'houses/calc_bill/with_kwh.html' %}
+
+
 
 <a type="button" class="close" aria-label="Close" href="{% url 'share:reports_view' pk=Main_House.first.id %}">
       <small><span aria-hidden="true">Back to Reports</span></small>
