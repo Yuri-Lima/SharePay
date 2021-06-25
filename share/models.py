@@ -149,6 +149,25 @@ class SubKilowattModel(models.Model):
     def __str__(self):
         return str(self.sub_house_kwh_FK) + ' - ' + str(self.sub_kwh) + 'kwh'
 
+    #https://docs.djangoproject.com/en/3.2/ref/models/instances/
+    def clean(self):
+        if self.sub_last_read_kwh and self.sub_read_kwh:
+            if (self.sub_last_read_kwh > self.sub_read_kwh):
+                raise ValidationError({
+                    'sub_read_kwh': _('Should be greatter than previous Kw/h read')
+                    })
+            else:
+                self.sub_kwh = self.sub_read_kwh - self.sub_last_read_kwh
+            return self.sub_kwh
+        elif self.sub_kwh:
+            return self.sub_kwh
+        else:
+            raise ValidationError({
+                        'sub_kwh': _('Fill up at least one option!'),
+                        'sub_last_read_kwh': _('Fill up at least one option!'),
+                        # 'sub_read_kwh' : _('Only Numbers'),
+                        })
+
     def get_absolute_url(self, subpk):
         return reverse('share:detail_sub_house_name', kwargs={
                                                         'pk': self.pk,
