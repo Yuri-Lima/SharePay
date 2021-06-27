@@ -40,12 +40,15 @@
 
 
 {% comment %} START TABLE LEFT OVER {% endcomment %}
+{% comment %} {% for  in  %}{% endfor %} {% endcomment %}
+{% comment %} {{calc_2.left_over1}} {% endcomment %}
 {% if  calc_2.left_over1 %}
 <div class="table-responsive">
+  {% for name, keysANDvalues in calc_2.left_over1.items %}
     <table class="table table-hover">
       <caption>This is a value which no one was living as a tenant.</caption>
-      {% for left_name, v in calc_2.left_over1.items %}
-        <h3 class='text-responsive2'> Left Over</h3> {% comment %} {{left_name}} {% endcomment %}
+        {% comment %} {{key}} - {{value}} {% endcomment %}
+        <h3 class='text-responsive2'>Left Over - {{name}}</h3> {% comment %} {{left_name}} {% endcomment %}
           <thead class="thead-dark">
             <tr>
               <th scope="col">#</th>
@@ -53,25 +56,31 @@
               <th scope="col">Value per Day</th>
             </tr>
           </thead>
-          {% for k, v in v.details_date.items %}
+          {% for key, value in keysANDvalues.details_date.items %}
             <tbody>
-              <tr class="table-secondary">
-                  <th scope="row">{{forloop.counter}}</th>
-                  <td>{{k}}</td> 
-                  <td>{{v}}</td> 
-              </tr>
-            </tbody>
+                <tr class="table-danger">
+                    <th scope="row">{{forloop.counter}}</th>
+                    <td>{{key}}</td>
+                    <td>{{value|floatformat:3}}</td>
+                </tr>
+            </tbody> 
           {% endfor %}
-      
           <thead class="thead">
                 <tr class="table-secondary">
                   <th scope="col">#</th>
                   <th scope="col">Total</th>
-                  <th scope="col">{{v.left_over1}}</th>
+                  <th scope="col">{{keysANDvalues.left_over1}}</th>
                 </tr>
           </thead>
-      {% endfor %}  
+          <thead class="thead">
+                <tr class="table-secondary">
+                  <th scope="col">#</th>
+                  <th scope="col">Empty Days</th>
+                  <th scope="col">{{keysANDvalues.days_left_over}}</th>
+                </tr>
+          </thead>
     </table>
+  {% endfor %}
   </div>
 {% endif %}
 {% comment %} END TABLE LEFT OVER {% endcomment %}

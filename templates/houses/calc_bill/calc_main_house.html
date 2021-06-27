@@ -106,23 +106,38 @@
           <thead class="thead-dark">
             <tr>
               <th scope="col">#</th>
-              <th scope="col">Description</th>
-              <th scope="col">Days</th>
+              <th scope="col">Main/Sub House_Name - Date</th>
               <th scope="col">Left Over</th>
             </tr>
           </thead>
-          <tbody>
-            <tr class="table-success">
-                <th scope="row">{{forloop.counter}}</th>
-                <td>{{v.description}}</td>
-                <td>{{v.days_left_over}}</td>
-                <td>{{v.left_over1}}</td>
+          {% for key, value in v.details_date.items %}
+            <tbody>
+                <tr class="table-danger">
+                    <th scope="row">{{forloop.counter}}</th>
+                    <td>{{key}}</td>
+                    <td>{{value|floatformat:3}}</td>
+                </tr>
+            </tbody> 
+          {% endfor %}
+          <thead class="thead-secondary">
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Total</th>
+              <th scope="col">{{v.left_over1}}</th>
             </tr>
-          </tbody>
+          </thead>
+          {% comment %} <thead class="thead-secondary">
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Empty Days</th>
+              <th scope="col">{{v.days_left_over}}</th>
+            </tr>
+          </thead> {% endcomment %}
       {% endfor %}
     </table>
   </div>
 {% endif %}
+
 {% comment %} END TABLE LEFT OVER {% endcomment %}
 
 {% comment %} START all With Kilowatts {% endcomment %}

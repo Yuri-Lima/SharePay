@@ -197,10 +197,12 @@ class CoreSharePay(object):
 
     def value_by_day(self, _without_kwh=False, _with_kwh=False, *args, **kwargs):
         #Preciso separar por dia tbm, porem tenho que descobrir como criar variavaeis com   os valores de cada sub house com kwh cadastrados.
+        getcontext().prec = 9
         if _without_kwh:
-            amount_bill_without_kwh = float(self.new_amount_main_bill)
+            self.value_by_day_without_kwh = dict()
+            amount_bill_without_kwh = self.new_amount_main_bill
             days_bill = self.days_bill_main_house
-            self.value_by_day_without_kwh = round(amount_bill_without_kwh/days_bill, self.decimal_places_core_sharepay)
+            self.value_by_day_without_kwh = Decimal(amount_bill_without_kwh)/days_bill
             return self.value_by_day_without_kwh
 
         if _with_kwh:
@@ -210,8 +212,8 @@ class CoreSharePay(object):
             for nameA in subid_with_kwh:
                 for nameB, value in self.amount_by_sub_houses_with_kwh.items():
                     if str(nameA) == str(nameB):
-                        # print(f'nameA: {nameA} - nameB: {nameB}\n')
-                        self.value_by_day_with_kwh.update({nameA : round(value/days_bill, self.decimal_places_core_sharepay)})
+                        # print(f'nameA: {nameA} - value: {value}\n')
+                        self.value_by_day_with_kwh.update({nameA : Decimal(value)/days_bill})
                     
             # print(f"value_by_day_with_kwh--> {value_by_day_with_kwh}")
             return self.value_by_day_with_kwh
@@ -229,97 +231,117 @@ class CoreSharePay(object):
             data_dict_date_by_day_without_kwh = self.dict_date_range_for_tenants_without_kwh
             end =dict()
             data_set_tenants_by_day_without_kwh = set()
-            left_over_without_kwh = dict()
-            self._empty_days_without_kwh = 0
+            left_over_without_kwh = set()
+
             for main, houses_data in data_dict_date_by_day_without_kwh.items():
+                data_set_tenants_by_day_without_kwh.clear()
+                # left_over_without_kwh.clear()
                 for house_name, tenant_name_and_dates in houses_data.items():
+                    # left_over_without_kwh.clear()
                     for tenant_name, dates in tenant_name_and_dates.items():
                         if date_bill_verification_by_day in dates['dates']:
                             data_set_tenants_by_day_without_kwh.add(str(tenant_name))
                         else:
-                            left_over_without_kwh.update({f'left_{house_name} - {date_bill_verification_by_day}':'0'})
-
-            if data_set_tenants_by_day_without_kwh:
-                end.update({'names':data_set_tenants_by_day_without_kwh})
-                if left_over_without_kwh:
-                    end.update({"left_over_without_kwh":left_over_without_kwh})
-            else:
-                end.update({"left_over_without_kwh":left_over_without_kwh})
+                            left_over_without_kwh.add(f'left_{house_name} - {tenant_name} - {date_bill_verification_by_day}')
+                            # print(f"House: {house_name} Tenant: {tenant_name} Date: {date_bill_verification_by_day}")
+                    
+                if data_set_tenants_by_day_without_kwh:
+                    # print(f"House: {house_name} Tenant: {tenant_name} Date: {date_bill_verification_by_day}")
+                    if left_over_without_kwh:
+                        data_set_tenants_by_day_without_kwh.update(left_over_without_kwh)
+                    end.update({str(house_name):[x for x in data_set_tenants_by_day_without_kwh]})
+                    # if left_over_without_kwh:
+                    #     end.update({"left_over_without_kwh":left_over_without_kwh})
+                else:
+                    end.update({f"left_over_without_kwh":[x for x in left_over_without_kwh]})
+                    
+            # print(f'{end}\n')
             return end  
             
         #END get_tenants_by_day without kwh
 
         #START get_tenants_by_day with kwh
         if _with_kwh:
-            sub_houses = self.subid_with_kwh
             range_dates_tenants_with_kwh = self.dict_date_range_for_tenants_with_kwh
             # print(f'sub_houses--> {sub_houses}')
             end =dict()
             data_set_tenants_by_day_with_kwh = set()
-            left_over_with_kwh = dict()
-            self._empty_days_with_kwh = 0
+            left_over_with_kwh = set()
             
             for house_name, tenant_name_and_dates in range_dates_tenants_with_kwh.items():
                 # print(f'{house_name}-->{tenant_name_and_dates}\n')
                 data_set_tenants_by_day_with_kwh.clear()
+                left_over_with_kwh.clear()
                 for tenant_name, dates in tenant_name_and_dates.items():
                     # print(f'{house_name}-->{tenant_name}')
                     if date_bill_verification_by_day in dates['dates'] :
                         data_set_tenants_by_day_with_kwh.add(str(tenant_name))
                     else:
-                        left_over_with_kwh.update({f'left_{house_name} - {date_bill_verification_by_day}':'0'})
+                        left_over_with_kwh.add(f'left_{house_name} - {tenant_name} - {date_bill_verification_by_day}')
 
                 if data_set_tenants_by_day_with_kwh:
-                    end.update({str(house_name):[x for x in data_set_tenants_by_day_with_kwh]})
                     if left_over_with_kwh:
-                        end.update({"left_over_with_kwh":left_over_with_kwh})
-                    
+                        data_set_tenants_by_day_with_kwh.update(left_over_with_kwh)
+                    end.update({str(house_name):[x for x in data_set_tenants_by_day_with_kwh]})
                 else:
-                    end.update({"left_over_with_kwh":left_over_with_kwh})
-                    # data_set_tenants_by_day_with_kwh.clear()
+                    end.update({f"left_over_with_kwh_{house_name}":[x for x in left_over_with_kwh if x.startswith(f'left_{house_name}')]})
             
             # print(f'{end}\n')
             return end
 
         #START get_tenants_by_day get both
         if _both:
-            data_dict_date_by_day_with_kwh = self.dict_date_range_for_tenants_with_kwh
+            #========================== Without Kilowatts =================================================
             data_dict_date_by_day_without_kwh = self.dict_date_range_for_tenants_without_kwh
             end =dict()
             data_set_tenants_by_day_without_kwh = set()
-            left_over_without_kwh = dict()
-            self._empty_days_without_kwh = 0
+            left_over_without_kwh = set()
+
             for main, houses_data in data_dict_date_by_day_without_kwh.items():
+                data_set_tenants_by_day_without_kwh.clear()
+                # left_over_without_kwh.clear()
                 for house_name, tenant_name_and_dates in houses_data.items():
+                    # left_over_without_kwh.clear()
                     for tenant_name, dates in tenant_name_and_dates.items():
                         if date_bill_verification_by_day in dates['dates']:
                             data_set_tenants_by_day_without_kwh.add(str(tenant_name))
                         else:
-                            left_over_without_kwh.update({f'{house_name} - {date_bill_verification_by_day}':'0'})
-
-            if data_set_tenants_by_day_without_kwh:
-                end.update({'names':data_set_tenants_by_day_without_kwh})
-                if left_over_without_kwh:
-                    end.update({"left_over_without_kwh":left_over_without_kwh})
-            else:
-                end.update({"left_over_without_kwh":left_over_without_kwh})
-            
+                            left_over_without_kwh.add(f'left_{house_name} - {tenant_name} - {date_bill_verification_by_day}')
+                            # print(f"House: {house_name} Tenant: {tenant_name} Date: {date_bill_verification_by_day}")
+                    
+                if data_set_tenants_by_day_without_kwh:
+                    # print(f"House: {house_name} Tenant: {tenant_name} Date: {date_bill_verification_by_day}")
+                    if left_over_without_kwh:
+                        data_set_tenants_by_day_without_kwh.update(left_over_without_kwh)
+                    end.update({str(house_name):[x for x in data_set_tenants_by_day_without_kwh]})
+                    # if left_over_without_kwh:
+                    #     end.update({"left_over_without_kwh":left_over_without_kwh})
+                else:
+                    end.update({f"left_over_without_kwh":[x for x in left_over_without_kwh]})
+            #========================== With Kilowatts =================================================
+            range_dates_tenants_with_kwh = self.dict_date_range_for_tenants_with_kwh
+            # print(f'sub_houses--> {sub_houses}')
+            end =dict()
             data_set_tenants_by_day_with_kwh = set()
-            left_over_with_kwh = dict()
-            self._empty_days_with_kwh = 0
-            for house_name, tenant_name_and_dates in data_dict_date_by_day_with_kwh.items():
+            left_over_with_kwh = set()
+            
+            for house_name, tenant_name_and_dates in range_dates_tenants_with_kwh.items():
+                # print(f'{house_name}-->{tenant_name_and_dates}\n')
+                data_set_tenants_by_day_with_kwh.clear()
+                left_over_with_kwh.clear()
                 for tenant_name, dates in tenant_name_and_dates.items():
-                    if date_bill_verification_by_day in dates['dates']:
+                    # print(f'{house_name}-->{tenant_name}')
+                    if date_bill_verification_by_day in dates['dates'] :
                         data_set_tenants_by_day_with_kwh.add(str(tenant_name))
                     else:
-                        left_over_with_kwh.update({f'{house_name} - {date_bill_verification_by_day}':'0'})
-            
-            if data_set_tenants_by_day_with_kwh:
-                end.update({'names':data_set_tenants_by_day_with_kwh})
-                if left_over_with_kwh:
-                    end.update({"left_over_with_kwh":left_over_with_kwh})
-            else:
-                end.update({"left_over_with_kwh":left_over_with_kwh})
+                        left_over_with_kwh.add(f'left_{house_name} - {tenant_name} - {date_bill_verification_by_day}')
+
+                if data_set_tenants_by_day_with_kwh:
+                    if left_over_with_kwh:
+                        data_set_tenants_by_day_with_kwh.update(left_over_with_kwh)
+                    end.update({str(house_name):[x for x in data_set_tenants_by_day_with_kwh]})
+                else:
+                    end.update({f"left_over_with_kwh_{house_name}":[x for x in left_over_with_kwh if x.startswith(f'left_{house_name}')]})
 
             return end
 
@@ -348,9 +370,7 @@ class CoreSharePay(object):
             Parameters: date - Format(YYYY-MM-DD)
             Retorna e Filtra quais sao os moradores em cada dia da conta
             Return and Filter each tenant into each day's bill
-        """ 
-        dates = set()
-         
+        """          
         if _without_kwh:
             data_dict_from_bill_period_without_kwh = dict()
             for enum, each_date in enumerate(self.range_dates_bill,1):
@@ -398,40 +418,38 @@ class CoreSharePay(object):
         total_by_each_tenant_converted =  dict()
         
         house_name_main_house = self.house_name_main_house
-        getcontext().prec = 9 #manter alta precisao, pois no somatorio sera necessario.
+        getcontext().prec = 8 #manter alta precisao, pois no somatorio sera necessario.
+        rounded = 3
 
         for day_number, AB in filter_all_tenant_from_bill_period.items():# 3-->{'names': {'Sebastiao Correia', 'Laura Sophia'}} or 29-->{'left_over_without_kwh': {'Ebenezer Terrance 18 - 2021-01-29': '0', "Naira's House - 2021-01-29": '0'}}
             # print(f"{day_number}-->{AB}")
             for ab, names in AB.items(): #{names):{names}}
-                # print(f"{ab}-->{len(names)}")
+                # print(f"day: {day_number} {ab}: {names} Size: {len(names)}\n")
                 #Step -2
                 check_zero = (1 if not len(names) else len(names))
                 #Step -3
-                v = round(days_value_one_house_one_bill / check_zero, getcontext().prec - 1)
+                v = Decimal(days_value_one_house_one_bill) / check_zero
                 #Step -4
                 step_3 = { key : v for key in names }
+                # print(f"day: {day_number} step_3: {step_3}\n")
                 #Step -5
                 total_by_each_tenant = Counter(step_3) + Counter(total_by_each_tenant)
                 #Step -6
-                total_by_each_tenant_converted['all'] = {key : float(value) for key, value in total_by_each_tenant.items() if not key.startswith('left_')}#tiver que converter, pois v estava em Decimal Class
-                total_by_each_tenant_converted['Left_Over_without_kwh'] = {key : float(value) for key, value in total_by_each_tenant.items() if key.startswith('left_')}
+                total_by_each_tenant_converted['all'] = {key : value for key, value in total_by_each_tenant.items() if not key.startswith('left_')}#tiver que converter, pois v estava em Decimal Class
+                total_by_each_tenant_converted['Left_Over_without_kwh'] = {key : value for key, value in total_by_each_tenant.items() if key.startswith('left_')}
                 #Step -7
         # print(f"{total_by_each_tenant}\n")
-        # print(f"{total_by_each_tenant_converted['Left_Over_without_kwh']}")
+        # print(f"{total_by_each_tenant_converted['Left_Over_without_kwh']}\n")
         #================================= 
         #Step -8
         sub_tenants_filtered_without_kwh= self.tenants_name_without_kwh
-
-        #New Feature
-        sub_tenants_filtered_with_kwh  = self.tenants_name_with_kwh 
-        # print(type(sub_tenants_filtered_with_kwh))
 
         #Step -9
          #--> Main Houses Data <---
         total_by_each_tenant_converted['main_house'] = {
             str(house_name_main_house) : {
                 str(each_name) : {
-                    str('value'): f"€{round(total_by_each_tenant_converted['all'].pop(str(each_name)),2)}",
+                    str('value'): f"€{round(total_by_each_tenant_converted['all'].pop(str(each_name)),rounded)}",
                     str('date'): f'{each_name.start_date} to {each_name.end_date}',
                     str('days'): f'{each_name.days}',
                 }for each_name in tenants_main_house
@@ -441,7 +459,7 @@ class CoreSharePay(object):
         total_by_each_tenant_converted['sub_house_without'] = {
             str(sub_house_name) : {
                 str(each_name) : {
-                    str('value'): f'€{round(total_by_each_tenant_converted["all"].pop(str(each_name)),2)}',
+                    str('value'): f'€{round(total_by_each_tenant_converted["all"].pop(str(each_name)),rounded)}',
                     str('date'): f'{each_name.sub_start_date} to {each_name.sub_end_date}',
                     str('days'): f'{each_name.sub_days}',
                     }for each_name in sub_tenants_names#should be all sub tenants
@@ -451,13 +469,13 @@ class CoreSharePay(object):
         #--> Left Houses Data <---
         if total_by_each_tenant_converted['Left_Over_without_kwh']:
             total_by_each_tenant_converted['left_over1'] = {
-                str('Left_Over_without_kwh') : {
-                    str('description') : 'This is a value which no one was living as a tenant.',
-                    str('left_over1') : f'€{round(sum(total_by_each_tenant_converted["Left_Over_without_kwh"].values()),2)}',
-                    str('days_left_over') : f'{self._empty_days}',
-                    str('details_date'): total_by_each_tenant_converted["Left_Over_without_kwh"],
-                }
+                str(key) : {
+                    str('left_over1') : f'€{round(sum(values_dict.values()),rounded)}',
+                    str('days_left_over') : f'{len(values_dict)}',
+                    str('details_date'): values_dict,
+                }for key, values_dict in total_by_each_tenant_converted.items() if key.startswith('Left_Over_without_kwh')
             }
+            # print([{key:value} for key, value in total_by_each_tenant_converted.items() if key.startswith('Left_Over_without_kwh')])
             total_by_each_tenant_converted.pop('Left_Over_without_kwh')
 
         total_by_each_tenant_converted.pop('all')
@@ -502,36 +520,28 @@ class CoreSharePay(object):
             Step - 10. soma todos os valors por morador gerando o total de cada morador
             Step - 11. validations
             """
-            data_dict_tenant_with_value_day = dict()
             #fill some elements from all tenants from bill period
             filter_all_tenant_from_bill_period = self.filter_all_tenant_from_bill_period(_with_kwh=True)
-            
-            
-            # print(f"--> {filter_all_tenant_from_bill_period}")
             #============== Start Calcs ======================================================
             #Step -1
             days_value_one_house_one_bill = self.value_by_day(_with_kwh=True)
-            # print(f'value_: {days_value_one_house_one_bill}')
-            # {'Ebenezer Terrance 18A': Decimal('1.9722'), "Noeli's House": Decimal('3.9445')}
             #Steds -2,3,4,5,6
-            tenants_main_house = self.tenants_main_house
             total_by_each_tenant = dict()
             total_by_each_tenant_converted =  dict()
             
-            house_name_main_house = self.house_name_main_house
-            getcontext().prec = 9 #manter alta precisao, pois no somatorio sera necessario.
+            getcontext().prec = 8 #manter alta precisao, pois no somatorio sera necessario.
+            rounded = 3
 
             for house_name_1, value in days_value_one_house_one_bill.items():
                 for day_number, AB in filter_all_tenant_from_bill_period.items():# 3-->{'names': {'Sebastiao Correia', 'Laura Sophia'}} or 29-->{'left_over_without_kwh': {'Ebenezer Terrance 18 - 2021-01-29': '0', "Naira's House - 2021-01-29": '0'}}
                     # print(f"{day_number}-->{AB}")
                     for house_name_2, tenant_names in AB.items(): #{house name):{tenant_names}}
-                        # print(f"{house_name_2}-->{tenant_names}")
-                        if (house_name_1 == house_name_2) or (house_name_2 == 'left_over_with_kwh'):
-                            # print(f"{house_name_1}--{house_name_2 }-->Names: {tenant_names}-->Value: {value}")
+                        if (house_name_1 == house_name_2) or (house_name_2 == f'left_over_with_kwh_{house_name_1}'):
+                            # print(f"day: {day_number} House: {house_name_2} Tenants: {tenant_names} Size: {len(tenant_names)} Value: {value}\n")
                             #Step -2
                             check_zero = (1 if not len(tenant_names) else len(tenant_names))
                             #Step -3
-                            v = round(value / check_zero, getcontext().prec - 1)
+                            v = Decimal(value) / check_zero
                             # print(f"{house_name_1}--{house_name_2 }-->Names: {tenant_names}-->V: {v}")
                             #Step -4
                             step_3 = { key : v for key in tenant_names }
@@ -540,15 +550,9 @@ class CoreSharePay(object):
                             #Step -5
                             total_by_each_tenant = Counter(step_3) + Counter(total_by_each_tenant)
                             #Step -6
-                            total_by_each_tenant_converted['all'] = {key : float(value) for key, value in total_by_each_tenant.items() if not key.startswith('left_')}#tiver que converter, pois v estava em Decimal Class
-                            total_by_each_tenant_converted['Left_Over_with_kwh'] = {key : float(value) for key, value in total_by_each_tenant.items() if key.startswith('left_')}
-                            # total_by_each_tenant_converted['kwh'] = {house_name_2 : float(value) for into in self.sub_kwh_sub_house for x in into if x.sub_house_name_FK.startswith(house_name_2)}
-                    
-                   
-
-                    #Step -7
-            # print(f"{total_by_each_tenant}\n")
-            # print(f"{total_by_each_tenant_converted['Left_Over_with_kwh']}")
+                            total_by_each_tenant_converted['all'] = {key : value for key, value in total_by_each_tenant.items() if not key.startswith('left_')}#tiver que converter, pois v estava em Decimal Class
+                            total_by_each_tenant_converted[f'Left_Over_with_kwh_{house_name_1}'] = {key : value for key, value in total_by_each_tenant.items() if key.startswith(f'left_{house_name_1}')}
+            
             #================================= 
             #Step -8
             sub_tenants_filtered_with_kwh= self.tenants_name_with_kwh
@@ -556,45 +560,29 @@ class CoreSharePay(object):
             #Step -9
             #--> Sub Houses Data without <---        
             total_by_each_tenant_converted['sub_house_with'] = {
-                    str(sub_house_name) : {
-                        str(each_name) : {
-                            str('tenant_value'): f'€{round(total_by_each_tenant_converted["all"].pop(str(each_name)),2)}',
-                            str('date'): f'{each_name.sub_start_date} to {each_name.sub_end_date}',
-                            str('days'): f'{each_name.sub_days}',
-                            str('kwh_infor'): {int(x.sub_kwh) for x in self.sub_kwh_sub_house if str(sub_house_name) == str(x.sub_house_kwh_FK)},
-                            str('bill_value'): f"€{[float(round(value,2)) for name, value in self.amount_by_sub_houses_with_kwh.items() if str(sub_house_name) == str(name)].pop()}",
-                            }for each_name in sub_tenants_names#should be all sub tenants
-                    }for sub_house_name, sub_tenants_names in sub_tenants_filtered_with_kwh.items()#should be only sub_houses_name
+                str(sub_house_name) : {
+                    str(each_name) : {
+                        str('tenant_value'): f'€{round(Decimal(total_by_each_tenant_converted["all"].pop(str(each_name))),rounded)}',
+                        str('date'): f'{each_name.sub_start_date} to {each_name.sub_end_date}',
+                        str('days'): f'{each_name.sub_days}',
+                        str('kwh_infor'): {int(x.sub_kwh) for x in self.sub_kwh_sub_house if str(sub_house_name) == str(x.sub_house_kwh_FK)},
+                        str('bill_value'): f"€{round([Decimal(value) for name, value in self.amount_by_sub_houses_with_kwh.items() if str(sub_house_name) == str(name)].pop(), rounded)}",
+                    }for each_name in sub_tenants_names#should be all sub tenants
+                }for sub_house_name, sub_tenants_names in sub_tenants_filtered_with_kwh.items()#should be only sub_houses_name
+            }#there are some possibilities which we can have multiple sub house it means multiples sub_pk's
 
-                }#there are some possibilities which we can have multiple sub house it means multiples sub_pk's
-
-            #--> Left Houses Data <---
-            if total_by_each_tenant_converted['Left_Over_with_kwh']:
+            #--> Left Houses Data <---            
+            temporary_left = [ {key:value} for key, value in total_by_each_tenant_converted.items() if key.startswith('Left_Over_with_kwh')]
+            if temporary_left:
                 total_by_each_tenant_converted['left_over1'] = {
-                    str('Left_Over_with_kwh') : {
-                        str('description') : 'This is a value which no one was living as a tenant.',
-                        str('left_over1') : f'€{round(sum(total_by_each_tenant_converted["Left_Over_with_kwh"].values()),2)}',
-                        str('days_left_over') : f'{self._empty_days}',
-                        str('details_date'): total_by_each_tenant_converted["Left_Over_with_kwh"],
-                    }
+                    str(f"{key.replace('Left_Over_with_kwh_','')}") : {
+                        str('left_over1') : f'€{round(Decimal(sum(value.values())),rounded)}',
+                        str('days_left_over') : f'{len(value.values())}',
+                        str('details_date'): value,
+                    }for key, value in total_by_each_tenant_converted.items() if key.startswith('Left_Over_with_kwh')
                 }
-                total_by_each_tenant_converted.pop('Left_Over_with_kwh')
-
+            # print([ {x.replace('Left_Over_with_kwh_',''):y} for x, y in total_by_each_tenant_converted.items() if x.startswith('Left_Over_with_kwh')])
             total_by_each_tenant_converted.pop('all')
-
-            #Step -10
-            total_by_each_tenant_converted['kwh'] = [x for x in self.sub_kwh_sub_house]
-            total_by_each_tenant_converted['bill_value'] = self.amount_by_sub_houses_with_kwh
-            total_by_each_tenant_converted['period_bill'] = f'{self.start_date_bill_main_house} to {self.end_date_bill_main_house}'
-            total_by_each_tenant_converted['user'] = self.user_main_house
-            total_by_each_tenant_converted['new_amount'] = f'€{self.new_amount_main_bill}'
-            total_by_each_tenant_converted['new_main_kwh'] = self.new_main_kwh
-
-            #Step -10
-            getcontext().prec = 5 #Reduz a precisao um pouco pois nao sera mais necessario, uma vez que os valores ja teve sua alta precisao
-            # total_bill = Decimal(sum(total_by_each_tenant.values()))
-            # print(total_bill)
-
 
             #Validations
             """
