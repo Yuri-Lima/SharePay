@@ -449,8 +449,6 @@ class CoreSharePay(object):
                         #Step -6
                         total_by_each_tenant_converted['all'] = {key : value for key, value in total_by_each_tenant.items() if not key.startswith('left')}#tiver que converter, pois v estava em Decimal Class
                         total_by_each_tenant_converted['Left_Over_without_kwh'] = {key : value for key, value in total_by_each_tenant.items() if key.startswith('left')}
-                        A = names
-                        B = day_number
                     elif len(AB)==1:
                         #Step -2
                         check_zero = (1 if not len(names) else len(names))
@@ -465,6 +463,10 @@ class CoreSharePay(object):
                         #Step -6
                         total_by_each_tenant_converted['all'] = {key : value for key, value in total_by_each_tenant.items() if not key.startswith('left')}#tiver que converter, pois v estava em Decimal Class
                         total_by_each_tenant_converted['Left_Over_without_kwh'] = {key : value for key, value in total_by_each_tenant.items() if key.startswith('left')}
+                    
+                    """Dont you dare remove those things below"""
+                    A = names
+                    B = day_number 
                     # total_by_each_tenant_converted['days'] = {key : value for key, value in total_by_each_tenant.items() if key.startswith('left_')}
                     #Step -7
         # print(f"{total_by_each_tenant}\n")
@@ -584,8 +586,6 @@ class CoreSharePay(object):
                                     #Step -6
                                     total_by_each_tenant_converted['all'] = {key : value for key, value in total_by_each_tenant.items() if not key.startswith('left')}#tiver que converter, pois v estava em Decimal Class
                                     total_by_each_tenant_converted['Left_Over_with_kwh'] = {key : value for key, value in total_by_each_tenant.items() if key.startswith('left')}
-                                    A = names
-                                    B = day_number
                                 elif len(AB)==1:
                                     #Step -2
                                     check_zero = (1 if not len(names) else len(names))
@@ -601,7 +601,9 @@ class CoreSharePay(object):
                                     total_by_each_tenant_converted['all'] = {key : value for key, value in total_by_each_tenant.items() if not key.startswith('left')}#tiver que converter, pois v estava em Decimal Class
                                     total_by_each_tenant_converted['Left_Over_with_kwh'] = {key : value for key, value in total_by_each_tenant.items() if key.startswith('left')}
                                 # total_by_each_tenant_converted['days'] = {key : value for key, value in total_by_each_tenant.items() if key.startswith('left_')}
-                
+                                """Dont you dare remove those things below"""
+                                A = names
+                                B = day_number
             #================================= 
             #Step -8
             sub_tenants_filtered_with_kwh= self.tenants_name_with_kwh
