@@ -93,7 +93,6 @@ class CoreSharePay(object):
         """
         #step 3:
         getcontext().prec = 6 #manter alta precisao, pois no somatorio sera necessario.
-
         self.new_amount_main_bill = (Decimal(self.main_amount_bill) * Decimal(self.new_main_kwh))/self.kwh_main_house
         # print(f"new_amount_main_bill: {self.new_amount_main_bill}")
     # 2
@@ -297,7 +296,6 @@ class CoreSharePay(object):
                         })
                 # else:
                 #     end.update({f"left_over_with_kwh_{house_name}":[x for x in left_over_with_kwh if x.startswith(f'left_{house_name}')]})
-
             
             # print(f'{end}\n')
             return end
@@ -453,8 +451,6 @@ class CoreSharePay(object):
                         #Step -6
                         total_by_each_tenant_converted['all'] = {key : value for key, value in total_by_each_tenant.items() if not key.startswith('left')}#tiver que converter, pois v estava em Decimal Class
                         total_by_each_tenant_converted['Left_Over_without_kwh'] = {key : value for key, value in total_by_each_tenant.items() if key.startswith('left')}
-                        A = names
-                        B = day_number
                     elif len(AB)==1:
                         #Step -2
                         check_zero = (1 if not len(names) else len(names))
@@ -469,6 +465,10 @@ class CoreSharePay(object):
                         #Step -6
                         total_by_each_tenant_converted['all'] = {key : value for key, value in total_by_each_tenant.items() if not key.startswith('left')}#tiver que converter, pois v estava em Decimal Class
                         total_by_each_tenant_converted['Left_Over_without_kwh'] = {key : value for key, value in total_by_each_tenant.items() if key.startswith('left')}
+                    
+                    """Dont you dare remove those things below"""
+                    A = names
+                    B = day_number 
                     # total_by_each_tenant_converted['days'] = {key : value for key, value in total_by_each_tenant.items() if key.startswith('left_')}
                     #Step -7
         # print(f"{total_by_each_tenant}\n")
@@ -588,8 +588,6 @@ class CoreSharePay(object):
                                     #Step -6
                                     total_by_each_tenant_converted['all'] = {key : value for key, value in total_by_each_tenant.items() if not key.startswith('left')}#tiver que converter, pois v estava em Decimal Class
                                     total_by_each_tenant_converted['Left_Over_with_kwh'] = {key : value for key, value in total_by_each_tenant.items() if key.startswith('left')}
-                                    A = names
-                                    B = day_number
                                 elif len(AB)==1:
                                     #Step -2
                                     check_zero = (1 if not len(names) else len(names))
@@ -605,7 +603,9 @@ class CoreSharePay(object):
                                     total_by_each_tenant_converted['all'] = {key : value for key, value in total_by_each_tenant.items() if not key.startswith('left')}#tiver que converter, pois v estava em Decimal Class
                                     total_by_each_tenant_converted['Left_Over_with_kwh'] = {key : value for key, value in total_by_each_tenant.items() if key.startswith('left')}
                                 # total_by_each_tenant_converted['days'] = {key : value for key, value in total_by_each_tenant.items() if key.startswith('left_')}
-                
+                                """Dont you dare remove those things below"""
+                                A = names
+                                B = day_number
             #================================= 
             #Step -8
             sub_tenants_filtered_with_kwh= self.tenants_name_with_kwh
@@ -636,7 +636,6 @@ class CoreSharePay(object):
                 }
             # print([ {x.replace('Left_Over_with_kwh_',''):y} for x, y in total_by_each_tenant_converted.items() if x.startswith('Left_Over_with_kwh')])
             # total_by_each_tenant_converted.pop('all')
-
 
             #Validations
             """
