@@ -240,6 +240,8 @@ class CoreSharePay(object):
             data_set_tenants_by_day_without_kwh = set()
             left_over_without_kwh = set()
             for main, houses_data in data_dict_date_by_day_without_kwh.items():
+                data_set_tenants_by_day_without_kwh.clear()
+                # left_over_without_kwh.clear()
                 for house_name, tenant_name_and_dates in houses_data.items():
                     data_set_tenants_by_day_without_kwh.clear()
                     for tenant_name, dates in tenant_name_and_dates.items():
