@@ -239,6 +239,7 @@ class CoreSharePay(object):
             end =dict()
             data_set_tenants_by_day_without_kwh = set()
             left_over_without_kwh = set()
+            mount_without_kwh = str()
             for main, houses_data in data_dict_date_by_day_without_kwh.items():
                 data_set_tenants_by_day_without_kwh.clear()
                 # left_over_without_kwh.clear()
@@ -248,11 +249,12 @@ class CoreSharePay(object):
                         if date_bill_verification_by_day in dates['dates']:
                             data_set_tenants_by_day_without_kwh.add(str(tenant_name))
                         else:
-                            data_set_tenants_by_day_without_kwh.add('left')
+                            mount_without_kwh = f'left_{house_name}_{date_bill_verification_by_day}'
+                            data_set_tenants_by_day_without_kwh.add(mount_without_kwh)
 
                     if data_set_tenants_by_day_without_kwh:
-                        if len(data_set_tenants_by_day_without_kwh) > 1 and 'left' in data_set_tenants_by_day_without_kwh:
-                            data_set_tenants_by_day_without_kwh.discard('left')
+                        if len(data_set_tenants_by_day_without_kwh) > 1 and mount_without_kwh in data_set_tenants_by_day_without_kwh:
+                            data_set_tenants_by_day_without_kwh.discard(mount_without_kwh)
                         end.update({
                             str(house_name):{
                                 str(date_bill_verification_by_day): [x for x in data_set_tenants_by_day_without_kwh],
@@ -271,7 +273,7 @@ class CoreSharePay(object):
             end =dict()
             data_set_tenants_by_day_with_kwh = set()
             left_over_with_kwh = set()
-            
+            mount_with_kwh = str()
             for house_name, tenant_name_and_dates in range_dates_tenants_with_kwh.items():
                 # print(f'{house_name}-->{tenant_name_and_dates}\n')
                 data_set_tenants_by_day_with_kwh.clear()
@@ -281,14 +283,15 @@ class CoreSharePay(object):
                     if date_bill_verification_by_day in dates['dates'] :
                         data_set_tenants_by_day_with_kwh.add(str(tenant_name))
                     else:
-                        data_set_tenants_by_day_with_kwh.add('left')
+                        mount_with_kwh = f'left_{house_name}_{date_bill_verification_by_day}'
+                        data_set_tenants_by_day_with_kwh.add(mount_with_kwh)
                         # left_over_with_kwh.add(f'left_{house_name} - {tenant_name} - {date_bill_verification_by_day}')
 
                 if data_set_tenants_by_day_with_kwh:
                     # if left_over_with_kwh:
                     #     data_set_tenants_by_day_with_kwh.update(left_over_with_kwh)
-                    if len(data_set_tenants_by_day_with_kwh) > 1 and 'left' in data_set_tenants_by_day_with_kwh:
-                            data_set_tenants_by_day_with_kwh.discard('left')
+                    if len(data_set_tenants_by_day_with_kwh) > 1 and mount_with_kwh in data_set_tenants_by_day_with_kwh:
+                            data_set_tenants_by_day_with_kwh.discard(mount_with_kwh)
                     end.update({
                             str(house_name):{
                                 str(date_bill_verification_by_day): [x for x in data_set_tenants_by_day_with_kwh],

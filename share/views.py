@@ -19,7 +19,7 @@ from .models import (
     SubTenantModel,
     SubKilowattModel)
 from .forms import (
-    HouseNameFormset,
+    HouseTenantFormset,
     HouseBillFormset,
     HouseKilowattsFormset,
 
@@ -270,7 +270,7 @@ class TenantsHouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
 
     """Handle a Formset setting - Instansce get self.object which was set for HousesName by each user"""
     def get_form(self, form_class=None):
-        formset = HouseNameFormset(**self.get_form_kwargs(), instance=self.object)
+        formset = HouseTenantFormset(**self.get_form_kwargs(), instance=self.object)
         return formset # inline FormSet
 
     def form_valid(self, form) :

@@ -34,6 +34,8 @@ ALLOWED_HOSTS = [
     'sharepay.app.br',
     'www.sharepay.com.br',
     'sharepay.com.br',
+    'http://www.sharepay.com.br',
+    'http://sharepay.com.br',
     'https://sharepaybill.herokuapp.com/',
     'https://git.heroku.com/sharepaybill.git'
     ]

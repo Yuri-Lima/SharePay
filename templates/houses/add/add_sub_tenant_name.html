@@ -92,30 +92,29 @@
 {% block Scripts %}
 <!--  Adding Dynamic FormSet  -->
 <!-- Bug Fixed: https://github.com/elo80ka/django-dynamic-formset/issues/180 -->
-    <script src="{% static 'js/jquery.formset.js' %}"></script>
-    <script type="text/javascript">
-        $(function() {
-            $('.dynamicInlineFormSet').formset({
-                prefix: '{{form.prefix}}',
-                formCssClass: 'dynamicInlineFormSet',
-                //Add Modifications
-                addCssClass: 'btn btn-success btn-sm rounded-0', //from line 185 js file
-                //addContainerClass: 'dynamicInlineFormSet',
-                addText: ' Add Another',
-                //Delete Modifications
-                deleteCssClass: 'btn btn-danger btn-sm rounded-0',
-                deleteText: ' Remove',//just to remove the name
-                deleteContainerClass: 'list-inline m-0',//Encontre esse cara e add
-                //extraClasses:['']
-            });
-        })
-    </script>
+<script src="{% static 'js/jquery.formset.js' %}"></script>
+<script type="text/javascript">
+    $(function() {
+        $('.dynamicInlineFormSet').formset({
+            prefix: '{{form.prefix}}',
+            formCssClass: 'dynamicInlineFormSet',
+            //Add Modifications
+            addCssClass: 'btn btn-success btn-sm rounded-0', //from line 185 js file
+            //addContainerClass: 'dynamicInlineFormSet',
+            addText: ' Add Another',
+            //Delete Modifications
+            deleteCssClass: 'btn btn-danger btn-sm rounded-0',
+            deleteText: ' Remove',//just to remove the name
+            deleteContainerClass: 'list-inline m-0',//Encontre esse cara e add
+            //extraClasses:['']
+        });
+    })
+</script>
 <!--  Adding Toll Tips  -->
-    <script type="text/javascript">
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip();
-            });
-    </script>
-   
+<script type="text/javascript">
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        });
+</script>
 {% endblock Scripts %}
 {% comment %} https://github.com/elo80ka/django-dynamic-formset/ {% endcomment %}
