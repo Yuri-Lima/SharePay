@@ -93,6 +93,7 @@ class CoreSharePay(object):
         """
         #step 3:
         getcontext().prec = 6 #manter alta precisao, pois no somatorio sera necessario.
+
         self.new_amount_main_bill = (Decimal(self.main_amount_bill) * Decimal(self.new_main_kwh))/self.kwh_main_house
         # print(f"new_amount_main_bill: {self.new_amount_main_bill}")
     # 2
@@ -240,6 +241,8 @@ class CoreSharePay(object):
             data_set_tenants_by_day_without_kwh = set()
             left_over_without_kwh = set()
             for main, houses_data in data_dict_date_by_day_without_kwh.items():
+                data_set_tenants_by_day_without_kwh.clear()
+                # left_over_without_kwh.clear()
                 for house_name, tenant_name_and_dates in houses_data.items():
                     data_set_tenants_by_day_without_kwh.clear()
                     for tenant_name, dates in tenant_name_and_dates.items():
@@ -294,6 +297,7 @@ class CoreSharePay(object):
                         })
                 # else:
                 #     end.update({f"left_over_with_kwh_{house_name}":[x for x in left_over_with_kwh if x.startswith(f'left_{house_name}')]})
+
             
             # print(f'{end}\n')
             return end
@@ -632,6 +636,7 @@ class CoreSharePay(object):
                 }
             # print([ {x.replace('Left_Over_with_kwh_',''):y} for x, y in total_by_each_tenant_converted.items() if x.startswith('Left_Over_with_kwh')])
             # total_by_each_tenant_converted.pop('all')
+
 
             #Validations
             """
