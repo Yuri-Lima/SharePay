@@ -10,79 +10,61 @@
     <source src="{% static 'mp4/bg.mp4' %}" type="video/mp4">
   </video>
 
-  <div class="masthead">
-    <div class="masthead-bg"></div>
-    <div class="container h-100">
-      <div class="row h-100">
-        <div class="col-12 my-auto">
-          <div class="masthead-content text-white py-5 py-md-0">
-          {% comment %} LOGO {% endcomment %}
-          {% include 'houses/logo.html' %}
+<div class="masthead">
+  <div class="masthead-bg"></div>
+  <div class="container h-100">
+    <div class="row h-100">
+      <div class="col-12 my-auto">
+        <div class="masthead-content text-white py-5 py-md-0">
+        {% comment %} LOGO {% endcomment %}
+        {% include 'houses/logo.html' %}
 
-          <form action="" method="POST" enctype="multipart/form-data">
-            {% for hidden_field in forms.hidden_fields %}
-                {{ hidden_field.erros }}
-                { 
-            {% endfor %}
+        <form action="" method="POST" enctype="multipart/form-data">
+          {% for hidden_field in forms.hidden_fields %}
+              {{ hidden_field.erros }}
+              { 
+          {% endfor %}
 
-            {% csrf_token %}
-        
-            {{ forms.non_form_erros }}
-            {{ field.erros }}
+          {% csrf_token %}
+      
+          {{ forms.non_form_erros }}
+          {{ field.erros }}
 
-              <div class="conteiner">
-                <div class="row">
-                    <div class="col">
-                        <p>What will be the new house name:</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col py-2">
-                        <p>House Name:</p>
-                    </div>
-                    <div class="col py-2">
-                        <p>{{form.house_name}}</p>
-                        <p>{{form.house_name.errors}}</p>
-                    </div>
-                </div>
-                {% comment %} <div class="row">
-                    <div class="col py-2">
-                        <abbr title="Is the bill belongs this house typed above?" class="initialism" ><p>Is that main house?</p></abbr>
-                    </div>
-                    <div class="col py-2">
-                        <p>{{form.main_house}}</p>
-                        <p>{{form.main_house.errors}}</p>
-                    </div>
-                </div> {% endcomment %}
-                {% comment %} <div class="row">
-                    <div class="col py-2">
-                        <p class='mb-1'>How many Meters have you installed:</p>
-                    </div>
-                </div>
-                <div class="row">
-                  <div class="col py-1">
-                        <p>{{form.meter}}</p>
-                        <p>{{form.meter.errors}}</p>
-                    </div>
-                </div> {% endcomment %}
-              </div> 
-                <p class="pt-2">
-                    <button type="submit" class="btn btn-primary w-100 mb-2" >Update House Name</button>
-                    <a href="{% url 'share:detail_house_name' pk=house.id %}" role="button" class="btn btn-secondary w-100">Back</a>
-                </p>
-          </form>
-          
-            {% if user.is_authenticated %}
-            <div class="input-group-append p-2">
-              <a href="{% url 'users:logout' %}" type="button" class="btn btn-outline-warning btn-sm ">Log Out</a>
+          <p>What will be the new house name:</p>
+          <div class="form-row text-white">
+            <div class="form-group col-md-8">
+                <label for="inputName">House Name:</label>
+                {{form.house_name}}
+                {{form.house_name.errors}}
             </div>
-            {% endif %}
           </div>
+          <p class="pt-2">
+              <button type="submit" class="btn btn-primary w-100 mb-2" >Update House Name</button>
+              <a href="{% url 'share:detail_house_name' pk=house.id %}" role="button" class="btn btn-secondary w-100">Back</a>
+          </p>
+        </form>
+          {% if user.is_authenticated %}
+          <div class="input-group-append p-2">
+            <a href="{% url 'users:logout' %}" type="button" class="btn btn-outline-warning btn-sm ">Log Out</a>
+          </div>
+          {% endif %}
         </div>
       </div>
     </div>
   </div>
+</div>
 
   {% include 'social_media/social_media.html' %}
   
 {% endblock content %}
+
+{% block Scripts %}
+<!--  Adding Toll Tips  -->
+<script type="text/javascript">
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        });
+</script>
+{% endblock Scripts %}
+
+

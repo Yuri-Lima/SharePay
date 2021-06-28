@@ -4,19 +4,19 @@
 {% block title %}SharePay - Bill{% endblock title %}
 
 {% block content %}
-  <div class="overlay"></div>
-  <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
+<div class="overlay"></div>
+<video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
     <source src="{% static 'mp4/bg.mp4' %}" type="video/mp4">
-  </video>
-  <div class="masthead">
+</video>
+<div class="masthead">
     <div class="masthead-bg"></div>
     <div class="container h-100">
-      <div class="row h-100">
-        <div class="col-12 my-auto">
-          <div class="masthead-content text-white py-5 py-md-0">
-          {% comment %} LOGO {% endcomment %}
-          {% include 'houses/logo.html' %}
-            <!-- ================================ -->
+        <div class="row h-100">
+            <div class="col-12 my-auto">
+                <div class="masthead-content text-white py-5 py-md-0">
+                    {% comment %} LOGO {% endcomment %}
+                    {% include 'houses/logo.html' %}
+                    <!-- ================================ -->
                     {% if messages %}
                     <ul class="bill_messages">
                         {% for message in messages %}
@@ -24,102 +24,127 @@
                         {% endfor %}
                     </ul>
                     {% endif %}
-            <!-- ================================ -->
-            <form action="" method="POST", enctype="multipart/form-data">
-                {% for hidden_field in form.hidden_fields %}
-                    {{ hidden_field.erros }}
-                    {{ hidden_field }}
-                {% endfor %}
+                    <!-- ================================ -->
+                    <form action="" method="POST", enctype="multipart/form-data">
+                        {% for hidden_field in form.hidden_fields %}
+                            {{ hidden_field.erros }}
+                            {{ hidden_field }}
+                        {% endfor %}
 
-                {% csrf_token %}
+                        {% csrf_token %}
 
-                {{ form.management_form }}
-                {{ form.non_form_erros }}
+                        {{ form.management_form }}
+                        {{ form.non_form_erros }}
 
-                <h3>Insert Total Value of The Bill</h3>
-                {% for bill_form in form.forms %}
+                        {% for hidden_field in bill_form.hidden_fields %}
+                            {{ hidden_field.erros }}
+                        {% endfor %}
+
+                        <h3>Insert Detail's Bill</h3>
+                        <hr>
+                        <!-- ================ Start Dynamic FormSet ================ -->
+                        {% for name_form in form.forms %}
+                            <div class="dynamicInlineFormSet_bill">
+                                <div class="form-row text-white">
+                                    <p>Total value of bill</p>
+                                </div>
+                                <div class="form-row text-white">
+                                    <div class="form-group col-md-8">
+                                        <label for="inputName">Value:</label>
+                                        {{name_form.amount_bill}}
+                                        {{name_form.amount_bill.errors}}
+                                    </div>
+                                </div>
+                                <div class="form-row text-white">
+                                    <p>Select period of the bill</p>
+                                </div>
+                                <div class="form-row text-white">
+                                    <div class="form-group col-md-4">
+                                        <label for="inputStartDay">Start: </label>
+                                        {{name_form.start_date_bill}}
+                                        {{name_form.start_date_bill.errors}}
+                                    </div>
+                                    <div class="form-group col-md-4">
+                                        <label for="inputEndDay">End: </label>
+                                        {{name_form.end_date_bill}}
+                                        {{name_form.end_date_bill.errors}}
+                                    </div>
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label class="mb-0 flex-wrap" for="inputSelect"></label>
+                                    <ul class="list-inline m-0">
+                                        {% if form.can_delete and name_form.instance.id %}{{ name_form.id }}{{ name_form.DELETE }}{% endif %}
+                                    </ul>
+                                </div>
+                            </div>
+                        {% endfor %}
+                        <!-- ================ End Dynamic FormSet ================ -->
+                        <hr>
+                        <p>
+                        {% for bill in  housesbill.house_bill_related.all %}
+                            <button type="submit" value="Add Tenants" class="btn btn-primary w-100 mb-3" >Update House Bill</button>
+                        {% empty %}
+                            <button type="submit" value="Add Tenants" class="btn btn-primary w-100 mb-3" >Add House Bill</button>
+                        {% endfor %}
+                            <a href="{% url 'share:detail_house_name' pk=housesbill.id %}" role="button" class="btn btn-secondary w-100">Back</a>
+                        </p>
+                    </form>
+                    {% if user.is_authenticated %}
                     <hr>
-                {% for hidden_field in bill_form.hidden_fields %}
-                    {{ hidden_field.erros }}
-                {% endfor %}
-                <div class="row">
-                    <div class="col">
-                        <p>Total value of bill:</p>
-                        <p>{{bill_form.amount_bill}}</p>
-                        <p>{{bill_form.amount_bill.errors}}</p>
+                    <div class="input-group-append">
+                        <a href="{% url 'users:logout' %}" type="button" class="btn btn-outline-warning btn-sm ">Log Out</a>
                     </div>
-                    <div class="col">
-                        
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <p>Select period of the bill:</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <p>Start:</p>
-                    </div>
-                    <div class="col">
-                        <p>{{ bill_form.start_date_bill }}</p>
-                        <p>{{bill_form.start_date_bill.errors}}</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        <p>End:</p>
-                    </div>
-                    <div class="col">
-                        <p>{{ bill_form.end_date_bill }}</p>
-                        <p>{{bill_form.end_date_bill.errors}}</p>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
-                        {% if form.can_delete  and bill_form.instance.id %} 
-                        <!-- If you are useing formset as ModelFormSet, you must provide the ID onto FormSet -->
-                        {{bill_form.id}}
-                        <p>{{ bill_form.DELETE }} - <b>Delete</b></p>
                     {% endif %}
-                    </div>
                 </div>
-                {% endfor %}
-                <hr>
-                <p>
-                {% for bill in  housesbill.house_bill_related.all %}
-                    <button type="submit" value="Add Tenants" class="btn btn-primary w-100 mb-3" >Update House Bill</button>
-                {% empty %}
-                    <button type="submit" value="Add Tenants" class="btn btn-primary w-100 mb-3" >Add House Bill</button>
-                {% endfor %}
-                    <a href="{% url 'share:detail_house_name' pk=housesbill.id %}" role="button" class="btn btn-secondary w-100">Back</a>
-                </p>
-            </form>
-
-
-            {% if user.is_authenticated %}
-            <hr>
-            <div class="input-group-append">
-              <a href="{% url 'users:logout' %}" type="button" class="btn btn-outline-warning btn-sm ">Log Out</a>
             </div>
-            {% endif %}
-          </div>
         </div>
-      </div>
     </div>
-  </div>
+</div>
 
-  {% include 'social_media/social_media.html' %}
+{% include 'social_media/social_media.html' %}
 {% endblock content %}
 
 {% block Scripts %}
 <script src="{% static 'js/jquery.mask.min.js' %}"></script>
 
+<!--  Mask  -->
 <script>
 $(document).ready(function(){
   $('.id_amount_bill').mask('000,000,000,000,000.00', {reverse: true});
 });
 </script>
+<!--  Adding Toll Tips  -->
+<script type="text/javascript">
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        });
+</script>
+<!--  Adding Dynamic FormSet  -->
+<!-- Bug Fixed: https://github.com/elo80ka/django-dynamic-formset/issues/180 -->
+<script src="{% static 'js/jquery.formset.js' %}"></script>
+<script type="text/javascript">
+    $(function() {
+        $('.dynamicInlineFormSet_bill').formset({
+            prefix: '{{form.prefix}}',
+            formCssClass: 'dynamicInlineFormSet',
+            //Add Modifications
+            addCssClass: 'btn btn-success btn-sm rounded-0', //from line 185 js file
+            //addContainerClass: 'dynamicInlineFormSet',
+            addText: ' Add Another',
+            //Delete Modifications
+            deleteCssClass: 'btn btn-danger btn-sm rounded-0',
+            deleteText: ' Remove',//just to remove the name
+            deleteContainerClass: 'list-inline m-0',//Encontre esse cara e add
+            //extraClasses:['']
+        });
+    })
+</script>
+<!--  Adding Toll Tips  -->
+<script type="text/javascript">
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip();
+        });
+</script>
+
 
 {% endblock Scripts %}
-

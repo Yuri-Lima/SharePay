@@ -245,21 +245,18 @@ class SubTenantNameModelForm(forms.ModelForm):
         # self.cleaned_data['sub_days'] = int((self.cleaned_data['sub_end_date'] - self.cleaned_data['sub_start_date']).days)
         return super(SubTenantNameModelForm, self).clean()
 
-HouseNameFormset = inlineformset_factory(
+HouseTenantFormset = inlineformset_factory(
 
     HouseNameModel,
     HouseTenantModel,
     form=HouseTenantModelForm,
-    # formset=CustomFormSetBase_HouseNameFormset,
+    # formset=CustomFormSetBase_HouseTenantFormset,
     # fields=['house_tenant', 'start_date', 'end_date'],
     extra=0,
     min_num=1,
     max_num=20,
     can_delete=True,
     can_order=True,
-    error_messages={
-        'unique': ('TESTE1'),
-    },
     widgets={
         'house_tenant': TextInput(attrs={
             'autofocus': True,
@@ -295,7 +292,7 @@ HouseBillFormset = inlineformset_factory(
     # fields=['house_bill_FK', 'amount_bill', 'start_date_bill', 'end_date_bill', 'days_bill], 
     extra=0, 
     min_num=1,
-    max_num=2,
+    max_num=1,
     can_delete=True,
     can_order=True,
     widgets={
@@ -345,21 +342,31 @@ HouseKilowattsFormset = inlineformset_factory(
     can_delete=True,
     can_order=True,
     widgets={
-        'kwh': NumberInput(attrs={
-            'placeholder': 'Units Kilowatts...',
-            'id': 'inputKwh',
-            'type':'number',
-        }),
-        'last_read_kwh' : NumberInput(attrs={
-            'placeholder': 'Previous read...',
-            'id': 'inputPreviousKwh',
-            'type':'number',
-        }),
-        'read_kwh' : NumberInput(attrs={
-            'placeholder': 'Present read...',
-            'id': 'inputPresentKwh',
-            'type':'number',
-        }),
+        'kwh': NumberInput(
+            attrs={
+                'autofocus': True,
+                'class': 'form-control',
+                'placeholder': 'Units Kilowatts...',
+                'aria-label': 'Units Kilowatts...',
+                'id': 'inputKwh',
+                'type':'number',
+            }),
+        'last_read_kwh' : NumberInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Previous read...',
+                'aria-label': 'Previous read...',
+                'id': 'inputPreviousKwh',
+                'type':'number',
+            }),
+        'read_kwh' : NumberInput(
+            attrs={
+                'class': 'form-control',
+                'placeholder': 'Present read...',
+                'aria-label': 'Present read...',
+                'id': 'inputPresentKwh',
+                'type':'number',
+            }),
     },
 )
 
@@ -369,14 +376,21 @@ SubHouseNameFormset = inlineformset_factory(
     SubHouseNameModel,
     form=SubHouseNameModelForm,
     # fields=['sub_house_FK','sub_house_name', 'sub_meter', 'sub_main_house'], 
-    extra=2, 
+    extra=1,
     min_num=1,
-    max_num=3,
+    max_num=5,
     can_delete=True,
     can_order=True,
-    error_messages={
-        'unique': ('TESTE2'),
-    },
+    widgets={
+        'sub_house_name': TextInput(attrs={
+            'autofocus': True,
+            'class': 'form-control',
+            'placeholder': 'Enter Sub House Name...',
+            'aria-label': 'Enter Sub House Name...',
+            'id': 'inputSubHouseName',
+            'type':'text',
+        }),
+    }
 )
 
 SubHouseKilowattFormset = inlineformset_factory(
@@ -417,7 +431,7 @@ SubHouseTenantFormset = inlineformset_factory(
     # fields=['main_tenant_FK', 'sub_house_tenant_FK', 'sub_house_tenant', 'sub_start_date', 'sub_end_date', 'sub_days'],
     extra=0,
     min_num=1,
-    max_num=10,
+    max_num=20,
     can_delete=True,
     can_order=True,
     widgets={
