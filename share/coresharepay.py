@@ -20,11 +20,7 @@
 #main_tenant_FK=None - sub_house_tenant_FK=None - sub_house_tenant=None - sub_start_date=None - sub_end_date=None - sub_days=None
 
 from datetime import timedelta
-import datetime
-from django.db.models.fields import DateTimeCheckMixin
-from django.shortcuts import resolve_url
 from django.utils.translation import gettext_lazy as _
-from django.contrib import messages
 from collections import Counter
 from decimal import *
 
@@ -96,10 +92,9 @@ class CoreSharePay(object):
                 x       --- r
         """
         #step 3:
-        getcontext().prec = 5 #manter alta precisao, pois no somatorio sera necessario.
+        getcontext().prec = 8 #manter alta precisao, pois no somatorio sera necessario.
         self.new_amount_main_bill = (Decimal(self.main_amount_bill) * Decimal(self.new_main_kwh))/self.kwh_main_house
-        
-        pass
+        # print(f"new_amount_main_bill: {self.new_amount_main_bill}")
     # 2
     def check_if_which_sub_house_hasnt_kwh_filled(self, _names_with_kwh=False, _names_without_kwh=False, _subid_without_kwh=False, _subid_with_kwh=False, *args, **kwargs):
         """
@@ -176,7 +171,17 @@ class CoreSharePay(object):
                 }for name, subid_without_kwh in subids_without_kwh.items()
             }
         )
-        # print(f"--->>{self.dict_date_range_for_tenants_without_kwh}")
+        """[to_remove]
+            to_remove contains sub houses without any data. It happens, because the user has registered only the name of the sub house
+            I had to remove it, otherwise it will affects the calculation of the bill.
+        """
+        to_remove= str()
+        for key, value in self.dict_date_range_for_tenants_without_kwh['main'].items():
+            if not value:
+                to_remove = str(key)
+        del self.dict_date_range_for_tenants_without_kwh['main'][to_remove]
+        
+        """[to_remove]"""
 
         #=======xxxxx Range Sub With Kwh xxxx===========
         self.dict_date_range_for_tenants_with_kwh = dict()
@@ -228,27 +233,28 @@ class CoreSharePay(object):
         
         #START get_tenants_by_day without kwh
         if _without_kwh:
+            sub_house_empty_tenants = set()
             data_dict_date_by_day_without_kwh = self.dict_date_range_for_tenants_without_kwh
             end =dict()
             data_set_tenants_by_day_without_kwh = set()
             left_over_without_kwh = set()
+            # print(data_dict_date_by_day_without_kwh['main'].get("Ramon's House"))
 
             for main, houses_data in data_dict_date_by_day_without_kwh.items():
                 data_set_tenants_by_day_without_kwh.clear()
                 # left_over_without_kwh.clear()
                 for house_name, tenant_name_and_dates in houses_data.items():
-                    # left_over_without_kwh.clear()
                     for tenant_name, dates in tenant_name_and_dates.items():
                         if date_bill_verification_by_day in dates['dates']:
                             data_set_tenants_by_day_without_kwh.add(str(tenant_name))
                         else:
                             left_over_without_kwh.add(f'left_{house_name} - {tenant_name} - {date_bill_verification_by_day}')
                             # print(f"House: {house_name} Tenant: {tenant_name} Date: {date_bill_verification_by_day}")
-                    
+
                 if data_set_tenants_by_day_without_kwh:
-                    # print(f"House: {house_name} Tenant: {tenant_name} Date: {date_bill_verification_by_day}")
                     if left_over_without_kwh:
                         data_set_tenants_by_day_without_kwh.update(left_over_without_kwh)
+                    
                     end.update({str(house_name):[x for x in data_set_tenants_by_day_without_kwh]})
                     # if left_over_without_kwh:
                     #     end.update({"left_over_without_kwh":left_over_without_kwh})
@@ -386,7 +392,6 @@ class CoreSharePay(object):
 
         #57: {datetime.date(2021, 5, 9): {'Daiane', 'Elizagela', 'José', 'Ellen', 'Nathalia', 'Eugenio'}}
 
-    
     def calc_1(self, request=None, *args, **kwargs):
         #Se sub house nao preencheu kwh pego todos os tenants da casa pai e filhos(Nao se pega pai'S' somente todos os filhos)
         """
@@ -437,6 +442,7 @@ class CoreSharePay(object):
                 #Step -6
                 total_by_each_tenant_converted['all'] = {key : value for key, value in total_by_each_tenant.items() if not key.startswith('left_')}#tiver que converter, pois v estava em Decimal Class
                 total_by_each_tenant_converted['Left_Over_without_kwh'] = {key : value for key, value in total_by_each_tenant.items() if key.startswith('left_')}
+                # total_by_each_tenant_converted['days'] = {key : value for key, value in total_by_each_tenant.items() if key.startswith('left_')}
                 #Step -7
         # print(f"{total_by_each_tenant}\n")
         # print(f"{total_by_each_tenant_converted['Left_Over_without_kwh']}\n")
@@ -475,10 +481,11 @@ class CoreSharePay(object):
                     str('details_date'): values_dict,
                 }for key, values_dict in total_by_each_tenant_converted.items() if key.startswith('Left_Over_without_kwh')
             }
+            
             # print([{key:value} for key, value in total_by_each_tenant_converted.items() if key.startswith('Left_Over_without_kwh')])
-            total_by_each_tenant_converted.pop('Left_Over_without_kwh')
+            # total_by_each_tenant_converted.pop('Left_Over_without_kwh')
 
-        total_by_each_tenant_converted.pop('all')
+        # total_by_each_tenant_converted.pop('all')
 
         #Step -10
         total_by_each_tenant_converted['kwh'] = self.kwh_main_house
@@ -582,7 +589,7 @@ class CoreSharePay(object):
                     }for key, value in total_by_each_tenant_converted.items() if key.startswith('Left_Over_with_kwh')
                 }
             # print([ {x.replace('Left_Over_with_kwh_',''):y} for x, y in total_by_each_tenant_converted.items() if x.startswith('Left_Over_with_kwh')])
-            total_by_each_tenant_converted.pop('all')
+            # total_by_each_tenant_converted.pop('all')
 
             #Validations
             """
