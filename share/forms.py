@@ -266,6 +266,9 @@ HouseTenantFormset = inlineformset_factory(
             'aria-describedby':'submit-button',
             'id': 'inputName',
             'type':'text',
+            'data-toggle': "tooltip",
+            'data-placement': "top",
+            'title': "Add Tenant Name"
         }),
         'start_date': HouseNameDateInput(format=['%Y-%m-%d'],
             attrs={
