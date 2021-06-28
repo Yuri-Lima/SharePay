@@ -466,7 +466,7 @@ class SubHouseKilowattsFormView(LoginRequiredMixin, SingleObjectMixin, FormView)
 
 from share.coresharepay import CoreSharePay
 ############  START CALC MAIN HOUSES  AND SUBHOUSES ################################
-class CalcHouseView(LoginRequiredMixin, TemplateView, MultipleObjectMixin, CoreSharePay):
+class CalcHouseView(LoginRequiredMixin, TemplateView, MultipleObjectMixin   ):
     template_name = 'houses/calc_bill/calc_main_house.html'
     
 
