@@ -32,12 +32,13 @@
   </head>
 
   <body>
+  {% spaceless %}
     {% autoescape on %}
         {% block content %}
         
         {% endblock content %}
     {% endautoescape %}
-
+  {% endspaceless %}
       <!-- Dont remove anythong below -->
       <!-- Bootstrap core JavaScript -->
       <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
