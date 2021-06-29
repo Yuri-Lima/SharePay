@@ -162,7 +162,7 @@ STATIC_ROOT = BASE_DIR / "staticfiles"
 
 #Settings SMTP email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST =config('EMAIL_HOST')
+EMAIL_HOST ='smtp.eu.mailgun.org'
 EMAIL_PORT = config('EMAIL_PORT', cast=int)
 EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
