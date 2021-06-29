@@ -31,11 +31,13 @@
         {% comment %} <link rel="stylesheet" href="{% static 'css/coming-soon.min.css' %}"> {% endcomment %}
     </head>
     <body >
+    {% spaceless %}
         {% autoescape on %}
             {% block content %}
             
             {% endblock content %}
         {% endautoescape %}
+    {% endspaceless %}
 
         <!-- Bootstrap core JavaScript
         ================================================== -->
