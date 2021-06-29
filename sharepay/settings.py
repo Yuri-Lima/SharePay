@@ -139,9 +139,10 @@ USE_TZ = True
 SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
-# # PREPEND_WWW = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 BASE_URL = "https://www.sharepay.com.br"
+
+# # PREPEND_WWW = True
 
 
 # Static files (CSS, JavaScript, Images)
@@ -158,6 +159,21 @@ MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
+
+#Settings SMTP email
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST ='smtp.eu.mailgun.org'
+EMAIL_PORT = config('EMAIL_PORT', cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+
+
+#Settings API email
+# EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"  # or sendgrid.EmailBackend, or...
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')  # if you don't already have this in settings
+SERVER_EMAIL = config('SERVER_EMAIL')  # ditto (default from-email for Django errors)
+
 
 #AWS S3 Buckets Config
 # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html
