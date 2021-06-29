@@ -492,6 +492,19 @@ class CalcHouseView(LoginRequiredMixin, TemplateView, MultipleObjectMixin   ):
 
 ############  END CALC MAIN HOUSES  AND SUB HOUSES  ################################
 
+############  MAKE REPORTS for MAIN HOUSES AND SUB HOUSES ################################
+
+class ReportsViews(LoginRequiredMixin, TemplateView, MultipleObjectMixin):
+    
+    template_name = 'houses/report.html'
+    
+    def get_context_data(self, **kwargs):
+        main_house = HouseNameModel.objects.filter(pk=self.kwargs['pk'])
+        kwargs['object_list'] = main_house
+        kwargs['Main_House'] = main_house 
+        return super(ReportsViews, self).get_context_data(**kwargs)
+
+
 ############  START ERROR VIEWS  ################################
 from django.http import HttpResponseForbidden
 

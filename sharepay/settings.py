@@ -52,9 +52,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'django.contrib.sitemaps',
     #Local Apps
-    'users',
-    'share',
+    'users.apps.UsersConfig',
+    'share.apps.ShareConfig',
     #Apps by others
 ]
 
