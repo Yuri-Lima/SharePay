@@ -71,10 +71,7 @@ class HouseKilowattModel(models.Model):
         return str(self.house_kwh_FK) + ' - ' + str(self.kwh) + 'kwh'
 
     def get_absolute_url(self):
-        return reverse('share:detail_house_name', kwargs={
-                                                        'pk': self.pk,
-                                                        'subpk': self.subpk,
-                                                        })
+        return reverse('share:detail_house_name', kwargs={'pk': self.pk})
 
 class HouseTenantModel(models.Model):
     house_name_FK = models.ForeignKey(HouseNameModel, null=True, blank=True, max_length=255,
@@ -89,10 +86,7 @@ class HouseTenantModel(models.Model):
         return self.house_tenant
     
     def get_absolute_url(self):
-        return reverse('share:detail_house_name', kwargs={
-                                                        'pk': self.pk,
-                                                        'subpk': self.subpk,
-                                                        })
+        return reverse('share:detail_house_name', kwargs={'pk': self.pk,})
 
     def clean(self):
         if self.house_tenant:
