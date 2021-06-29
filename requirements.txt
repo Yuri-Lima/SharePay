@@ -1,3 +1,4 @@
+# ================ Start Originals ==============
 asgiref==3.3.1
 boto3==1.17.39
 botocore==1.20.39
@@ -18,3 +19,4 @@ six==1.15.0
 sqlparse==0.4.1
 urllib3==1.26.4
 whitenoise==5.2.0
+# ================ End Originals ==============

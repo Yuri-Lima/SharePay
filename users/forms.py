@@ -19,6 +19,7 @@ class PasswordConfirmationForm(SetPasswordForm):
         label=("New password"),
         widget=forms.PasswordInput(
             attrs={
+                'autofocus': True,
                 'autocomplete': 'new-password',
                 'class': 'form-control',
                 'placeholder': 'Enter password',
@@ -26,13 +27,13 @@ class PasswordConfirmationForm(SetPasswordForm):
         strip=False,
     )
     new_password2 = forms.CharField(
-        label=("New password confirmation"),
+        label=("Confirmation"),
         strip=False,
         widget=forms.PasswordInput(
             attrs={
-                'autocomplete': 'new-password',
+                'autocomplete': 'new-password-confirmation',
                 'class': 'form-control',
-                'placeholder': 'Enter password',
+                'placeholder': 'Enter password confirmation',
                 }),
     )
 
@@ -42,6 +43,7 @@ class EmailValidationOnForgotPassword(PasswordResetForm):
         max_length=254,
         widget=forms.EmailInput(
             attrs={
+                'autofocus': True,
                 'autocomplete': 'email',
                 'class': 'form-control',
                 'placeholder': 'Your email here...',
@@ -58,20 +60,26 @@ class EmailValidationOnForgotPassword(PasswordResetForm):
 
 class CustomLoginForm(AuthenticationForm):
     
-    username = forms.CharField(widget=TextInput(
-        attrs={
-            'autofocus': True,
-            'class': 'form-control',
-            'placeholder': 'Enter username...',
-            'aria-label': 'Enter username...',
-            'aria-describedby':'submit-button',
-            }))
-    password = forms.CharField(widget=PasswordInput(
-        attrs={
-            'class': 'form-control',
-            'autocomplete': 'current-password',
-            'placeholder': 'Enter password',
-            }))
+    username = forms.CharField(
+        widget=TextInput(
+            attrs={
+                'autofocus': True,
+                'class': 'form-control',
+                'placeholder': 'Enter username...',
+                'aria-label': 'Enter username...',
+                'aria-describedby':'submit-button',
+            }
+        )
+    )
+    password = forms.CharField(
+        widget=PasswordInput(
+            attrs={
+                'class': 'form-control',
+                'autocomplete': 'current-password',
+                'placeholder': 'Enter password',
+            }
+        )
+    )
 
 class CustomUserCreationForm(UserCreationForm):
 
@@ -86,6 +94,7 @@ class CustomUserCreationForm(UserCreationForm):
         widgets = {
             'username': forms.TextInput(
                 attrs={
+                    'autofocus': True,
                     'class': 'form-control',
                     'placeholder': 'Enter username...',
                     'aria-label': 'Enter username...',
@@ -105,6 +114,7 @@ class CustomUserCreationForm(UserCreationForm):
         strip=False,
         widget=forms.PasswordInput(
             attrs={
+                'autofocus': True,
                 'class': 'form-control',
                 'autocomplete': 'new-password',
                 'placeholder': 'Enter password',
@@ -135,6 +145,7 @@ class CustomUserChangeForm(UserChangeForm):
         widgets = {
             'username': forms.TextInput(
                 attrs={
+                    'autofocus': True,
                     'class': 'form-control',
                     'placeholder': 'Enter username...',
                     'aria-label': 'Enter username...',
