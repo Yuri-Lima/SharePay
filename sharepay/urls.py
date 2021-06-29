@@ -2,14 +2,46 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
+#Google Robots >> robots.txt <<
+from django.views.generic import TemplateView
+# Sitemap from django
+from django.contrib.sitemaps.views import sitemap
+#Sitemaps from apps
+from share.sitemaps import (
+    HouseNameSitemap,
+    HouseTenantSitemap,
+    HouseKilowattSitemap,
+    HouseBillSitemap,
+    SubHouseNameSitemap,
+    SubKilowattSitemap,
+    SubTenantSitemap, 
+)
+from users.sitemaps import CustomUserSitemap
+#Dict Sitemaps
+# https://www.youtube.com/watch?v=xAXMqiPSY34
+sitemaps = {
+    'housename': HouseNameSitemap,
+    'housetenant': HouseTenantSitemap,
+    'Housekilowatts': HouseKilowattSitemap,
+    'housebill': HouseBillSitemap,
+    'subhousename' : SubHouseNameSitemap,
+    'subkilowatts' : SubKilowattSitemap,
+    'subtenant' : SubTenantSitemap,
+    'users' : CustomUserSitemap,
+}
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('users.urls')),
-    # path('users/', include('django.contrib.auth.urls')),
 
     #Share URLS
     path('', include('share.urls')),
+
+    #SiteMap
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}),
+
+    #Google Robots >> robots.txt << https://developers.google.com/search/docs/advanced/robots/create-robots-txt?hl=en
+    path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type='text/plain')),
 ]
 #Static Paths >> static <<
 if settings.DEBUG is True:
