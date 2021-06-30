@@ -30,7 +30,20 @@ class HouseNameDateInput(DateInput):
 class HouseNameModelForm(forms.ModelForm):
     class Meta:
         model= HouseNameModel
-        fields='__all__'  
+        fields='__all__'
+
+    def clean(self):
+        if self.cleaned_data['house_name']:
+            if len(self.cleaned_data['house_name']) > 25:
+                raise ValidationError({
+                    'house_name': _(f'Ensure House Name has max 25 characters (it has {len(self.cleaned_data["house_name"])}).'),
+                })
+        else:
+            raise ValidationError({
+                'house_name': _('You must provide a House Name (up to 25 letters).'),
+            })
+
+        return super(HouseNameModelForm).clean()
 
 class HouseTenantModelForm(forms.ModelForm):
     class Meta:
