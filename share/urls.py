@@ -69,7 +69,7 @@ urlpatterns = [
     path('calc_house/<int:pk>/', CalcHouseView.as_view(), name='calc_house'), 
 
     #Reports Views
-    path('case_simple/<int:pk>/', ReportsViews.as_view(), name='reports_view'),
+    path('report/<int:pk>/', ReportsViews.as_view(), name='reports_view'),
 ]
 
 #Error Pages Paths >> ERROR PAGES <<

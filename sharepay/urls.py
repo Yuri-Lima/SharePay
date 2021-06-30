@@ -14,19 +14,21 @@ from share.sitemaps import (
     HouseBillSitemap,
     SubHouseNameSitemap,
     SubKilowattSitemap,
-    SubTenantSitemap, 
+    SubTenantSitemap,
+    IndexSiteamp,
 )
 from users.sitemaps import CustomUserSitemap
 #Dict Sitemaps
 # https://www.youtube.com/watch?v=xAXMqiPSY34
 sitemaps = {
-    'housename': HouseNameSitemap,
-    'housetenant': HouseTenantSitemap,
-    'Housekilowatts': HouseKilowattSitemap,
-    'housebill': HouseBillSitemap,
-    'subhousename' : SubHouseNameSitemap,
-    'subkilowatts' : SubKilowattSitemap,
-    'subtenant' : SubTenantSitemap,
+    'index': IndexSiteamp,
+    #'housename': HouseNameSitemap,
+    #'housetenant': HouseTenantSitemap,
+    #'Housekilowatts': HouseKilowattSitemap,
+    #'housebill': HouseBillSitemap,
+    #'subhousename' : SubHouseNameSitemap,
+    #'subkilowatts' : SubKilowattSitemap,
+    #'subtenant' : SubTenantSitemap,
     'users' : CustomUserSitemap,
 }
 

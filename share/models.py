@@ -17,24 +17,15 @@ class HouseNameModel(models.Model):
     last_updated_house = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     
     def __str__(self) -> str:
-        return self.house_name
+        if self.house_name:
+            return self.house_name
+        return self
     
     def get_absolute_url(self):
         return reverse('share:detail_house_name', kwargs={'pk': self.pk})
 
     class Meta:
         ordering = ['-last_updated_house']
-    
-    def clean(self):
-        if self.house_name != None:
-            if len(self.house_name) > 25:
-                raise ValidationError({
-                    'house_name': _(f'Ensure House Name has max 25 characters (it has {len(self.house_name)}).'),
-                })
-        else:
-            raise ValidationError({
-                'house_name': _('You must provide a House Name (up to 25 letters).'),
-            })
         
 class HouseBillModel(models.Model):
     house_bill_FK = models.ForeignKey(HouseNameModel, null=True, blank=True, max_length=255,
