@@ -68,15 +68,3 @@
 
   {% include 'social_media/social_media.html' %}
 {% endblock content %}
-
-<div class="d-block flex-wrap mb-2">
-  <div class="" style="border-top-right-radius: 0;border-bottom-right-radius: 0;">
-    
-  </div>
-  <div class="" style="border-radius: 0;">
-    <a href="{% url 'share:update_house_name' pk=housename.id %}" class="text-white">Update</a>
-  </div>
-  <div class="btn btn-outline-warning" style="border-top-left-radius: 0;border-bottom-left-radius: 0;">
-    <a href="{% url 'share:delete_house_name' pk=housename.id %}"  class="text-white">Delete</a>
-  </div>
-</div>
