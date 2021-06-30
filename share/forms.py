@@ -43,8 +43,9 @@ class HouseNameModelForm(forms.ModelForm):
         fields=['house_name']
 
     def clean(self):
-        if self.cleaned_data['house_name']:
-            if len(self.cleaned_data['house_name']) > 25:
+        house_name = self.cleaned_data['house_name']
+        if house_name:
+            if len(house_name) > 25:
                 raise ValidationError({
                     'house_name': _(f'Ensure House Name has max 25 characters (it has {len(self.cleaned_data["house_name"])}).'),
                 })
@@ -68,33 +69,36 @@ class HouseTenantModelForm(forms.ModelForm):
         #First Validation
         #Data Range Validation
         obj_house_name=HouseNameModel.objects.get(pk=self.cleaned_data['house_name_FK'].id)
-        start_date, end_date = False, False
+        flag_start_date, flag_end_date = False, False
+        start_date = self.cleaned_data['start_date']
+        end_date = self.cleaned_data['end_date']
         for obj_house_bill in obj_house_name.house_bill_related.all():
-            if date.fromisoformat(str(self.cleaned_data['start_date'])) < date.fromisoformat(str(obj_house_bill.start_date_bill)):
-                start_date = True
-            if date.fromisoformat(str(self.cleaned_data['end_date'])) > date.fromisoformat(str(obj_house_bill.end_date_bill)):
-                end_date = True
+            if start_date < obj_house_bill.start_date_bill:
+                flag_start_date = True
+            if end_date > obj_house_bill.end_date_bill:
+                flag_end_date = True
 
-            if start_date and end_date:
+            if flag_start_date and flag_end_date:
                 raise ValidationError({
                     'start_date': _(f'Out of Range - {obj_house_bill.start_date_bill}'),
                     'end_date': _(f'Out of Range - {obj_house_bill.end_date_bill}')
                 })
-            elif start_date:
+            elif flag_start_date:
                 raise ValidationError({
                     'start_date': _(f'Out of Range - {obj_house_bill.start_date_bill}')
                 })
-            elif end_date:
+            elif flag_end_date:
                 raise ValidationError({
                     'end_date': _(f'Out of Range - {obj_house_bill.end_date_bill}')
                 })
 
-        self.cleaned_data['days'] = int((self.cleaned_data['end_date'] - self.cleaned_data['start_date']).days)
-        if self.cleaned_data['days'] < 0:
+        days = int((end_date - start_date).days)
+        if days < 0:
             raise ValidationError({
                 'start_date': _('Start_Date has to be smaller than End_date'),
                 'end_date': _('End_Date has to be bigger than Start_date')
             })
+        self.cleaned_data['days'] = days
         return super(HouseTenantModelForm, self).clean()
 
 class HouseBillModelForm(forms.ModelForm):
@@ -132,26 +136,26 @@ class HouseKilowattModelForm(forms.ModelForm):
         fields=['kwh', 'last_read_kwh', 'read_kwh']
 
     def clean(self):
-        if self.cleaned_data['last_read_kwh'] and self.cleaned_data['read_kwh']:
-            if (self.cleaned_data['last_read_kwh'] > self.cleaned_data['read_kwh']):
+        last_read_kwh = self.cleaned_data['last_read_kwh']
+        read_kwh = self.cleaned_data['read_kwh']
+        if last_read_kwh and read_kwh:
+            if (last_read_kwh > read_kwh):
                 raise ValidationError({
                     'read_kwh': _('Should be greatter than previous Kw/h read')
-                    })
+                })
             else:
-                self.cleaned_data['kwh'] = self.cleaned_data['read_kwh'] - self.cleaned_data['last_read_kwh']
+                self.cleaned_data['kwh'] = read_kwh - last_read_kwh
         elif self.cleaned_data['kwh']:
             if self.cleaned_data['kwh'] < 0:
                 raise ValidationError({
-                        'kwh': _('Only Positive Number!')
-                        })
-                return super(SubKilowattModelForm, self).clean()
+                    'kwh': _('Only Positive Number!')
+                })
             elif self.cleaned_data['kwh'] >= 0:
                 return super(HouseKilowattModelForm, self).clean()
         else:
             raise ValidationError({
                 'kwh': _('Fill up at least one option!'),
                 'last_read_kwh': _('Fill up at least one option!'),
-                # 'read_kwh' : _('Only Numbers'),
                 })
         return super(HouseKilowattModelForm, self).clean()
 
@@ -334,6 +338,7 @@ HouseBillFormset = inlineformset_factory(
                 'max' : '500000.00', 
                 'inputmode' : "decimal",
                 'required':'True',
+                'oninput':'validity.valid||(value="")',
                 }),
         'start_date_bill': HouseNameDateInput(format=['%Y-%m-%d'],
             attrs={
@@ -376,6 +381,8 @@ HouseKilowattsFormset = inlineformset_factory(
                 'aria-label': 'Units Kilowatts...',
                 'id': 'inputKwh',
                 'type':'number',
+                'min':"0",
+                'oninput':'validity.valid||(value="")',
             }),
         'last_read_kwh' : NumberInput(
             attrs={
@@ -384,6 +391,8 @@ HouseKilowattsFormset = inlineformset_factory(
                 'aria-label': 'Previous read...',
                 'id': 'inputPreviousKwh',
                 'type':'number',
+                'min':"0",
+                'oninput':'validity.valid||(value="")',
             }),
         'read_kwh' : NumberInput(
             attrs={
@@ -392,6 +401,8 @@ HouseKilowattsFormset = inlineformset_factory(
                 'aria-label': 'Present read...',
                 'id': 'inputPresentKwh',
                 'type':'number',
+                'min':"0",
+                'oninput':'validity.valid||(value="")',
             }),
     },
 )
@@ -415,6 +426,9 @@ SubHouseNameFormset = inlineformset_factory(
             'aria-label': 'Enter Sub House Name...',
             'id': 'inputSubHouseName',
             'type':'text',
+            'data-toggle': "tooltip",
+            'data-placement': "top",
+            'title': "Add Sub House Name",
         }),
     }
 )
