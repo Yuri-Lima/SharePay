@@ -399,7 +399,7 @@ HouseKilowattsFormset = inlineformset_factory(
                 'min':"0",
                 'oninput':'validity.valid||(value="")',
                 'data-toggle': "tooltip",
-                'data-placement': "top",
+                'data-placement': "botton",
                 'title': "Add Killowatts",
             }),
         'last_read_kwh' : NumberInput(
