@@ -290,9 +290,9 @@ HouseTenantFormset = inlineformset_factory(
             'class': 'form-control',
             'placeholder': 'Enter Tenant Name...',
             'aria-label': 'Enter Tenant Name...',
-            'aria-describedby':'submit-button',
             'id': 'inputName',
             'type':'text',
+            'required':'True',
             'data-toggle': "tooltip",
             'data-placement': "top",
             'title': "Add Tenant Name"
@@ -303,6 +303,9 @@ HouseTenantFormset = inlineformset_factory(
                 'id': 'inputStartDay',
                 'type':'date',
                 'required':'True',
+                'data-toggle': "tooltip",
+                'data-placement': "top",
+                'title': "Add Srtat Date",
             }),
         'end_date' : HouseNameDateInput(format=['%Y-%m-%d'],
             attrs={
@@ -310,6 +313,9 @@ HouseTenantFormset = inlineformset_factory(
                 'id': 'inputEndDay',
                 'type':'date',
                 'required':'True',
+                'data-toggle': "tooltip",
+                'data-placement': "top",
+                'title': "Add End Date",
             }),
     },
 )
@@ -339,18 +345,27 @@ HouseBillFormset = inlineformset_factory(
                 'inputmode' : "decimal",
                 'required':'True',
                 'oninput':'validity.valid||(value="")',
+                'data-toggle': "tooltip",
+                'data-placement': "top",
+                'title': "Add Amount of the Bill",
                 }),
         'start_date_bill': HouseNameDateInput(format=['%Y-%m-%d'],
             attrs={
                 'id': 'inputStartDayBill',
                 'type':'date',
                 'required':'True',
+                'data-toggle': "tooltip",
+                'data-placement': "top",
+                'title': "Add Start Date",
             }),
         'end_date_bill' : HouseNameDateInput(format=['%Y-%m-%d'],
             attrs={
                 'id': 'inputEndDayBill',
                 'type':'date',
                 'required':'True',
+                'data-toggle': "tooltip",
+                'data-placement': "top",
+                'title': "Add End Date",
             }),
         'days_bill' : NumberInput(
             attrs={
@@ -383,6 +398,9 @@ HouseKilowattsFormset = inlineformset_factory(
                 'type':'number',
                 'min':"0",
                 'oninput':'validity.valid||(value="")',
+                'data-toggle': "tooltip",
+                'data-placement': "top",
+                'title': "Add Killowatts",
             }),
         'last_read_kwh' : NumberInput(
             attrs={
@@ -393,6 +411,9 @@ HouseKilowattsFormset = inlineformset_factory(
                 'type':'number',
                 'min':"0",
                 'oninput':'validity.valid||(value="")',
+                'data-toggle': "tooltip",
+                'data-placement': "top",
+                'title': "Add Last Read",
             }),
         'read_kwh' : NumberInput(
             attrs={
@@ -403,6 +424,9 @@ HouseKilowattsFormset = inlineformset_factory(
                 'type':'number',
                 'min':"0",
                 'oninput':'validity.valid||(value="")',
+                'data-toggle': "tooltip",
+                'data-placement': "top",
+                'title': "Add Present Read",
             }),
     },
 )
@@ -446,7 +470,9 @@ SubHouseKilowattFormset = inlineformset_factory(
     can_order=True,
     widgets={
         'sub_kwh': NumberInput(attrs={
+            'autofocus': True,
             'placeholder': 'Units Kilowatts...',
+            'aria-label': 'Units Kilowatts...',
             'id': 'inputSubKwh',
             'type':'number',
             'min':"0",
@@ -457,6 +483,7 @@ SubHouseKilowattFormset = inlineformset_factory(
         }),
         'sub_last_read_kwh' : NumberInput(attrs={
             'placeholder': 'Previous read...',
+            'aria-label': 'Previous read...',
             'id': 'inputSubPreviousKwh',
             'type':'number',
             'min':"0",
@@ -467,6 +494,7 @@ SubHouseKilowattFormset = inlineformset_factory(
         }),
         'sub_read_kwh' : NumberInput(attrs={
             'placeholder': 'Present read...',
+            'aria-label': 'Present read...',
             'id': 'inputSubPresentKwh',
             'type':'number',
             'min':"0",
@@ -497,20 +525,32 @@ SubHouseTenantFormset = inlineformset_factory(
             'aria-label': 'Enter Sub Tenant Name...',
             'id': 'inputSubName',
             'type':'text',
+            'required':'True',
+            'data-toggle': "tooltip",
+            'data-placement': "top",
+            'title': "Add Tenant Name"
         }),
         'sub_start_date': HouseNameDateInput(format=['%Y-%m-%d'],
             attrs={
-                    'class': 'form-control',
-                    'id': 'inputSubStartDay',
-                    'type':'date',
-                    'required':'True',
-                }),
+                'autofocus': True,
+                'class': 'form-control',
+                'id': 'inputSubStartDay',
+                'type':'date',
+                'required':'True',
+                'data-toggle': "tooltip",
+                'data-placement': "top",
+                'title': "Add Start Date"
+            }),
         'sub_end_date' : HouseNameDateInput(format=['%Y-%m-%d'],
             attrs={
+                'autofocus': True,
                 'class': 'form-control',
                 'id': 'inputSubEndDay',
                 'type':'date',
                 'required':'True',
+                'data-toggle': "tooltip",
+                'data-placement': "top",
+                'title': "Add End Date"
             }), 
     },
 )
