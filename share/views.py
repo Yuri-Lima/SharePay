@@ -19,6 +19,8 @@ from .models import (
     SubTenantModel,
     SubKilowattModel)
 from .forms import (
+    HouseNameModelForm,
+
     HouseTenantFormset,
     HouseBillFormset,
     HouseKilowattsFormset,
@@ -72,7 +74,7 @@ class HouseNameListView(LoginRequiredMixin, ListView):
 class HouseNameCreateView(LoginRequiredMixin, CreateView):
     model = HouseNameModel
     template_name = 'houses/create_house_name.html'
-    fields = ['house_name',]
+    form_class=HouseNameModelForm
 
     def form_valid(self, form):
         #Set User

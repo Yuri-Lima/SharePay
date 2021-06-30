@@ -3,7 +3,6 @@ from django import forms
 from django.db.models.fields import CharField
 from django.forms.models import inlineformset_factory
 from django.forms import TextInput, DateInput, NumberInput
-from pytz import NonExistentTimeError
 from share.models import (
     HouseNameModel,
     HouseTenantModel,
@@ -13,12 +12,9 @@ from share.models import (
     SubTenantModel,
     SubKilowattModel,
 )
-from django.forms import BaseInlineFormSet
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from datetime import date
-from django.http import request
-from decimal import Decimal
 
 """ CALENDAR """
 class HouseNameDateInput(DateInput):
@@ -28,9 +24,23 @@ class HouseNameDateInput(DateInput):
         super(HouseNameDateInput, self).__init__(**kwargs) 
 
 class HouseNameModelForm(forms.ModelForm):
+    house_name = forms.TextInput(
+        attrs={
+            'autofocus': True,
+            'class': 'form-control',
+            'placeholder': 'Enter House Name...',
+            'aria-label': 'Enter House Name...',
+            'aria-describedby':'submit-housename',
+            'id': 'inputName',
+            'type':'text',
+            'data-toggle': "tooltip",
+            'data-placement': "top",
+            'title': "Add House Name",
+            'required':'True',
+        })
     class Meta:
         model= HouseNameModel
-        fields='__all__'
+        fields=['house_name']
 
     def clean(self):
         if self.cleaned_data['house_name']:
@@ -43,7 +53,7 @@ class HouseNameModelForm(forms.ModelForm):
                 'house_name': _('You must provide a House Name (up to 25 letters).'),
             })
 
-        return super(HouseNameModelForm).clean()
+        return super(HouseNameModelForm, self).clean()
 
 class HouseTenantModelForm(forms.ModelForm):
     class Meta:
