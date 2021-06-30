@@ -10,7 +10,6 @@ from .models import (
     SubKilowattModel,
     SubTenantModel,
     )
-
 class IndexSiteamp(Sitemap):
     changefreq = 'weekly'
     
@@ -60,6 +59,7 @@ class HouseTenantSitemap(Sitemap):
 class SubHouseNameSitemap(Sitemap):
     changefreq = "hourly"
 
+    
     # def items(self):
     #     self.add = list()
     #     for obj in HouseNameModel.objects.all():
