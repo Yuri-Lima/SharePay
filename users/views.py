@@ -1,5 +1,5 @@
 from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView
 from django.views.generic.edit import FormView
 from django.contrib.auth.views import (
     LoginView, 
@@ -11,10 +11,12 @@ from django.contrib.auth.views import (
     PasswordChangeDoneView)
 
 from .forms import (
-    CustomUserCreationForm, 
+    CustomUserCreationForm,
+    CustomUserChangeForm, 
     CustomLoginForm, 
     EmailValidationOnForgotPassword,
     PasswordConfirmationForm)
+from users.models import CustomUser
 
 """
     [Source]
@@ -28,6 +30,18 @@ class SignUpView(CreateView):
     template_name = 'account/signup.html'
     form_class = CustomUserCreationForm
     success_url = reverse_lazy('users:login')
+
+class UpdateAccountView(UpdateView):
+    template_name = 'account/update.html'
+    form_class = CustomUserChangeForm
+    success_url = reverse_lazy('share:index')
+    queryset = CustomUser.objects.all()
+
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        print(form)
+        return super(UpdateAccountView, self).post(request, *args, **kwargs)
     
 class ResetPassWord(PasswordResetView):
     template_name = 'account/password_reset.html'

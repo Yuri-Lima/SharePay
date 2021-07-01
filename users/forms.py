@@ -134,9 +134,9 @@ class CustomUserCreationForm(UserCreationForm):
 
 class CustomUserChangeForm(UserChangeForm):
 
-    class Meta:
+    class Meta(UserChangeForm.Meta):
         model = CustomUser  
-        fields = ('username', 'email')
+        fields = ('username', 'email','password1','password2')
         help_texts = {
             'username': None,
             'email': None,
@@ -181,3 +181,4 @@ class CustomUserChangeForm(UserChangeForm):
         strip=False,
         help_text=("Enter the same password as before, for verification."),
     )
+
