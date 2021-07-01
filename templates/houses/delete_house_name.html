@@ -22,23 +22,15 @@
                 <form method="POST">
                     {% csrf_token %}
                     <fieldset class="form-group">
-                        <p>You will <q><b>permanently</b></q> delete:</p>
-                        <table>
-                        <tr>
-                        {% comment %}Start First columm{% endcomment %}
-                          <th>  
-                            <ul>
-                              <li><p>{{house.house_name}}</p></li>
-                              <ul>
-                                <li>Bill</li>
-                                <li>KiloWatts and SubKiloWatts</li>
-                                <li>Tenants and SubTenants</li>
-                              </ul>
-                            </ul>
-                          </th>
-                        </tr>
-
-                        </table>
+                      <p>You will <q><b>permanently</b></q> delete:</p>
+                      <ul>
+                        <li><p>{{house.house_name}}</p></li>
+                        <ul>
+                          <li>Bill</li>
+                          <li>KiloWatts and SubKiloWatts</li>
+                          <li>Tenants and SubTenants</li>
+                        </ul>
+                      </ul>
                     </fieldset>
                     <div class="form-group">
                         <button class="btn btn-outline-danger text-white m-2" type="submit">Yes. Delete House</button>

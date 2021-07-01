@@ -79,7 +79,8 @@
                   {% endif %}
                   <!-- ============== Reports ================== -->
                   <a href="{% url 'share:reports_view' pk=house.id  %}" role="button" class="btn btn-success w-100 mb-2">Reports</a>
-                
+                  <!-- ============== Add New Sub House ================== -->
+                  <a href="{% url 'share:add_sub_house' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Add Sub Houses</a>
                 {% else %}
                   <a href="{% url 'share:add_sub_house_tenant_name' pk=house.id subpk=subhouse.first.id %}" role="button" class="btn btn-success w-100 mb-2">Add Sub Tenants</a>
                 {% endif %}

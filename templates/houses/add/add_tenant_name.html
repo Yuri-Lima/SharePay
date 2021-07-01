@@ -3,7 +3,7 @@
 {% load humanize %}
 
 
-{% block title %}SharePay - Tenants{% endblock title %}
+{% block title %}SharePay - Add Tenants{% endblock title %}
 
 {% block content %}
 <div class="container">
@@ -50,17 +50,17 @@
                     <div class="form-group col-md-6">
                         <label for="inputName">Tenant's Name</label>
                         {{name_form.house_tenant}}
-                        {{name_form.house_tenant.errors}}
+                        <p class=mt-1>{{name_form.house_tenant.errors}}</p>
                     </div>
                     <div class="form-group col-md-2">
                         <label for="inputStartDay">Start Day</label>
                         {{name_form.start_date}}
-                        {{name_form.start_date.errors}}
+                        <p class=mt-1>{{name_form.start_date.errors}}</p>
                     </div>
                     <div class="form-group col-md-2">
                         <label for="inputEndDay">End Day</label>
                         {{name_form.end_date}}
-                        {{name_form.end_date.errors}}
+                        <p class=mt-1>{{name_form.end_date.errors}}</p>
                     </div>
                     <div class="form-group col-md-2">
                         <label class="mb-2 flex-wrap" for="inputSelect">Select</label>
