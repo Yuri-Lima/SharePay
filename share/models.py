@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.db.models import constraints
 from django.db.models.query_utils import select_related_descend
 from django.forms import widgets
 from django.urls import reverse
@@ -11,11 +12,12 @@ from decimal import *
 
 class HouseNameModel(models.Model):
     user_FK = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_related', null=False, verbose_name='User')
-    house_name = models.CharField(verbose_name="House Name",max_length=100, null=True, blank=True, unique=True,  error_messages={'unique':'Sub House Name has already been created! Try some diferent one.'})
+    house_name = models.CharField(verbose_name="House Name",max_length=100, null=True, blank=True,)
     meter = models.IntegerField(default=1)
     # main_house = models.BooleanField(null=False, blank=False, help_text='Is the bill belongs this house typed above?')
     last_updated_house = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-    
+    unique_test_HouseName = models.UniqueConstraint(fields= ['user_FK','house_name'], name='unique_house')
+    #unique=True,  error_messages={'unique':'Sub House Name has already been created! Try some diferent one.'}
     def __str__(self) -> str:
         if self.house_name:
             return self.house_name
@@ -72,6 +74,7 @@ class HouseTenantModel(models.Model):
     end_date = models.DateField(null=False, blank=False)
     days = models.IntegerField(null=True, blank=True, default=0)
     last_updated_tenant = models.DateField(auto_now=True, null=True, blank=True)
+    unique_test_HouseTenant = models.UniqueConstraint(fields= ['house_name_FK','house_tenant'], name='unique_tenant')
     
     def __str__(self) -> str:
         return self.house_tenant
@@ -99,12 +102,12 @@ class SubHouseNameModel(models.Model):
     """
     sub_house_FK = models.ForeignKey(HouseNameModel, null=True, blank=True, max_length=255,
                                 on_delete=models.CASCADE, related_name='sub_house_related', verbose_name='House Name')
-    sub_house_name = models.CharField(verbose_name="Sub House Name",max_length=100, null=True, blank=True, unique=True, error_messages={'unique':'Sub House Name has already been created! Try some diferent one.'})
+    sub_house_name = models.CharField(verbose_name="Sub House Name",max_length=100, null=True, blank=True,)
     sub_meter = models.IntegerField(null=True, blank=True, default=1)
     sub_main_house = models.BooleanField(null=False, blank=False, help_text='Is the bill belongs this house typed above?')
     sub_last_updated_house = models.DateTimeField(auto_now_add=True, null=True, blank=True)
-    unique_test = models.UniqueConstraint(fields= ['sub_house_FK','sub_house_name'], name='unique_sub_house')
-    
+    unique_test_SubHouseName = models.UniqueConstraint(fields= ['sub_house_FK','sub_house_name'], name='unique_sub_house')
+    #unique=True, error_messages={'unique':'Sub House Name has already been created! Try some diferent one.'}
     def __str__(self) -> str:
         return self.sub_house_name
 
@@ -150,6 +153,7 @@ class SubTenantModel(models.Model):
     sub_end_date = models.DateField(null=True, blank=True)
     sub_days = models.IntegerField(null=True, blank=True, default=0)
     sub_last_updated_tenant = models.DateTimeField(auto_now=True, null=True, blank=True)
+    unique_test_SubTenant = models.UniqueConstraint(fields= ['sub_house_tenant_FK','sub_house_tenant'], name='unique_sub_tenant')
 
     class Meta:
         ordering = ['-sub_last_updated_tenant']
