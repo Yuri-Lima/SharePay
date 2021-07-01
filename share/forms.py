@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.db.models.base import Model
 from django import forms
 from django.db.models.fields import CharField
@@ -115,7 +116,8 @@ class HouseBillModelForm(forms.ModelForm):
            'Val-2'--> Set total bill's day and check if the start ou end dates are inverted. 
         """
         #Val -1
-        self.cleaned_data['amount_bill'] = float(self.cleaned_data['amount_bill'].replace(',',''))
+        self.cleaned_data['amount_bill'] = round(Decimal(self.cleaned_data['amount_bill'].replace(',','')),2)
+        print(f"Amount_bill2: {self.cleaned_data['amount_bill']})")
         if self.cleaned_data['amount_bill'] < 0:
             raise ValidationError({
                 'amount_bill': _('Should be a positive number!'),
