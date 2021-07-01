@@ -455,9 +455,9 @@ class SubHouseKilowattsFormView(LoginRequiredMixin, SingleObjectMixin, FormView)
         )
         return HttpResponseRedirect(self.get_success_url())
     
-    # def form_invalid(self, form):
-    #     print('Invalid Form')
-    #     return super().form_invalid(form)
+    def form_invalid(self, form):
+        print(f'Invalid Form: {form.errors}')
+        return super().form_invalid(form)
         
     def get_success_url(self):
         return reverse('share:detail_sub_house_name', kwargs={
