@@ -526,7 +526,7 @@ class CoreSharePay(object):
         total_by_each_tenant_converted['new_main_kwh'] = self.new_main_kwh
 
         #Step -10
-        getcontext().prec = 5 #Reduz a precisao um pouco pois nao sera mais necessario, uma vez que os valores ja teve sua alta precisao
+        # getcontext().prec = 5 #Reduz a precisao um pouco pois nao sera mais necessario, uma vez que os valores ja teve sua alta precisao
         # total_bill = Decimal(sum(total_by_each_tenant.values()))
         # print(total_bill)
 
