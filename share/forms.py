@@ -99,6 +99,11 @@ class HouseTenantModelForm(forms.ModelForm):
                 'start_date': _('Start_Date has to be smaller than End_date'),
                 'end_date': _('End_Date has to be bigger than Start_date')
             })
+        if days == 0:
+            raise ValidationError({
+                'start_date': _('It cannot be Equal'),
+                'end_date': _('It cannot be Equal')
+            })
         self.cleaned_data['days'] = days
         return super(HouseTenantModelForm, self).clean()
 
@@ -127,18 +132,22 @@ class HouseBillModelForm(forms.ModelForm):
                 'amount_bill': _('Should be a positive number!'),
             })
         #Val -2
+        if self.cleaned_data['amount_bill'] == 0:
+            raise ValidationError({
+                'amount_bill': _('It cannot be Zero!'),
+            })
+        #Val -3
         if self.cleaned_data['days_bill'] < 0:
             raise ValidationError({
                 'start_date_bill': _('Start_Date has to be smaller than End_date'),
                 'end_date_bill': _('End_Date has to be bigger than Start_date')
             })
-        #Val -3
+        #Val -4
         if start_date_bill > today:
             raise ValidationError({
                 'start_date_bill': _('Check if date is out of range.')
             })
-        
-        #Val -4
+        #Val -5
         if end_date_bill > today:
             raise ValidationError({
                 'end_date_bill': _('Check if date is out of range.')
@@ -170,8 +179,7 @@ class HouseKilowattModelForm(forms.ModelForm):
                 return super(HouseKilowattModelForm, self).clean()
         else:
             raise ValidationError({
-                'kwh': _('Fill up at least one option!'),
-                'last_read_kwh': _('Fill up at least one option!'),
+                'kwh': _('Insert Kilowatts!'),
                 })
         return super(HouseKilowattModelForm, self).clean()
 
@@ -257,10 +265,13 @@ class SubTenantNameModelForm(forms.ModelForm):
 
         obj_house_name=HouseNameModel.objects.get(pk=self.pkform)
         start_date, end_date = False, False
+
+        sub_start_date = self.cleaned_data['sub_start_date']
+        sub_end_date = self.cleaned_data['sub_end_date']
         for obj_house_bill in obj_house_name.house_bill_related.all():
-            if date.fromisoformat(str(self.cleaned_data['sub_start_date'])) < date.fromisoformat(str(obj_house_bill.start_date_bill)):
+            if sub_start_date < obj_house_bill.start_date_bill:
                 start_date = True
-            if date.fromisoformat(str(self.cleaned_data['sub_end_date'])) > date.fromisoformat(str(obj_house_bill.end_date_bill)):
+            if sub_end_date > obj_house_bill.end_date_bill:
                 end_date = True
 
             if start_date and end_date:
@@ -277,14 +288,18 @@ class SubTenantNameModelForm(forms.ModelForm):
                     'sub_end_date': _(f'Out of Range- {obj_house_bill.end_date_bill}')
                 })
 
-        self.cleaned_data['sub_days'] = int((self.cleaned_data['sub_end_date'] - self.cleaned_data['sub_start_date']).days)
-        if self.cleaned_data['sub_days'] < 0:
+        days = int((sub_end_date - sub_start_date).days)
+        if days < 0:
             raise ValidationError({
                 'sub_start_date': _('Start_Date has to be smaller than End_date'),
                 'sub_end_date': _('End_Date has to be bigger than Start_date')
             })
-
-        # self.cleaned_data['sub_days'] = int((self.cleaned_data['sub_end_date'] - self.cleaned_data['sub_start_date']).days)
+        if days == 0:
+            raise ValidationError({
+                'sub_start_date': _('It cannot be Equal'),
+                'sub_end_date': _('It cannot be Equal')
+            })
+        self.cleaned_data['sub_days'] = days
         return super(SubTenantNameModelForm, self).clean()
 
 HouseTenantFormset = inlineformset_factory(

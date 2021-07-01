@@ -4,3 +4,17 @@ body {
   background: linear-gradient(to left, #112033, #5a7ca7);
   min-height: 100vh;
 }
+.errorlist
+{
+    /* background-color: #ff9800; */
+    border-radius: 15px;
+    border: 1px solid  #ff9800;
+    color: white;
+    padding: 0.1rem;
+    align-content: center;
+    text-align: center;
+}
+.errorlist li
+{
+    list-style-type: none;
+}
