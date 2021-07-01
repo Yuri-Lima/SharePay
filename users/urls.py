@@ -1,6 +1,7 @@
 from django.urls import path, include
 from .views import (
     SignUpView,
+    UpdateAccountView,
     LoginUserView,
     ResetPassWord,
     ResetPassWordDone,
@@ -23,4 +24,8 @@ urlpatterns = [
     path('password-reset/done/', ResetPassWordDone.as_view(), name='password_reset_done'),
     path('password-reset-confirm/<uidb64>/<token>/', ResetPassWordConfirmation.as_view(), name='password_reset_confirm'),
     path('password-reset-complete/', ResetCompleteView.as_view(), name='password_reset_complete'),
+
+    #Profiles
+    path('update/<int:pk>/', UpdateAccountView.as_view(), name='update'),
+
 ]
