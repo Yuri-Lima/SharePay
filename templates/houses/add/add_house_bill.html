@@ -41,6 +41,14 @@
                         {% endfor %}
 
                         <h3>Insert Detail's Bill</h3>
+                        {% if housesbill.house_bill_related.all %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <strong>Attetion!</strong> Once you change the period of the bill, all Tenants related will be deleted!
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        {% endif %}
                         <hr>
                         <!-- ================ Start Dynamic FormSet ================ -->
                         {% for name_form in form.forms %}

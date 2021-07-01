@@ -116,43 +116,66 @@ class HouseBillModelForm(forms.ModelForm):
     
     def clean(self):
         """
-           'Val-1'--> Convert Masked Text to Decimal and check if it is a positive number.
+            'Val-1'--> Check if any Date from the bill has changed.
+           'Val-2'--> Convert Masked Text to Decimal and check if it is a positive number.
                 This check will be removed soon, it is just in case. Once we are using Mask Js.
-           'Val-2'--> Set total bill's day and check if the start ou end dates are inverted. 
+           'Val-3'--> Set total bill's day and check if the start ou end dates are inverted. 
         """
         start_date_bill = self.cleaned_data['start_date_bill']
         end_date_bill = self.cleaned_data['end_date_bill']
         amount_bill = self.cleaned_data['amount_bill']
-        self.cleaned_data['days_bill'] = int((end_date_bill - start_date_bill).days)
+        days = int((end_date_bill - start_date_bill).days)
         today = date.today()
         #Val -1
-        self.cleaned_data['amount_bill'] = round(Decimal(self.cleaned_data['amount_bill'].replace(',','')),2)
-        if self.cleaned_data['amount_bill'] < 0:
+        try:
+            obj = HouseNameModel.objects.get(pk=self.cleaned_data['house_bill_FK'].pk)
+            for var in obj.house_bill_related.all():
+                if var.start_date_bill != start_date_bill or var.end_date_bill != end_date_bill:
+                    if obj.house_tenant_related.all():
+                        #Delete all Tenants from Main House
+                        for del_obj in obj.house_tenant_related.all():
+                            del_obj.delete()
+                    if obj.main_house_tenant_related.all():
+                        #Delete all Sub Tenants from All Sub Houses
+                        for del_obj in obj.main_house_tenant_related.all():
+                            del_obj.delete()
+        except:
+            pass
+
+        #Val -2
+        amount_bill = round(Decimal(amount_bill.replace(',','')),2)
+        if amount_bill < 0:
             raise ValidationError({
                 'amount_bill': _('Should be a positive number!'),
             })
-        #Val -2
-        if self.cleaned_data['amount_bill'] == 0:
+        #Val -3
+        if amount_bill == 0:
             raise ValidationError({
                 'amount_bill': _('It cannot be Zero!'),
             })
-        #Val -3
-        if self.cleaned_data['days_bill'] < 0:
+        #Val -4
+        if days < 0:
             raise ValidationError({
                 'start_date_bill': _('Start_Date has to be smaller than End_date'),
                 'end_date_bill': _('End_Date has to be bigger than Start_date')
             })
-        #Val -4
+        #Val -5
+        if days == 0:
+            raise ValidationError({
+                'start_date_bill': _('It cannot be Equal'),
+                'end_date_bill': _('It cannot be Equal')
+            })
+        #Val -6
         if start_date_bill > today:
             raise ValidationError({
                 'start_date_bill': _('Check if date is out of range.')
             })
-        #Val -5
+        #Val -7
         if end_date_bill > today:
             raise ValidationError({
                 'end_date_bill': _('Check if date is out of range.')
             })
-
+        self.cleaned_data['days_bill'] = days
         return super(HouseBillModelForm, self).clean()
 
 class HouseKilowattModelForm(forms.ModelForm):
