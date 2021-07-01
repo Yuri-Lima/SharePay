@@ -149,8 +149,8 @@ class CoreSharePay(object):
         
         self.dict_date_range_for_tenants_without_kwh= {
             str('main'):{
-                str(self.house_name_main_house): {
-                        str(t1.house_tenant): {
+                self.house_name_main_house: {
+                        f"{t1.id}-{t1.house_tenant}": {#Tive que colocar o ID para diferenciar os Tenant de cada casa
                             str('dates'): [t1.start_date + timedelta(days=x) for x in range(t1.days)],
                         }for t1 in tenants
                     }
@@ -164,8 +164,8 @@ class CoreSharePay(object):
         #{"Naira's House": 14}--> Example of subids_without_kwh
         
         self.dict_date_range_for_tenants_without_kwh['main'].update({
-            str(name): {
-                    str(sub_t1_names) : {
+            name: {
+                    f"{sub_t1_names.id}-{sub_t1_names}" : {#Tive que colocar o ID para diferenciar os Tenant de cada casa
                         str('dates'): [sub_t1_names.sub_start_date + timedelta(days=x) for x in range(sub_t1_names.sub_days)],
                     }for sub_t1_names in sub_tenants.filter(sub_house_tenant_FK= subid_without_kwh)
                 }for name, subid_without_kwh in subids_without_kwh.items()
@@ -189,8 +189,8 @@ class CoreSharePay(object):
         sub_tenants = self.tenants_sub_house
         subids_with_kwh = self.subid_with_kwh
         self.dict_date_range_for_tenants_with_kwh.update({
-            str(name): {
-                    str(sub_t1_names) : {
+            name: {
+                    f"{sub_t1_names.id}-{sub_t1_names}" : { #Tive que colocar o ID para diferenciar os Tenant de cada casa
                         str('dates'): [sub_t1_names.sub_start_date + timedelta(days=x) for x in range(sub_t1_names.sub_days)],
                     }for sub_t1_names in sub_tenants.filter(sub_house_tenant_FK= subid_with_kwh)
                 }for name, subid_with_kwh in subids_with_kwh.items()
@@ -485,7 +485,7 @@ class CoreSharePay(object):
         total_by_each_tenant_converted['main_house'] = {
             str(house_name_main_house) : {
                 str(each_name) : {
-                    str('value'): f"€{round(total_by_each_tenant_converted['all'].pop(str(each_name)),rounded)}",
+                    str('value'): f"€{round(total_by_each_tenant_converted['all'].pop(f'{each_name.id}-{each_name}'),rounded)}",
                     str('date'): f'{each_name.start_date} to {each_name.end_date}',
                     str('days'): f'{each_name.days}',
                 }for each_name in tenants_main_house
@@ -495,7 +495,7 @@ class CoreSharePay(object):
         total_by_each_tenant_converted['sub_house_without'] = {
             str(sub_house_name) : {
                 str(each_name) : {
-                    str('value'): f'€{round(total_by_each_tenant_converted["all"].pop(str(each_name)),rounded)}',
+                    str('value'): f"€{round(total_by_each_tenant_converted['all'].pop(f'{each_name.id}-{each_name}'),rounded)}",
                     str('date'): f'{each_name.sub_start_date} to {each_name.sub_end_date}',
                     str('days'): f'{each_name.sub_days}',
                     }for each_name in sub_tenants_names#should be all sub tenants
@@ -618,7 +618,7 @@ class CoreSharePay(object):
             total_by_each_tenant_converted['sub_house_with'] = {
                 str(sub_house_name) : {
                     str(each_name) : {
-                        str('tenant_value'): f'€{round(total_by_each_tenant_converted["all"].pop(str(each_name)),rounded)}',
+                        str('tenant_value'): f"€{round(total_by_each_tenant_converted['all'].pop(f'{each_name.id}-{each_name}'),rounded)}",
                         str('date'): f'{each_name.sub_start_date} to {each_name.sub_end_date}',
                         str('days'): f'{each_name.sub_days}',
                         str('kwh_infor'): {int(x.sub_kwh) for x in self.sub_kwh_sub_house if str(sub_house_name) == str(x.sub_house_kwh_FK)},
