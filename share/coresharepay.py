@@ -522,7 +522,7 @@ class CoreSharePay(object):
         total_by_each_tenant_converted['bill_value'] = f'€{self.amount_bill_main_house}'
         total_by_each_tenant_converted['period_bill'] = f'{self.start_date_bill_main_house} to {self.end_date_bill_main_house}'
         total_by_each_tenant_converted['user'] = self.user_main_house
-        total_by_each_tenant_converted['new_amount'] = f'€{self.new_amount_main_bill}'
+        total_by_each_tenant_converted['new_amount'] = f'€{round(self.new_amount_main_bill,3)}'
         total_by_each_tenant_converted['new_main_kwh'] = self.new_main_kwh
 
         #Step -10
@@ -618,7 +618,7 @@ class CoreSharePay(object):
             total_by_each_tenant_converted['sub_house_with'] = {
                 str(sub_house_name) : {
                     str(each_name) : {
-                        str('tenant_value'): f'€{round(Decimal(total_by_each_tenant_converted["all"].pop(str(each_name))),rounded)}',
+                        str('tenant_value'): f'€{round(total_by_each_tenant_converted["all"].pop(str(each_name)),rounded)}',
                         str('date'): f'{each_name.sub_start_date} to {each_name.sub_end_date}',
                         str('days'): f'{each_name.sub_days}',
                         str('kwh_infor'): {int(x.sub_kwh) for x in self.sub_kwh_sub_house if str(sub_house_name) == str(x.sub_house_kwh_FK)},
@@ -632,7 +632,7 @@ class CoreSharePay(object):
             if temporary_left:
                 total_by_each_tenant_converted['left_over1'] = {
                     str(f"{key.replace('Left_Over_with_kwh_','')}") : {
-                        str('left_over1') : f'€{round(Decimal(sum(value.values())),rounded)}',
+                        str('left_over1') : f'€{round(sum(value.values()),rounded)}',
                         str('days_left_over') : f'{len(value.values())}',
                         str('details_date'): value,
                     }for key, value in total_by_each_tenant_converted.items() if key.startswith('Left_Over_with_kwh')
