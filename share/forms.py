@@ -213,8 +213,12 @@ class SubKilowattModelForm(forms.ModelForm):
             sum_sub_kilowatts = sum_sub_kilowatts + sub_kwh
             if sum_sub_kilowatts > main.kwh:
                 raise ValidationError({
-                        'sub_kwh': _(f'The total of the Sum is {sum_sub_kilowatts} kwh, it cannot be greatter than kilowatts from the bill. Registreded: Max{main.kwh} kwh')
-                        })
+                    'sub_kwh': _(f'The total of the Sum is {sum_sub_kilowatts} kwh, it cannot be greatter than kilowatts from the bill. Registreded: Max{main.kwh} kwh')
+                })
+            elif sum_sub_kilowatts == main.kwh:#Caso o valor da soma seja igual ao valor da main house, o main fica com kwh zerados
+                raise ValidationError({
+                    'sub_kwh': _(f'The total of the Sum of the Kilowatts is {sum_sub_kilowatts} kwh, it cannot be greatter or equal than kilowatts from the bill. Registered: Max{main.kwh} kwh')
+                })
         else:
             raise ValidationError({
                 'sub_kwh': _('You must provide Killowatts Read')
