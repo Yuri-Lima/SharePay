@@ -187,42 +187,37 @@ class SubKilowattModelForm(forms.ModelForm):
         super(SubKilowattModelForm, self).__init__(*args, **kwargs)
 
     def clean(self):
+        sub_house_name = self.cleaned_data['sub_house_kwh_FK']
         all_obj = HouseNameModel.objects.get(pk=self.pkform)
         all_sub_kwh = all_obj.main_house_kilowatt_related.all()
         main = all_obj.house_kilowatt_related.all().first()
         sum_sub_kilowatts = int()
         for each in all_sub_kwh:
-            sum_sub_kilowatts = sum_sub_kilowatts + each.sub_kwh
+            if each.sub_house_kwh_FK != sub_house_name: #Se for ddiferente da casa que se esta sendo avaliada SOME
+                sum_sub_kilowatts = sum_sub_kilowatts + each.sub_kwh
         
-        if self.cleaned_data['sub_last_read_kwh'] and self.cleaned_data['sub_read_kwh']:
-            if (self.cleaned_data['sub_last_read_kwh'] > self.cleaned_data['sub_read_kwh']):
+        # if self.cleaned_data['sub_last_read_kwh'] and self.cleaned_data['sub_read_kwh']:
+        #     if (self.cleaned_data['sub_last_read_kwh'] > self.cleaned_data['sub_read_kwh']):
+        #         raise ValidationError({
+        #             'sub_read_kwh': _('Should be greatter than previous Kw/h read')
+        #             })
+        #     else:
+        #         self.cleaned_data['sub_kwh'] = self.cleaned_data['sub_read_kwh'] - self.cleaned_data['sub_last_read_kwh']
+        #         sum_sub_kilowatts = sum_sub_kilowatts + self.cleaned_data['sub_kwh']
+        #         if sum_sub_kilowatts > main.kwh:
+        #             raise ValidationError({
+        #                     'sub_read_kwh': _(f'The total of the Sum is {sum_sub_kilowatts} kwh, it cannot be greatter than kilowatts from the bill. Registreded: Max{main.kwh} kwh')
+        #                    })
+        sub_kwh = self.cleaned_data['sub_kwh']
+        if (sub_kwh != None) and (sub_kwh != 0):
+            sum_sub_kilowatts = sum_sub_kilowatts + sub_kwh
+            if sum_sub_kilowatts > main.kwh:
                 raise ValidationError({
-                    'sub_read_kwh': _('Should be greatter than previous Kw/h read')
-                    })
-            else:
-                self.cleaned_data['sub_kwh'] = self.cleaned_data['sub_read_kwh'] - self.cleaned_data['sub_last_read_kwh']
-                sum_sub_kilowatts = sum_sub_kilowatts + self.cleaned_data['sub_kwh']
-                if sum_sub_kilowatts > main.kwh:
-                    raise ValidationError({
-                            'sub_read_kwh': _(f'The total of the Sum is {sum_sub_kilowatts} kwh, it cannot be greatter than kilowatts from the bill. Registreded: Max{main.kwh} kwh')
-                            })
-        elif self.cleaned_data['sub_kwh']:
-            if self.cleaned_data['sub_kwh'] < 0:
-                raise ValidationError({
-                        'sub_kwh': _('Only Positive Number!')
+                        'sub_kwh': _(f'The total of the Sum is {sum_sub_kilowatts} kwh, it cannot be greatter than kilowatts from the bill. Registreded: Max{main.kwh} kwh')
                         })
-            elif self.cleaned_data['sub_kwh'] >= 0:
-                sum_sub_kilowatts = sum_sub_kilowatts + self.cleaned_data['sub_kwh']
-                if sum_sub_kilowatts > main.kwh:
-                    raise ValidationError({
-                            'sub_kwh': _(f'The total of the Sum is {sum_sub_kilowatts} kwh, it cannot be greatter than kilowatts from the bill. Registreded: Max{main.kwh} kwh')
-                            })
-                return super(SubKilowattModelForm, self).clean()
-        elif (self.cleaned_data['sub_kwh'] and self.cleaned_data['sub_last_read_kwh'] and self.cleaned_data['sub_read_kwh']):
+        else:
             raise ValidationError({
-                'sub_kwh': _('Fill up at least one option!'),
-                'sub_last_read_kwh': _('Fill up at least one option!'),
-
+                'sub_kwh': _('You must provide Killowatts Read')
                 })
         return super(SubKilowattModelForm, self).clean()
 
@@ -294,7 +289,7 @@ HouseTenantFormset = inlineformset_factory(
             'type':'text',
             'required':'True',
             'data-toggle': "tooltip",
-            'data-placement': "top",
+            'data-placement': "botton",
             'title': "Add Tenant Name"
         }),
         'start_date': HouseNameDateInput(format=['%Y-%m-%d'],
@@ -451,7 +446,7 @@ SubHouseNameFormset = inlineformset_factory(
             'id': 'inputSubHouseName',
             'type':'text',
             'data-toggle': "tooltip",
-            'data-placement': "top",
+            'data-placement': "botton",
             'title': "Add Sub House Name",
         }),
     }
@@ -527,7 +522,7 @@ SubHouseTenantFormset = inlineformset_factory(
             'type':'text',
             'required':'True',
             'data-toggle': "tooltip",
-            'data-placement': "top",
+            'data-placement': "botton",
             'title': "Add Tenant Name"
         }),
         'sub_start_date': HouseNameDateInput(format=['%Y-%m-%d'],

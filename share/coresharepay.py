@@ -19,7 +19,7 @@
 """========SubTenantModel==============="""
 #main_tenant_FK=None - sub_house_tenant_FK=None - sub_house_tenant=None - sub_start_date=None - sub_end_date=None - sub_days=None
 
-from datetime import timedelta
+from datetime import datetime, timedelta
 from django.utils.translation import gettext_lazy as _
 from collections import Counter
 from decimal import *
@@ -234,7 +234,6 @@ class CoreSharePay(object):
         
         #START get_tenants_by_day without kwh
         if _without_kwh:
-            sub_house_empty_tenants = set()
             data_dict_date_by_day_without_kwh = self.dict_date_range_for_tenants_without_kwh
             end =dict()
             data_set_tenants_by_day_without_kwh = set()
@@ -433,14 +432,18 @@ class CoreSharePay(object):
         house_name_main_house = self.house_name_main_house
         getcontext().prec = 8 #manter alta precisao, pois no somatorio sera necessario.
         rounded = 3
-        B = int()
+        A = list()
         for day_number, AB in filter_all_tenant_from_bill_period.items():# 3-->{'names': {'Sebastiao Correia', 'Laura Sophia'}} or 29-->{'left_over_without_kwh': {'Ebenezer Terrance 18 - 2021-01-29': '0', "Naira's House - 2021-01-29": '0'}}
             # print(f"{day_number}-->{AB}")
-            for house_name, data in AB.items(): #{names):{names}}
+            for house_name, data in AB.items():
+                # A.clear()
                 for date, names in data.items():
                     # print(f"day: {day_number} {house_name}: {date}: {names} Size: {len(names)}\n")
-                    if day_number == B and len(AB)>=2:#para fazer a uniao dos nomes em um data so
-                        names = names + A
+                    if len(AB)>=2:#para fazer a uniao dos nomes em um data so
+                        # print(f"day: {day_number} {house_name}: {date}: {names} Size: {len(names)}\n")
+                        A = names + A
+                        break
+                    if len(AB)==1:
                         #Step -2
                         check_zero = (1 if not len(names) else len(names))
                         #Step -3
@@ -454,25 +457,22 @@ class CoreSharePay(object):
                         #Step -6
                         total_by_each_tenant_converted['all'] = {key : value for key, value in total_by_each_tenant.items() if not key.startswith('left')}#tiver que converter, pois v estava em Decimal Class
                         total_by_each_tenant_converted['Left_Over_without_kwh'] = {key : value for key, value in total_by_each_tenant.items() if key.startswith('left')}
-                    elif len(AB)==1:
-                        #Step -2
-                        check_zero = (1 if not len(names) else len(names))
-                        #Step -3
-                        v = Decimal(days_value_one_house_one_bill) / check_zero
-                        #Step -4
-                        # names = [name for name in date.items()]
-                        step_3 = { name : v for name in names}
-                        # print(f"day: {day_number} step_3: {step_3}\n")
-                        #Step -5
-                        total_by_each_tenant = Counter(step_3) + Counter(total_by_each_tenant)
-                        #Step -6
-                        total_by_each_tenant_converted['all'] = {key : value for key, value in total_by_each_tenant.items() if not key.startswith('left')}#tiver que converter, pois v estava em Decimal Class
-                        total_by_each_tenant_converted['Left_Over_without_kwh'] = {key : value for key, value in total_by_each_tenant.items() if key.startswith('left')}
-                    
-                    """Dont you dare remove those things below"""
-                    A = names
-                    B = day_number 
-                    # total_by_each_tenant_converted['days'] = {key : value for key, value in total_by_each_tenant.items() if key.startswith('left_')}
+            if len(AB)>=2:
+                #Step -2
+                check_zero = (1 if not len(A) else len(A))
+                #Step -3
+                v = Decimal(days_value_one_house_one_bill) / check_zero
+                #Step -4
+                # names = [name for name in date.items()]
+                step_3 = { name : v for name in A}
+                # print(f"day: {day_number} step_3: {step_3}\n")
+                #Step -5
+                total_by_each_tenant = Counter(step_3) + Counter(total_by_each_tenant)
+                #Step -6
+                total_by_each_tenant_converted['all'] = {key : value for key, value in total_by_each_tenant.items() if not key.startswith('left')}#tiver que converter, pois v estava em Decimal Class
+                total_by_each_tenant_converted['Left_Over_without_kwh'] = {key : value for key, value in total_by_each_tenant.items() if key.startswith('left')}
+                # print(f"Total: {total_by_each_tenant}\n")
+                A.clear()
                     #Step -7
         # print(f"{total_by_each_tenant}\n")
         # print(f"{total_by_each_tenant_converted['Left_Over_without_kwh']}\n")
@@ -568,7 +568,7 @@ class CoreSharePay(object):
             
             getcontext().prec = 8 #manter alta precisao, pois no somatorio sera necessario.
             rounded = 3
-            B=int()
+            A = list()
             for house_name_1, value in days_value_one_house_one_bill.items():
                 for day_number, AB in filter_all_tenant_from_bill_period.items():# 3-->{'names': {'Sebastiao Correia', 'Laura Sophia'}} or 29-->{'left_over_without_kwh': {'Ebenezer Terrance 18 - 2021-01-29': '0', "Naira's House - 2021-01-29": '0'}}
                     # print(f"{day_number}-->{AB}")
@@ -576,21 +576,9 @@ class CoreSharePay(object):
                         for date, names in data.items():
                             if (house_name_1 == house_name_2) or (house_name_2 == f'left_over_with_kwh_{house_name_1}'):
                                 # print(f"day: {day_number} House: {house_name_2} Tenants: {names} Size: {len(names)} Value: {value}\n")
-                                if day_number == B and len(AB)>=2:#para fazer a uniao dos nomes em um data so
-                                    names = names + A
-                                    #Step -2
-                                    check_zero = (1 if not len(names) else len(names))
-                                    #Step -3
-                                    v = Decimal(value) / check_zero
-                                    #Step -4
-                                    # names = [name for name in date.items()]
-                                    step_3 = { name : v for name in names}
-                                    # print(f"day: {day_number} step_3: {step_3}\n")
-                                    #Step -5
-                                    total_by_each_tenant = Counter(step_3) + Counter(total_by_each_tenant)
-                                    #Step -6
-                                    total_by_each_tenant_converted['all'] = {key : value for key, value in total_by_each_tenant.items() if not key.startswith('left')}#tiver que converter, pois v estava em Decimal Class
-                                    total_by_each_tenant_converted['Left_Over_with_kwh'] = {key : value for key, value in total_by_each_tenant.items() if key.startswith('left')}
+                                if len(AB)>=2:#para fazer a uniao dos nomes em um data so
+                                    A = names + A
+                                    break
                                 elif len(AB)==1:
                                     #Step -2
                                     check_zero = (1 if not len(names) else len(names))
@@ -605,11 +593,23 @@ class CoreSharePay(object):
                                     #Step -6
                                     total_by_each_tenant_converted['all'] = {key : value for key, value in total_by_each_tenant.items() if not key.startswith('left')}#tiver que converter, pois v estava em Decimal Class
                                     total_by_each_tenant_converted['Left_Over_with_kwh'] = {key : value for key, value in total_by_each_tenant.items() if key.startswith('left')}
-                                # total_by_each_tenant_converted['days'] = {key : value for key, value in total_by_each_tenant.items() if key.startswith('left_')}
-                                """Dont you dare remove those things below"""
-                                A = names
-                                B = day_number
+                    if len(AB)>=2:
+                        #Step -2
+                        check_zero = (1 if not len(A) else len(A))
+                        #Step -3
+                        v = Decimal(value) / check_zero
+                        #Step -4
+                        # names = [name for name in date.items()]
+                        step_3 = { name : v for name in A}
+                        # print(f"day: {day_number} step_3: {step_3}\n")
+                        #Step -5
+                        total_by_each_tenant = Counter(step_3) + Counter(total_by_each_tenant)
+                        #Step -6
+                        total_by_each_tenant_converted['all'] = {key : value for key, value in total_by_each_tenant.items() if not key.startswith('left')}#tiver que converter, pois v estava em Decimal Class
+                        total_by_each_tenant_converted['Left_Over_with_kwh'] = {key : value for key, value in total_by_each_tenant.items() if key.startswith('left')}
+                        A.clear()
             #================================= 
+            # print(f"left: {total_by_each_tenant_converted['Left_Over_without_kwh']}")
             #Step -8
             sub_tenants_filtered_with_kwh= self.tenants_name_with_kwh
 

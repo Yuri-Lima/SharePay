@@ -46,11 +46,11 @@
                     {% endfor %}
                     
                     <p class="pt-2">
-                      {% if house.sub_house_related.all.count == 3 %}
+                      {% if house.sub_house_related.all.count == 5 %}
                         <p>The limit of 3 Sub House has been registered.</p>
                         <p>You can edit or delete one of them.</p>
                       {% endif %}
-                      <a href="{% url 'share:add_sub_house' pk=house.id %}" role="button" class="btn btn-secondary w-100 p-1 mb-2">Edit Sub House</a>
+                      <a href="{% url 'share:add_sub_house' pk=house.id %}" role="button" class="btn btn-secondary w-100 p-1 mb-2">Add Sub House</a>
                       <a href="{% url 'share:pre_detail_house_name' pk=house.id %}" role="button" class="btn btn-secondary w-100 p-1 mb-2">Back</a>
                     </p>
                 {% else %}
