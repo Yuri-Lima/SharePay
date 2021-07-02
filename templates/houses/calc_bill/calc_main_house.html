@@ -30,14 +30,18 @@
 </table>
 {% comment %} END INFOR BILL {% endcomment %}
 
+<div class="alert alert-danger text-center" role="alert">
+  <h3><strong class="text-responsive2">Main House and Sub Houses Without Kilowatts</strong></h3>
+</div>
+
 {% comment %} START TABLE MAIN HOUSE {% endcomment %}
 <div class="table-responsive">
   <table class="table table-hover">
     {% for main_name, values in calc_1.main_house.items %}
     <caption>Main House</caption>
-      <h3 class='text-responsive2'>{{main_name}}</h3>
-      <div><strong>Kilowatts:</strong> {{calc_1.new_main_kwh}} kwh</div>
-      <div><strong>Bill Value:</strong> {{calc_1.new_amount}}</div>
+      <h3 class='text-responsive2 m-2'>{{main_name}}</h3>
+      <div class="m-2"><strong>Kilowatts:</strong> {{calc_1.new_main_kwh}} kwh</div>
+      <div class="m-2"><strong>Bill Value:</strong> {{calc_1.new_amount}}</div>
         <thead class="thead-dark">
           <tr>
             <th scope="col">#</th>
@@ -69,7 +73,7 @@
   <div class="table-responsive">
     <table class="table table-hover">
       <caption>Sub House Without Kilowatts</caption>
-        <h3 class='text-responsive2'>{{subs_house_name}}</h3>
+        <h3 class='text-responsive2 m-2'>{{subs_house_name}}</h3>
         <thead class="thead-dark">
             <tr>
               <th scope="col">#</th>
@@ -98,44 +102,64 @@
 
 {% comment %} START TABLE LEFT OVER {% endcomment %}
 {% if  calc_1.left_over1 %}
-<div class="table-responsive">
-    <table class="table table-hover">
-      <caption>List of left_over</caption>
-      {% for left_name, v in calc_1.left_over1.items %}
-        <h3 class='text-responsive2'>Left_Over</h3>
-          <thead class="thead-dark">
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Main/Sub House_Name - Date</th>
-              <th scope="col">Left Over</th>
-            </tr>
-          </thead>
-          {% for key, value in v.details_date.items %}
-            <tbody>
-                <tr class="table-danger">
-                    <th scope="row">{{forloop.counter}}</th>
-                    <td>{{key}}</td>
-                    <td>{{value|floatformat:3}}</td>
+  <p class="m-2">
+    <a class="btn btn-primary text-responsive2" data-toggle="collapse" href="#collapseWithoutKWH" role="button" aria-expanded="false" aria-controls="collapseExample">
+      Details: Days of Empty House
+    </a>
+  </p>
+  <div class="collapse" id="collapseWithoutKWH">
+    <div class="card card-body">
+      <div class="table-responsive">
+        <table class="table table-hover">
+          <caption>List of left_over</caption>
+            {% for left_name, v in calc_1.left_over1.items %}
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Main/Sub House_Name - Date</th>
+                  <th scope="col">Left Over</th>
                 </tr>
-            </tbody> 
-          {% endfor %}
-          <thead class="thead-secondary">
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Total</th>
-              <th scope="col">{{v.left_over1}}</th>
-            </tr>
-          </thead>
-          {% comment %} <thead class="thead-secondary">
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col">Empty Days</th>
-              <th scope="col">{{v.days_left_over}}</th>
-            </tr>
-          </thead> {% endcomment %}
+              </thead>
+              {% for key, value in v.details_date.items %}
+                <tbody>
+                    <tr class="table-danger">
+                        <th scope="row">{{forloop.counter}}</th>
+                        <td>{{key}}</td>
+                        <td>{{value|floatformat:3}}</td>
+                    </tr>
+                </tbody> 
+              {% endfor %}
+              <thead class="thead-secondary">
+                <tr>
+                  <th scope="col">#</th>
+                  <th scope="col">Total</th>
+                  <th scope="col">{{v.left_over1}}</th>
+                </tr>
+              </thead>
+            {% endfor %}
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover">
+      {% for left_name, v in calc_1.left_over1.items %}
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Total Days of Empty House</th>
+          <th scope="col">{{v.left_over1}}</th>
+        </tr>
+        <tr>
+          <th scope="col">#</th>
+          <th scope="col">Total Days Left</th>
+          <th scope="col">{{v.days_left_over}}</th>
+        </tr>
+      </thead>
       {% endfor %}
     </table>
   </div>
+
 {% endif %}
 
 {% comment %} END TABLE LEFT OVER {% endcomment %}
