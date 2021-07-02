@@ -1,8 +1,10 @@
 
 {% comment %} START TABLE SUB HOUSE WITH KWH {% endcomment %}
+{% if calc_2.sub_house_with %}
 <div class="alert alert-danger text-center" role="alert">
   <h3><strong class="text-responsive2">Sub Houses With Kilowatts</strong></h3>
 </div>
+{% endif %}
 {% for subs_house_name, c in calc_2.sub_house_with.items %}
   <div class="table-responsive">
     <table class="table table-hover">
