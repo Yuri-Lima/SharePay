@@ -1,8 +1,10 @@
 
 {% comment %} START TABLE SUB HOUSE WITH KWH {% endcomment %}
+{% if calc_2.sub_house_with %}
 <div class="alert alert-danger text-center" role="alert">
   <h3><strong class="text-responsive2">Sub Houses With Kilowatts</strong></h3>
 </div>
+{% endif %}
 {% for subs_house_name, c in calc_2.sub_house_with.items %}
   <div class="table-responsive">
     <table class="table table-hover">
@@ -54,7 +56,7 @@
       <div class="table-responsive">
         {% for name, keysANDvalues in calc_2.left_over1.items %}
           <table class="table table-hover">
-            <caption>This is a value which no one was living as a tenant.</caption>
+            <caption>Values which no one was living as a tenant.</caption>
                 <thead class="thead-dark">
                   <tr>
                     <th scope="col">#</th>
