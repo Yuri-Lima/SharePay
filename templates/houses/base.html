@@ -9,11 +9,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="SharePay is an app created to help split bills within a home. If you don't like spreadsheets or math, we're here to help.">
     <meta name="keywords" content="SharePay, Split Bill, Divide Bill, Share Bill, Flatamate">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)"  content="black">
     <meta name="generator" content="SharePay v1.0">
     <meta name="author" content="Yuri Lima">
 
-    {% comment %} <meta name="theme-color" media="(prefers-color-scheme: light)" content="white"> {% endcomment %}
-    <meta name="theme-color" media="(prefers-color-scheme: dark)"  content="black">
+    <!-- Title Area -->
+    <title>{% block title %}{% endblock %}</title>
 
     <!-- Favicon Area -->
     <!-- https://favicon.io/ -->
@@ -23,12 +24,6 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon_io/favicon-16x16.png' %}">
     <link rel="manifest" href="{% static 'favicon_io/site.webmanifest' %}">
 
-    <!-- Title Area -->
-    <title>{% block title %}{% endblock %}</title>
-
-    <!-- Bootstrap core CSS -->
-    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
-
     <!-- Custom Googles Fonts for this template -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,10 +31,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
     
     <!-- Custom Fonts for this template -->
-    <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'vendor/fontawesome-free/css/all.min.css' %}" rel="preload" as="style" rel="stylesheet" type="text/css">
 
     <!-- Custom styles for this template -->
-    <link href="{% static 'css/coming-soon.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/coming-soon.min.css' %}" rel="preload" as="style" rel="stylesheet">
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="preload" as="style" rel="stylesheet">
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-5D06PRSEVB"></script>

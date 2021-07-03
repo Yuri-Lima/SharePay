@@ -11,6 +11,9 @@
         <meta name="generator" content="SharePay v1.0">
         <meta name="author" content="Yuri Lima">
 
+        <!-- Title Area -->
+        <title>{% block title %}{% endblock %}</title>
+
         <!-- Favicon Area -->
         <!-- from https://favicon.io/ -->
         <link rel="icon" href="{% static 'favicon_io/favicon.ico' %}">
@@ -18,16 +21,13 @@
         <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon_io/favicon-32x32.png' %}">
         <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon_io/favicon-16x16.png' %}">
         <link rel="manifest" href="{% static 'favicon_io/site.webmanifest' %}">
-        
-        <!-- Title Area -->
-        <title>{% block title %}{% endblock %}</title>
-
-        <!-- Bootstrap core CSS -->
-        <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
 
         {% block stylesheet %}
         
-        {% endblock  %}        
+        {% endblock  %}
+
+        <!-- Bootstrap core CSS -->
+        <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="preload" as="style" rel="stylesheet">   
 
         <!-- Global site tag (gtag.js) - Google Analytics -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-5D06PRSEVB"></script>
