@@ -20,6 +20,7 @@
         <div class="p-2 align-self-center">
             <div class="form-group">
                 <form class="needs-validation" novalidate method="POST">
+                    <legend>Update User.</legend>
                     {% csrf_token %}
                     {% if form.errors %}
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">

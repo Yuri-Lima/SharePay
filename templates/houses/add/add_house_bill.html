@@ -26,6 +26,7 @@
                     {% endif %}
                     <!-- ================================ -->
                     <form action="" method="POST", enctype="multipart/form-data">
+                        <legend>Add Houses Bill.</legend>
                         {% for hidden_field in form.hidden_fields %}
                             {{ hidden_field.erros }}
                             {{ hidden_field }}

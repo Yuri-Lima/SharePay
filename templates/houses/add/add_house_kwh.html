@@ -17,6 +17,7 @@
                         {% comment %} LOGO {% endcomment %}
                         {% include 'houses/logo.html' %}
                         <form action="" method="POST", enctype="multipart/form-data">
+                            <legend>Add House Kilowatts.</legend>
                             {% for hidden_field in form.hidden_fields %}
                                 {{ hidden_field.erros }}
                                 {{ hidden_field }}
