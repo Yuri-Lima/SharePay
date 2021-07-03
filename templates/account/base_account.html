@@ -14,6 +14,9 @@
         <!-- Title Area -->
         <title>{% block title %}{% endblock %}</title>
 
+        <!-- Bootstrap core CSS -->
+        <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="preload" as="style" rel="stylesheet">   
+
         <!-- Favicon Area -->
         <!-- from https://favicon.io/ -->
         <link rel="icon" href="{% static 'favicon_io/favicon.ico' %}">
@@ -25,9 +28,6 @@
         {% block stylesheet %}
         
         {% endblock  %}
-
-        <!-- Bootstrap core CSS -->
-        <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="preload" as="style" rel="stylesheet">   
 
         <!-- Global site tag (gtag.js) - Google Analytics -->
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-5D06PRSEVB"></script>
