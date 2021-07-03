@@ -20,10 +20,7 @@
     <link rel="manifest" href="{% static 'favicon_io/site.webmanifest' %}">
 
     <!-- Title Area -->
-    <title>{% block title %}{% endblock %}</title>
-
-    <!-- Bootstrap core CSS -->
-    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="preload" as="style" rel="stylesheet">   
+    <title>{% block title %}{% endblock %}</title>   
     
     <!-- Custom Googles Fonts for this template -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,7 +29,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
     
     <!-- Custom styles for this template -->
-    <link href="{% static 'css/calc_1.css' %}" rel="preload" as="style" rel="stylesheet" type="text/css">
+    <link href="{% static 'css/calc_1.css' %}" rel="stylesheet" type="text/css">
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-5D06PRSEVB"></script>
