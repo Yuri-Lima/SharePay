@@ -30,7 +30,6 @@
         </div>
     </div>
     <form action="" method="POST", enctype="multipart/form-data">
-        <legend>Add Tenants Name.</legend>
         {% for hidden_field in form.hidden_fields %}
             {{ hidden_field.erros }}
             {{ hidden_field }}

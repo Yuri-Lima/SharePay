@@ -20,7 +20,6 @@
         {% include 'houses/logo.html' %}
 
         <form action="" method="POST" enctype="multipart/form-data">
-          <legend>Update House Name.</legend>
           {% for hidden_field in forms.hidden_fields %}
               {{ hidden_field.erros }}
               { 
