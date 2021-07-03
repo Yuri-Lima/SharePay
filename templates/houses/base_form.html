@@ -29,6 +29,30 @@
 
     <!-- Custom styles for this template -->
     <link href="{% static 'css/base_form.css' %}" rel="stylesheet">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5D06PRSEVB"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        // Default ad_storage and analytics_storage to 'denied'.
+        gtag('consent', 'default', {
+                'ad_storage': 'denied',
+                'analytics_storage': 'denied'
+              });
+        gtag('js', new Date());
+        gtag('set', 
+              {
+                'cookie_flags': 'SameSite=None;Secure'
+              });
+        gtag('config', 'G-5D06PRSEVB', 
+              {
+                'cookie_prefix': 'sharepay_ga',
+                'cookie_domain': 'www.sharepay.com.br',
+                'user_id': "{{user.id}}",
+                'cookie_expires': 28 * 24 * 60 * 60  // 28 days, in seconds
+              });
+    </script>
   </head>
 
   <body>
@@ -38,25 +62,33 @@
         {% endblock content %}
     {% endautoescape %}
 
-      <!-- Dont remove anythong below -->
-      <!-- Bootstrap core JavaScript -->
-      <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
-      <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <!-- Dont remove anythong below -->
+    <!-- Bootstrap core JavaScript -->
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
 
-      <!-- Custom scripts for this template -->
-      <script src="{% static 'js/coming-soon.min.js' %}"></script>
+    <!-- Custom scripts for this template -->
+    <script src="{% static 'js/coming-soon.min.js' %}"></script>
 
-      <!-- Bootstrap core JavaScript
-      ================================================== -->
-      <!-- Placed at the end of the document so the pages load faster -->
-      <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.7/holder.min.js"></script>
-
-      <!-- Extras JavaScript Code by each Template -->
-      {% block Scripts %}
-      {% endblock Scripts %}
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.6.0.slim.min.js" integrity="sha256-u7e5khyithlIdTpu22PHhENmPcRdFiHRjhAuHcs05RI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.7/holder.min.js"></script>
+    <!-- TODO this section should be updated based on your business requirements. -->
+    <script>
+      function consentGranted() {
+        gtag('consent', 'update', {
+          'ad_storage': 'granted',
+          'analytics_storage': 'granted'
+        });
+      }
+    </script>
+    <!-- Extras JavaScript Code by each Template -->
+    {% block Scripts %}
+    {% endblock Scripts %}
   </body>
 
 </html>

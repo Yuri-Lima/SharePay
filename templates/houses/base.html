@@ -36,15 +36,52 @@
 
     <!-- Custom styles for this template -->
     <link href="{% static 'css/coming-soon.min.css' %}" rel="stylesheet">
+
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-5D06PRSEVB"></script>
-    <script>
+    <script type="text/javascript">
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
+        // Default ad_storage and analytics_storage to 'denied'.
+        gtag('consent', 'default', {
+                'ad_storage': 'denied',
+                'analytics_storage': 'denied'
+              });
         gtag('js', new Date());
-
-        gtag('config', 'G-5D06PRSEVB');
-    </script>
+        gtag('set', 
+              {
+                'cookie_flags': 'SameSite=None;Secure'
+              });
+        gtag('config', 'G-5D06PRSEVB', 
+              {
+                'cookie_prefix': 'sharepay_ga',
+                'cookie_domain': 'www.sharepay.com.br',
+                'user_id': "{{user.id}}",
+                'cookie_expires': 28 * 24 * 60 * 60  // 28 days, in seconds
+              });
+    </script> 
+    <!-- cookie policy -->
+      <script src="https://cdn.websitepolicies.io/lib/cookieconsent/1.0.3/cookieconsent.min.js" defer></script>
+      <script>window.addEventListener("load",function(){
+        window.wpcc.init({
+          "border":"thin",
+          "corners":"small",
+          "colors":{
+            "popup":{
+              "background":"#edfdfa",
+              "text":"#000000",
+              "border":"#5ec2b6"
+            },
+            "button":{
+              "background":"#5ec2b6",
+              "text":"#ffffff",
+              "onclick":"consentGranted"
+            }
+          },
+          "position":"top"
+        })
+      });
+      </script>
   </head>
 
   <body>
@@ -67,10 +104,19 @@
       <script src="{% static 'vendor/bootstrap/js/popper.min.js' %}"></script>
       <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
       <script src="{% static 'vendor/bootstrap/js/holder.min.js' %}"></script>
-      
+      <!-- TODO this section should be updated based on your business requirements. -->
+      <script>
+        function consentGranted() {
+          gtag('consent', 'update', {
+            'ad_storage': 'granted',
+            'analytics_storage': 'granted'
+          });
+        }
+      </script>     
 
       <!-- Extras JavaScript Code by each Template -->
       {% block Scripts %}
+      
       {% endblock Scripts %}
   </body>
 

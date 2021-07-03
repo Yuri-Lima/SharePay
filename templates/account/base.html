@@ -33,9 +33,23 @@
         <script>
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
+            // Default ad_storage and analytics_storage to 'denied'.
+            gtag('consent', 'default', {
+                    'ad_storage': 'denied',
+                    'analytics_storage': 'denied'
+                });
             gtag('js', new Date());
-
-            gtag('config', 'G-5D06PRSEVB');
+            gtag('set', 
+                {
+                    'cookie_flags': 'SameSite=None;Secure'
+                });
+            gtag('config', 'G-5D06PRSEVB', 
+                {
+                    'cookie_prefix': 'sharepay_ga',
+                    'cookie_domain': 'www.sharepay.com.br',
+                    'user_id': "{{user.id}}",
+                    'cookie_expires': 28 * 24 * 60 * 60  // 28 days, in seconds
+                });
         </script>
     </head>
     <body >
@@ -47,15 +61,27 @@
         {% endautoescape %}
     {% endspaceless %}
 
-        <!-- Bootstrap core JavaScript
-        ================================================== -->
-        <!-- Placed at the end of the document so the pages load faster -->
-        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.slim.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.7/holder.min.js"></script>
-        <!-- Example starter JavaScript for disabling form submissions if there are invalid fields -->
-        <script href="{% static 'js/signup_form.js' %}"></script>
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/holder/2.9.7/holder.min.js"></script>
+    <!-- Example starter JavaScript for disabling form submissions if there are invalid fields -->
+    <script href="{% static 'js/signup_form.js' %}"></script>
+    <!-- TODO this section should be updated based on your business requirements. -->
+    <script>
+        function consentGranted() {
+        gtag('consent', 'update', {
+            'ad_storage': 'granted',
+            'analytics_storage': 'granted'
+        });
+        }
+    </script>
+    {% block Scripts %}
+
+    {% endblock Scripts %}
     </body>
 </html>
