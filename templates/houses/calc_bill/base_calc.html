@@ -21,6 +21,9 @@
 
     <!-- Title Area -->
     <title>{% block title %}{% endblock %}</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="preload" as="style" rel="stylesheet">   
     
     <!-- Custom Googles Fonts for this template -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,9 +33,6 @@
     
     <!-- Custom styles for this template -->
     <link href="{% static 'css/calc_1.css' %}" rel="preload" as="style" rel="stylesheet" type="text/css">
-
-    <!-- Bootstrap core CSS DONT REMOVE-->
-    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="preload" as="style" rel="stylesheet">
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-5D06PRSEVB"></script>
