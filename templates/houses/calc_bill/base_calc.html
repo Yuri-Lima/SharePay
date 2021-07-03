@@ -27,6 +27,30 @@
 
     <!-- Title Area -->
     <title>{% block title %}{% endblock %}</title>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5D06PRSEVB"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        // Default ad_storage and analytics_storage to 'denied'.
+        gtag('consent', 'default', {
+                'ad_storage': 'denied',
+                'analytics_storage': 'denied'
+              });
+        gtag('js', new Date());
+        gtag('set', 
+              {
+                'cookie_flags': 'SameSite=None;Secure'
+              });
+        gtag('config', 'G-5D06PRSEVB', 
+              {
+                'cookie_prefix': 'sharepay_ga',
+                'cookie_domain': 'www.sharepay.com.br',
+                'user_id': "{{user.id}}",
+                'cookie_expires': 28 * 24 * 60 * 60  // 28 days, in seconds
+              });
+    </script>
 </head>
 <body>
 {% autoescape on %}
@@ -41,8 +65,18 @@
   <script src="{% static 'vendor/jquery/jquery.slim.min.js' %}"></script>
   <script src="{% static 'vendor/bootstrap/js/popper.min.js' %}"></script>
   <script src="{% static 'vendor/bootstrap/js/bootstrap.min.js' %}"></script>
+  <!-- TODO this section should be updated based on your business requirements. -->
+  <script>
+    function consentGranted() {
+      gtag('consent', 'update', {
+        'ad_storage': 'granted',
+        'analytics_storage': 'granted'
+      });
+    }
+  </script>
   <!-- Field Mask JavaScript -->
   {% block Scripts %}
+ 
   {% endblock Scripts %}
 </body>
 </html>
