@@ -7,10 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="SharePay is an app created to help split bills within a home. If you don't like spreadsheets or math, we're here to help.">
     <meta name="keywords" content="SharePay, Split Bill, Divide Bill, Share Bill, Flatamate">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)"  content="black">
     <meta name="generator" content="SharePay v1.0">
     <meta name="author" content="Yuri Lima">
-
-    <meta name="theme-color" media="(prefers-color-scheme: dark)"  content="black">
     
     <!-- Favicon Area -->
     <!-- https://favicon.io/ -->
@@ -19,6 +18,13 @@
     <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon_io/favicon-32x32.png' %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon_io/favicon-16x16.png' %}">
     <link rel="manifest" href="{% static 'favicon_io/site.webmanifest' %}">
+    
+    <!-- Custom Googles Fonts for this template -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+    
     <!-- Custom styles for this template -->
     <link rel="stylesheet" href="{% static 'css/calc_1.css' %}" type="text/css">
 
@@ -53,11 +59,13 @@
     </script>
 </head>
 <body>
-{% autoescape on %}
-    {% block content %}
-    
-    {% endblock content %}
-{% endautoescape %}  
+  {% spaceless %}
+    {% autoescape on %}
+        {% block content %}
+        
+        {% endblock content %}
+    {% endautoescape %}
+  {% endspaceless %}
   
   <!-- Bootstrap core JavaScript
   ================================================== -->

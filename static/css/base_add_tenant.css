@@ -3,6 +3,7 @@ body {
   background: -webkit-linear-gradient(to left, #112033, #5a7ca7);
   background: linear-gradient(to left, #112033, #5a7ca7);
   min-height: 100vh;
+  font-family: 'Source Sans Pro', sans-serif;
 }
 .errorlist
 {
