@@ -136,7 +136,7 @@ class CustomUserChangeForm(UserChangeForm):
 
     class Meta(UserChangeForm.Meta):
         model = CustomUser  
-        fields = ('username', 'email','password1','password2')
+        fields = ('username', 'email')
         help_texts = {
             'username': None,
             'email': None,
