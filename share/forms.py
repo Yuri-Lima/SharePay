@@ -346,9 +346,9 @@ HouseTenantFormset = inlineformset_factory(
             'id': 'inputName',
             'type':'text',
             'required':'True',
-            'data-toggle': "tooltip",
-            'data-placement': "botton",
-            'title': "Add Tenant Name"
+            # 'data-toggle': "tooltip",
+            # 'data-placement': "botton",
+            # 'title': "Add Tenant Name"
         }),
         'start_date': HouseNameDateInput(format=['%Y-%m-%d'],
             attrs={
@@ -579,9 +579,9 @@ SubHouseTenantFormset = inlineformset_factory(
             'id': 'inputSubName',
             'type':'text',
             'required':'True',
-            'data-toggle': "tooltip",
-            'data-placement': "botton",
-            'title': "Add Tenant Name"
+            # 'data-toggle': "tooltip",
+            # 'data-placement': "botton",
+            # 'title': "Add Tenant Name"
         }),
         'sub_start_date': HouseNameDateInput(format=['%Y-%m-%d'],
             attrs={
