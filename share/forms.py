@@ -346,9 +346,9 @@ HouseTenantFormset = inlineformset_factory(
             'id': 'inputName',
             'type':'text',
             'required':'True',
-            # 'data-toggle': "tooltip",
-            # 'data-placement': "botton",
-            # 'title': "Add Tenant Name"
+            'data-toggle': "tooltip",
+            'data-placement': "bottom",
+            'title': "Add Tenant Name"
         }),
         'start_date': HouseNameDateInput(format=['%Y-%m-%d'],
             attrs={
@@ -452,7 +452,7 @@ HouseKilowattsFormset = inlineformset_factory(
                 'min':"0",
                 'oninput':'validity.valid||(value="")',
                 'data-toggle': "tooltip",
-                'data-placement': "botton",
+                'data-placement': "bottom",
                 'title': "Add Killowatts",
             }),
         'last_read_kwh' : NumberInput(
@@ -504,7 +504,7 @@ SubHouseNameFormset = inlineformset_factory(
             'id': 'inputSubHouseName',
             'type':'text',
             'data-toggle': "tooltip",
-            'data-placement': "botton",
+            'data-placement': "bottom",
             'title': "Add Sub House Name",
         }),
     }
@@ -579,9 +579,9 @@ SubHouseTenantFormset = inlineformset_factory(
             'id': 'inputSubName',
             'type':'text',
             'required':'True',
-            # 'data-toggle': "tooltip",
-            # 'data-placement': "botton",
-            # 'title': "Add Tenant Name"
+            'data-toggle': "tooltip",
+            'data-placement': "bottom",
+            'title': "Add Tenant Name"
         }),
         'sub_start_date': HouseNameDateInput(format=['%Y-%m-%d'],
             attrs={
