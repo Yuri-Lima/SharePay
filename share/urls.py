@@ -33,7 +33,7 @@ app_name = 'share'
 
 urlpatterns = [
     #Firts View
-    path('', IndexTemplateView.as_view(), name='index'),
+    path('welcome/', IndexTemplateView.as_view(), name='index'),
     
     #If there no House Name Registered
     path('create_house_name/add/', HouseNameCreateView.as_view(), name='create_house_name'),
