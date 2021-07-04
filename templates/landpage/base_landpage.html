@@ -1,0 +1,112 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="SharePay is an app created to help split bills within a home. If you don't like spreadsheets or math, we're here to help.">
+    <meta name="keywords" content="SharePay, Split Bill, Divide Bill, Share Bill, Flatamate">
+    <meta name="theme-color" media="(prefers-color-scheme: dark)"  content="black">
+    <meta name="generator" content="SharePay v1.0">
+    <meta name="author" content="Yuri Lima">
+
+    <!-- Title Area -->
+    <title>{% block title %}{% endblock %}</title>
+
+    <!-- Favicon Area -->
+    <!-- https://favicon.io/ -->
+    <link rel="icon" href="{% static 'favicon_io/favicon.ico' %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'favicon_io/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'favicon_io/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'favicon_io/favicon-16x16.png' %}">
+    <link rel="manifest" href="{% static 'favicon_io/site.webmanifest' %}">
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+
+    <!-- Custom Googles Fonts for this template -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700;1,900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap icons-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+
+    <!-- Custom styles for this template -->
+    <link href="{% static 'css/landpage.css' %}" rel="stylesheet">
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-5D06PRSEVB"></script>
+    <script type="text/javascript">
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        // Default ad_storage and analytics_storage to 'denied'.
+        gtag('consent', 'default', {
+                'ad_storage': 'denied',
+                'analytics_storage': 'denied'
+              });
+        gtag('js', new Date());
+        gtag('set', 
+              {
+                'cookie_flags': 'SameSite=None;Secure'
+              });
+        gtag('config', 'G-5D06PRSEVB', 
+              {
+                'cookie_prefix': 'sharepay_ga',
+                'cookie_domain': 'www.sharepay.com.br',
+                'user_id': "{{user.id}}",
+                'cookie_expires': 28 * 24 * 60 * 60  // 28 days, in seconds
+              });
+    </script> 
+    <!-- cookie policy -->
+      <script src="https://cdn.websitepolicies.io/lib/cookieconsent/1.0.3/cookieconsent.min.js" defer></script>
+      <script>window.addEventListener("load",function(){
+        window.wpcc.init({
+          "border":"thin",
+          "corners":"small",
+          "colors":{
+            "popup":{
+              "background":"#edfdfa",
+              "text":"#000000",
+              "border":"#5ec2b6"
+            },
+            "button":{
+              "background":"#5ec2b6",
+              "text":"#ffffff",
+              "onclick":"consentGranted"
+            }
+          },
+          "position":"top"
+        })
+      });
+      </script>
+  </head>
+
+  <body class="d-flex flex-column h-100">
+  {% spaceless %}
+    {% autoescape on %}
+        {% block content %}
+        
+        {% endblock content %}
+    {% endautoescape %}
+  {% endspaceless %}
+      <!-- TODO this section should be updated based on your business requirements. -->
+      <script>
+        function consentGranted() {
+          gtag('consent', 'update', {
+            'ad_storage': 'granted',
+            'analytics_storage': 'granted'
+          });
+        }
+      </script>   
+
+      <!-- Extras JavaScript Code by each Template -->
+      {% block Scripts %}
+      
+      {% endblock Scripts %}
+  </body>
+</html>
