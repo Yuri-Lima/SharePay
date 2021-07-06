@@ -34,8 +34,14 @@ sitemaps = {
 }
 
 urlpatterns = [
+    #Admin Path
     path('admin/', admin.site.urls),
+
+    #Users Account
     path('', include('users.urls')),
+
+    #django Allauth
+    path('accounts/', include('allauth.urls')),
 
     #Share
     path('', include('share.urls')),
