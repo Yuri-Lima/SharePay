@@ -1,31 +1,37 @@
 from django.urls import path, include
 from .views import (
-    SignUpView,
-    UpdateAccountView,
+    SignUpUserView,
     LoginUserView,
-    ResetPassWord,
-    ResetPassWordDone,
-    ResetPassWordConfirmation,
-    ResetCompleteView)
-from django.contrib.auth import views as auth_views
+    LogoutUserView,
+    PasswordSetUserView,
+    PasswordChangeUserView,
+    PasswordResetView,
+    ConnectionsUserView,
+    EmailUserView,
+    )
 
 
 app_name = 'users'
 
 urlpatterns = [
 
-    path('signup/', SignUpView.as_view(), name='signup'),
+    path('accounts/signup/', SignUpUserView.as_view(), name='account_signup'),
     #Authenticaios Users
-    path('login/',  LoginUserView.as_view(), name='login'), 
-    path('logout/', auth_views.LogoutView.as_view(), name='logout'),
+    path('accounts/login/',  LoginUserView.as_view(), name='account_login'), 
+    path('accounts/logout/', LogoutUserView.as_view(), name='account_logout'),
 
     #Password Reset
-    path('password-reset/', ResetPassWord.as_view(), name='password_reset'),
-    path('password-reset/done/', ResetPassWordDone.as_view(), name='password_reset_done'),
-    path('password-reset-confirm/<uidb64>/<token>/', ResetPassWordConfirmation.as_view(), name='password_reset_confirm'),
-    path('password-reset-complete/', ResetCompleteView.as_view(), name='password_reset_complete'),
+    path('accounts/password/set/', PasswordSetUserView.as_view(), name='account_set_password'),
+    path('accounts/password/change/', PasswordChangeUserView.as_view(), name='account_change_password'),
+    path('accounts/password/reset/', PasswordResetView.as_view(), name='account_reset_password'),
+
+    #Email Management
+    path('accounts/email/', EmailUserView.as_view(), name='account_email'),
+
+    #Social Connections
+    path('accounts/social/connections/', ConnectionsUserView.as_view(), name='socialaccount_connections'),  
 
     #Profiles
-    path('update/<int:pk>/', UpdateAccountView.as_view(), name='update'),
+    # path('update/<int:pk>/', UpdateAccountView.as_view(), name='update'),
 
 ]
