@@ -30,6 +30,7 @@ SITE_ID = 5
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
+    'https://127.0.0.1',
     'www.sharepay.app.br',
     'sharepay.app.br',
     'www.sharepay.com.br',
@@ -156,6 +157,8 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+SITE_ID = 3
 
 """ Security Session """
 # if not DEBUG:
