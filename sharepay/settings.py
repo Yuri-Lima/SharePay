@@ -315,8 +315,8 @@ SOCIAL_AUTH_FACEBOOK_OAUTH2_KEY = config('client_id_facebook')
 SOCIAL_AUTH_FACEBOOK_OAUTH2_SECRET = config('secret_facebook')
 
 #Linkedin Settings
-SOCIAL_AUTH_LINKEDIN_OAUTH2_KEY = config('client_id')
-SOCIAL_AUTH_LINKEDIN_OAUTH2_SECRET = config('secret')
+SOCIAL_AUTH_LINKEDIN_OAUTH2_KEY = config('client_id_linkedin')
+SOCIAL_AUTH_LINKEDIN_OAUTH2_SECRET = config('secret_linkedin')
 
 
 django_heroku.settings(locals())
