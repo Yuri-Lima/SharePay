@@ -217,7 +217,7 @@ AWS_S3_REGION_NAME = 'eu-west-1'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 # STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
 
-SITE_ID = 2
+SITE_ID = 3
 """A uthetications Redirects """
 LOGOUT_REDIRECT_URL = 'share:index'#After login they goes to home page
 LOGIN_REDIRECT_URL = 'share:index'#After login they goes to home page
