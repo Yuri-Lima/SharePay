@@ -1,7 +1,6 @@
 {% extends 'account/base_account.html' %}
 {% load account %}
 {% load socialaccount %}
-{% load i18n %}
 {% load static %}
 
 {% block title %}Log In{% endblock %}
@@ -11,7 +10,9 @@
 
 {% block content %}
     <div class="wrapper">
+        {% comment %} LOGO {% endcomment %}
         {% include 'account/logo.html'%}
+        
         <div class="card">
             <div class="card-body">
                 <form class="d-flex flex-column" novalidate method="POST">
@@ -38,10 +39,9 @@
                 </form>
                 <div class="position-relative border-bottom my-3 line"> <span class="connect">or connect with</span> </div>
                 <div class="text-center py-3 connections"> 
-                    <a href="{% provider_login_url "facebook" method="oauth2" %}" target="_blank" class="px-2"> <img src="{% static 'img/facebook-logo.png' %}" alt="Facebook_Account"> </a> 
-                    <a href="{% provider_login_url "google" %}" target="_blank" class="px-2"> <img src="https://www.freepnglogos.com/uploads/google-logo-png/google-logo-png-suite-everything-you-need-know-about-google-newest-0.png" alt="Google_Account"> </a> 
-                    <a href="{% provider_login_url "linkedin_oauth2" %}" target="_blank" class="px-2"> <img src="{% static 'img/linkedin-logo.png' %}" alt="Linkedin_Account"> </a> 
-                </div>
+                    {% comment %} <a href="https://wwww.facebook.com" target="_blank" class="px-2"> <img src="https://www.dpreview.com/files/p/articles/4698742202/facebook.jpeg" alt=""> </a>  {% endcomment %}
+                    <a href="{% provider_login_url "google"  %}" target="_blank" class="px-2"> <img src="https://www.freepnglogos.com/uploads/google-logo-png/google-logo-png-suite-everything-you-need-know-about-google-newest-0.png" alt=""> </a> 
+                    {% comment %} <a href="https://www.github.com" target="_blank" class="px-2"> <img src="https://www.freepnglogos.com/uploads/512x512-logo-png/512x512-logo-github-icon-35.png" alt=""> </a> </div> {% endcomment %}
             </div>
         </div>
         <!-- ==================Footer================ -->
