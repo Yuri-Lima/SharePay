@@ -111,18 +111,18 @@ WSGI_APPLICATION = 'sharepay.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.postgresql',
-    #     'NAME': 'decfeqioelq8iq',
-    #     'USER': 'ohuwoglidavqod',
-    #     'PASSWORD': '3e1684e449b1ef06f11168901c2b3e141a3fe086225c010d70c0bc3ce73be2b4',
-    #     'HOST': 'ec2-52-213-119-221.eu-west-1.compute.amazonaws.com',
-    #     'PORT': '5432',
-    # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'decfeqioelq8iq',
+        'USER': 'ohuwoglidavqod',
+        'PASSWORD': '3e1684e449b1ef06f11168901c2b3e141a3fe086225c010d70c0bc3ce73be2b4',
+        'HOST': 'ec2-52-213-119-221.eu-west-1.compute.amazonaws.com',
+        'PORT': '5432',
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
 }
 
 
