@@ -53,11 +53,17 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'django.contrib.sitemaps',
+    'django.contrib.sites',
     #Local Apps
     'users.apps.UsersConfig',
     'share.apps.ShareConfig',
     #Apps by others
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
 ]
+
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
@@ -84,9 +90,18 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',
             ],
         },
     },
+]
+
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by e-mail
+    'allauth.account.auth_backends.AuthenticationBackend',
 ]
 
 WSGI_APPLICATION = 'sharepay.wsgi.application'
@@ -97,9 +112,17 @@ WSGI_APPLICATION = 'sharepay.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'decfeqioelq8iq',
+        'USER': 'ohuwoglidavqod',
+        'PASSWORD': '3e1684e449b1ef06f11168901c2b3e141a3fe086225c010d70c0bc3ce73be2b4',
+        'HOST': 'ec2-52-213-119-221.eu-west-1.compute.amazonaws.com',
+        'PORT': '5432',
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
 }
 
 
@@ -151,10 +174,6 @@ BASE_URL = "https://www.sharepay.com.br"
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-"""A uthetications Redirects """
-LOGOUT_REDIRECT_URL = 'share:index'#After login they goes to home page
-LOGIN_REDIRECT_URL = 'share:index'#After login they goes to home page
-LOGIN_URL = 'users:login'#if the user is not logged in, they redirect to login page
 
 MEDIA_ROOT  = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
@@ -197,5 +216,66 @@ AWS_QUERYSTRING_AUTH = False
 AWS_S3_REGION_NAME = 'eu-west-1'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 # STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
+
+SITE_ID = 2
+"""A uthetications Redirects """
+LOGOUT_REDIRECT_URL = 'share:index'#After login they goes to home page
+LOGIN_REDIRECT_URL = 'share:index'#After login they goes to home page
+LOGIN_URL = 'users:login'#if the user is not logged in, they redirect to login page
+
+#django-allauth registraion settings
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS =1
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = "optional"
+ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 5
+
+# 1 day
+ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 86400
+
+# ACCOUNT_EMAIL_SUBJECT_PREFIX
+
+ACCOUNT_AUTHENTICATED_LOGIN_REDIRECTS = True
+ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = None
+
+#or any other page
+ACCOUNT_LOGOUT_REDIRECT_URL ='users:account_login'
+
+ACCOUNT_LOGOUT_ON_GET = True
+
+ACCOUNT_FORMS = {
+    'login': 'users.forms.CustomLoginAccount',
+    'signup': 'users.forms.CustomSignupAccount',
+    'add_email': 'users.forms.CustomAddEmailAccount',
+    'change_password': 'users.forms.ChangePasswordFormAccount',
+    'set_password': 'users.forms.SetPasswordFormAccount',
+    'reset_password': 'users.forms.ResetPasswordFormAccount',
+    'reset_password_from_key': 'users.forms.ResetPasswordKeyFormAccount',
+    'disconnect': 'users.forms.DisconnectFormAccount',
+}
+
+# Provider specific settings
+SOCIALACCOUNT_PROVIDERS = {
+    'google': {
+        # 'SCOPE': [
+        #     'profile',
+        #     'email',
+        # ],
+        'AUTH_PARAMS': {
+            'access_type': 'online',
+        },
+        'APP': {
+            'client_id': config('client_id'),
+            'secret': config('secret'),
+            'key': ''
+        }
+    },
+    'linkedin': {
+        'HEADERS': {
+            'x-li-src': 'msdk'
+        }
+    }
+}
+
 
 django_heroku.settings(locals())

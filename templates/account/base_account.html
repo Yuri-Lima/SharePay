@@ -1,4 +1,6 @@
 {% load static %}
+{% load account %}
+{% load socialaccount %}
 
 <!doctype html>
 <html lang="en">
@@ -23,7 +25,10 @@
         <link rel="manifest" href="{% static 'favicon_io/site.webmanifest' %}">
 
         <!-- Bootstrap core CSS -->
-        <link href="{% static 'vendor/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Bootstrap icons-->
+        <link href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" rel="stylesheet" />
 
         {% block stylesheet %}
         
@@ -64,7 +69,7 @@
     <!-- Dont remove anythong below -->
     <!-- Bootstrap core JavaScript -->
     <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js"></script>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
