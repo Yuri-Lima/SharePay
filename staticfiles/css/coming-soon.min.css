@@ -12,13 +12,14 @@ body
     height:100%;
     min-height:35rem;
     position:sticky;
-    font-family:'Source Sans Pro';
+    /* font-family:'Source Sans Pro'; */
+    font-family: 'Source Sans Pro', sans-serif;
     font-weight:300
     
 }
 h1,h2,h3,h4,h5,h6
 {
-    font-family:Merriweather;
+    font-family: 'Merriweather', serif;
     font-weight:700
 }
 video
@@ -67,9 +68,6 @@ video
 }
 .masthead .masthead-bg
 {   
-    
-    
-
     position:absolute;
     top:0;
     bottom:auto;
