@@ -1,0 +1,9 @@
+
+
+{% load i18n %}{% autoescape off %}{% blocktrans with site_name=current_site.name %}Hello from SharePay team!{% endblocktrans %}
+
+{% block content %}{% endblock %}
+
+{% blocktrans with site_name=current_site.name site_domain=current_site.domain %}Thank you for using SharePay House Bill!
+https://www.sharepay.com.br/{% endblocktrans %}
+{% endautoescape %}
