@@ -16,6 +16,7 @@ from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
@@ -30,7 +31,6 @@ SITE_ID = 5
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'https://127.0.0.1',
     'www.sharepay.app.br',
     'sharepay.app.br',
     'www.sharepay.com.br',
@@ -41,7 +41,9 @@ ALLOWED_HOSTS = [
     'https://git.heroku.com/sharepaybill.git'
     ]
 
+
 # Application definition
+
 INSTALLED_APPS = [
     #Django's Apps
     'django.contrib.admin',
@@ -61,9 +63,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
-    'allauth.socialaccount.providers.linkedin_oauth2',
-    'allauth.socialaccount.providers.facebook'
 ]
+
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
@@ -158,8 +159,6 @@ USE_L10N = True
 
 USE_TZ = True
 
-SITE_ID = 3
-
 """ Security Session """
 # if not DEBUG:
 SECURE_SSL_REDIRECT = True
@@ -219,6 +218,7 @@ AWS_S3_REGION_NAME = 'eu-west-1'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 # STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
 
+SITE_ID = 3
 """A uthetications Redirects """
 LOGOUT_REDIRECT_URL = 'share:index'#After login they goes to home page
 LOGIN_REDIRECT_URL = 'share:index'#After login they goes to home page
@@ -244,9 +244,6 @@ ACCOUNT_LOGOUT_REDIRECT_URL ='users:account_login'
 
 ACCOUNT_LOGOUT_ON_GET = True
 
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'share:index'
-SOCIAL_AUTH_LOGIN_URL = 'users:account_login'
-
 ACCOUNT_FORMS = {
     'login': 'users.forms.CustomLoginAccount',
     'signup': 'users.forms.CustomSignupAccount',
@@ -261,64 +258,25 @@ ACCOUNT_FORMS = {
 # Provider specific settings
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
+        # 'SCOPE': [
+        #     'profile',
+        #     'email',
+        # ],
         'AUTH_PARAMS': {
             'access_type': 'online',
         },
+        'APP': {
+            'client_id': config('client_id'),
+            'secret': config('secret'),
+            'key': ''
+        }
     },
     'linkedin': {
-        'SCOPE': [
-            'r_basicprofile',
-            'r_emailaddress'
-        ],
-        'PROFILE_FIELDS': [
-            'id',
-            'first-name',
-            'last-name',
-            'email-address',
-            # 'picture-url',
-            'public-profile-url',
-        ],
         'HEADERS': {
-            'x-li-src': 'msdk',
-        },
-        'APP': {
-            'client_id': config('client_id_linkedin'),
-            'secret': config('secret_linkedin'),
-            'key': '',
-        },
-    },
-    'facebook': {
-        'METHOD': 'oauth2',
-        'SDK_URL': '//connect.facebook.net/{locale}/sdk.js',
-        'SCOPE': ['email', 'public_profile'],
-        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
-        'INIT_PARAMS': {'cookie': True},
-        'FIELDS': [
-            'id',
-            'first_name',
-            'last_name',
-            'middle_name',
-            'name',
-            'name_format',
-            # 'picture',
-            'short_name'
-        ],
-        'EXCHANGE_TOKEN': True,
-        'LOCALE_FUNC': 'path.to.callable',
-        'VERIFIED_EMAIL': False,
-        'VERSION': 'v7.0',
+            'x-li-src': 'msdk'
+        }
     }
 }
-
-XCHANGE_TOKEN = True
-
-#Facebook Settings
-SOCIAL_AUTH_FACEBOOK_OAUTH2_KEY = config('client_id_facebook')
-SOCIAL_AUTH_FACEBOOK_OAUTH2_SECRET = config('secret_facebook')
-
-#Linkedin Settings
-SOCIAL_AUTH_LINKEDIN_OAUTH2_KEY = config('client_id_linkedin')
-SOCIAL_AUTH_LINKEDIN_OAUTH2_SECRET = config('secret_linkedin')
 
 
 django_heroku.settings(locals())
