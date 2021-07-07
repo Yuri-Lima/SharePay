@@ -197,16 +197,35 @@ class ResetPasswordKeyFormAccount(ResetPasswordKeyForm):
 
 
 class SignupFormSocialAccount(SignupFormSocial):
-    def save(self, request):
-
-        # Ensure you call the parent class's save.
-        # .save() returns a User object.
-        user = super(SignupFormSocialAccount, self).save(request)
-
-        # Add your own processing here.
-
-        # You must return the original result.
-        return user
+    username = forms.CharField(
+        label=_("Username"),
+        # min_length=app_settings.USERNAME_MIN_LENGTH,
+        widget=forms.TextInput(
+            attrs={
+                "placeholder": _("Username"), 
+                "autocomplete": "username",
+                'autofocus': 'True',
+                'class': 'form-control',
+                'aria-label': 'Enter username...',
+                'aria-describedby':'submit-username',
+            }
+        ),
+    )
+    email = forms.EmailField(
+        label=_("E-mail"),
+        required=True,
+        widget=forms.TextInput(
+            attrs={
+                "type": "email",
+                "placeholder": _("E-mail address"),
+                "autocomplete": "email",
+                'autofocus': 'True',
+                'class': 'form-control',
+                'aria-label': 'Enter email...',
+                'aria-describedby':'submit-email',
+            }
+        ),
+    )
 
 class DisconnectFormAccount(DisconnectForm):
     def save(self):
