@@ -151,7 +151,6 @@ USE_L10N = True
 USE_TZ = True
 
 """ Security Session """
-# if not DEBUG:
 SECURE_SSL_REDIRECT = True
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
@@ -286,7 +285,7 @@ SOCIALACCOUNT_PROVIDERS = {
     },
     'facebook': {
         'METHOD': 'oauth2',
-        'SDK_URL': '//connect.facebook.net/{locale}/sdk.js',
+        'SDK_URL': '//connect.facebook.net/en_US/sdk.js',
         'SCOPE': ['email', 'public_profile'],
         'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
         'INIT_PARAMS': {'cookie': True},
@@ -304,6 +303,7 @@ SOCIALACCOUNT_PROVIDERS = {
         'LOCALE_FUNC': 'path.to.callable',
         'VERIFIED_EMAIL': False,
         'VERSION': 'v7.0',
+        # 'LOCALE_FUNC': lambda request: 'en_US'
     }
 }
 
