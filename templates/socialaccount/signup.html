@@ -22,9 +22,11 @@
 
         <div class="d-flex align-items-center input-field my-3 mb-4">{{ form.username }}</div>
         <div class="d-flex align-items-center input-field my-3 mb-4" text-center text-white>{{ form.username.errors }}</div>
+        
         {% if redirect_field_value %}
-        <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
+          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
         {% endif %}
+
         <button class="btn btn-outline-light" type="submit">{% trans "Sign Up" %} &raquo;</button>
       </form>
     </div>
