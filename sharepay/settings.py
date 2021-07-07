@@ -16,7 +16,6 @@ from decouple import config
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
@@ -25,8 +24,6 @@ SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
-
-# SITE_ID = 5
 
 ALLOWED_HOSTS = [
     'localhost',
@@ -41,9 +38,7 @@ ALLOWED_HOSTS = [
     'https://git.heroku.com/sharepaybill.git'
     ]
 
-
 # Application definition
-
 INSTALLED_APPS = [
     #Django's Apps
     'django.contrib.admin',
@@ -66,7 +61,6 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.linkedin_oauth2',
     'allauth.socialaccount.providers.facebook',
 ]
-
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
@@ -109,10 +103,8 @@ AUTHENTICATION_BACKENDS = [
 
 WSGI_APPLICATION = 'sharepay.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -127,7 +119,6 @@ DATABASES = {
     #     'NAME': BASE_DIR / 'db.sqlite3',
     # }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -147,10 +138,8 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -173,11 +162,8 @@ BASE_URL = "https://www.sharepay.com.br"
 
 # # PREPEND_WWW = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
-
-
 MEDIA_ROOT  = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
@@ -193,12 +179,10 @@ EMAIL_USE_TLS = config('EMAIL_USE_TLS', cast=bool)
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 
-
 #Settings API email
 # EMAIL_BACKEND = "anymail.backends.mailgun.EmailBackend"  # or sendgrid.EmailBackend, or...
 DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL')  # if you don't already have this in settings
 SERVER_EMAIL = config('SERVER_EMAIL')  # ditto (default from-email for Django errors)
-
 
 #AWS S3 Buckets Config
 # https://django-storages.readthedocs.io/en/latest/backends/amazon-S3.html
