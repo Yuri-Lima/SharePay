@@ -2,7 +2,7 @@ from datetime import date
 from django import contrib
 from django.db.models.fields import DecimalField
 from django.db.models.query import QuerySet
-from django.http.response import HttpResponse, HttpResponseRedirect
+from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls.base import reverse, reverse_lazy, set_urlconf 
 from django.views.generic.detail import SingleObjectMixin

@@ -8,6 +8,10 @@ from .views import (
     PasswordResetView,
     ConnectionsUserView,
     EmailUserView,
+    ExcludeUserData,
+
+    privacy_policy,
+    service_term
     )
 
 
@@ -32,6 +36,12 @@ urlpatterns = [
     path('accounts/social/connections/', ConnectionsUserView.as_view(), name='socialaccount_connections'),  
 
     #Profiles
-    # path('update/<int:pk>/', UpdateAccountView.as_view(), name='update'),
+    path('exclude-all-user-data/<int:pk>/', ExcludeUserData.as_view(), name='delete_user_data'),
+
+    #Privacy Policy
+    path('privacy-policy/', privacy_policy, name='account_privacy_policy'),
+
+    #Service Term
+    path('service-term/', service_term, name='account_service_term'),
 
 ]
