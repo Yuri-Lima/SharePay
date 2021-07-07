@@ -63,6 +63,8 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'allauth.socialaccount.providers.linkedin_oauth2',
+    'allauth.socialaccount.providers.facebook',
 ]
 
 
@@ -218,7 +220,6 @@ AWS_S3_REGION_NAME = 'eu-west-1'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 # STATICFILES_STORAGE = 'storages.backends.s3boto3.S3StaticStorage'
 
-SITE_ID = 3
 """A uthetications Redirects """
 LOGOUT_REDIRECT_URL = 'share:index'#After login they goes to home page
 LOGIN_REDIRECT_URL = 'share:index'#After login they goes to home page
@@ -244,6 +245,10 @@ ACCOUNT_LOGOUT_REDIRECT_URL ='users:account_login'
 
 ACCOUNT_LOGOUT_ON_GET = True
 
+#Socials Accnout Redirects
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = 'share:index'
+SOCIAL_AUTH_LOGIN_URL = 'users:account_login'
+
 ACCOUNT_FORMS = {
     'login': 'users.forms.CustomLoginAccount',
     'signup': 'users.forms.CustomSignupAccount',
@@ -266,17 +271,69 @@ SOCIALACCOUNT_PROVIDERS = {
             'access_type': 'online',
         },
         'APP': {
-            'client_id': config('client_id'),
-            'secret': config('secret'),
+            'client_id': config('client_id_google'),
+            'secret': config('secret_google'),
             'key': ''
         }
     },
     'linkedin': {
+        'SCOPE': [
+            'r_basicprofile',
+            'r_emailaddress'
+        ],
+        'PROFILE_FIELDS': [
+            'id',
+            'first-name',
+            'last-name',
+            'email-address',
+            # 'picture-url',
+            'public-profile-url',
+        ],
         'HEADERS': {
             'x-li-src': 'msdk'
-        }
+        },
+        'APP': {
+            'client_id': config('client_id_linkedin'),
+            'secret': config('secret_linkedin'),
+            'key': '',
+        },
+    },
+    'facebook': {
+        'METHOD': 'oauth2',
+        'SDK_URL': '//connect.facebook.net/{locale}/sdk.js',
+        'SCOPE': ['email', 'public_profile'],
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        'INIT_PARAMS': {'cookie': True},
+        'FIELDS': [
+            'id',
+            'first_name',
+            'last_name',
+            'middle_name',
+            'name',
+            'name_format',
+            # 'picture',
+            'short_name'
+        ],
+        'EXCHANGE_TOKEN': True,
+        'LOCALE_FUNC': 'path.to.callable',
+        'VERIFIED_EMAIL': False,
+        'VERSION': 'v7.0',
     }
 }
+
+XCHANGE_TOKEN = True
+
+#Google Settings
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('client_id_google')
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('secret_google')
+
+#Facebook Settings
+SOCIAL_AUTH_FACEBOOK_OAUTH2_KEY = config('client_id_facebook')
+SOCIAL_AUTH_FACEBOOK_OAUTH2_SECRET = config('secret_facebook')
+
+#Linkedin Settings
+SOCIAL_AUTH_LINKEDIN_OAUTH2_KEY = config('client_id_linkedin')
+SOCIAL_AUTH_LINKEDIN_OAUTH2_SECRET = config('secret_linkedin')
 
 
 django_heroku.settings(locals())
