@@ -5,20 +5,25 @@
 {% block head_title %}{% trans "Signup Social Account" %}{% endblock %}
 
 {% block content %}
-    <h1>{% trans "Sign Up" %}</h1>
-
-<p>{% blocktrans with provider_name=account.get_provider.name site_name=site.name %}You are about to use your {{provider_name}} account to login to
-SharePay. As a final step, please complete the following form:{% endblocktrans %}</p>
 
 <div class="wrapper">
   {% comment %} LOGO {% endcomment %}
   {% include 'account/logo.html'%}
   <div class="card">
+    <h1 class="text-center text-white">{% trans "Sign Up" %}</h1>
     <div class="card-body">
+      <p class="text-center text-white">{% blocktrans with provider_name=account.get_provider.name site_name=site.name %}You are about to use your {{provider_name}} account to login to
+          SharePay. As a final step, please complete the following form:{% endblocktrans %}
+      </p>
       <form class="d-flex flex-column signup" id="signup_form" method="post" action="{% url 'socialaccount_signup' %}">
         {% csrf_token %}
-        <div class="d-flex align-items-center input-field my-3 mb-4">{{ form.as_p }}</div>
-        {% comment %} {{ form.as_p }} {% endcomment %}
+        
+        <div class="d-flex align-items-center input-field my-3 mb-4">{{ form.email }}</div>
+        <div class="d-flex align-items-center input-field my-3 mb-4" text-center text-white>{{ form.email.errors }}</div>
+
+        <div class="d-flex align-items-center input-field my-3 mb-4">{{ form.username }}</div>
+        <div class="d-flex align-items-center input-field my-3 mb-4" text-center text-white>{{ form.username.errors }}</div>
+        
         {% if redirect_field_value %}
         <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
         {% endif %}
@@ -27,5 +32,4 @@ SharePay. As a final step, please complete the following form:{% endblocktrans %
     </div>
   </div>  
 </div>
-
 {% endblock %}
