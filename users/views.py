@@ -1,6 +1,10 @@
+from share.models import HouseBillModel, HouseNameModel
+from users.models import CustomUser
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, UpdateView
-from django.views.generic.edit import FormView
+from django.views.generic.edit import DeleteView, FormView
+from django.shortcuts import render
+from django.http.response import HttpResponseRedirect
 
 from allauth.account.views import(
     LoginView,
@@ -28,7 +32,7 @@ from .forms import (
     SignupFormSocialAccount,
     DisconnectFormAccount,
     )
-from users.models import CustomUser
+
 
 """
     [Source]
@@ -80,3 +84,34 @@ class ConnectionsUserView(ConnectionsView):
     # success_url = reverse_lazy('users:password_reset_complete')
     post_reset_login = True #A boolean indicating if the user should be automatically authenticated after a successful password reset
     # extra_context = 'Dict'
+
+class ExcludeUserData(DeleteView):
+    queryset = CustomUser.objects.all()
+    template_name = 'account/delete_user_data.html'
+    success_url = reverse_lazy('users:index')
+
+    def delete(self, request, *args, **kwargs):
+        """
+        Call the delete() method on the fetched object and then redirect to the
+        success URL.
+        """
+        self.object = self.get_object()
+        success_url = self.get_success_url()
+        self.object.delete()
+        return HttpResponseRedirect(success_url)
+
+    # Add support for browsers which only accept GET and POST for now.
+    def post(self, request, *args, **kwargs):
+        return self.delete(request, *args, **kwargs)
+
+def privacy_policy(request):
+    template_name = 'account/privacy_policy.html'
+    content_type = 'text/html'
+    return render(request, template_name)
+
+def service_term(request):
+    template_name = 'account/service_term.html'
+    content_type = 'text/html'
+    return render(request, template_name)
+
+
