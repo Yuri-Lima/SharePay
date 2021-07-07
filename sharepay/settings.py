@@ -210,7 +210,7 @@ LOGIN_URL = 'users:login'#if the user is not logged in, they redirect to login p
 
 #django-allauth registraion settings
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS =1
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "optional" #Attention
 ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 5
