@@ -1,0 +1,31 @@
+{% extends 'account/base_account.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}Exclude Account{% endblock %}
+
+{% block content %}
+    <div class="wrapper">
+        {% comment %} LOGO {% endcomment %}
+        {% include 'account/logo.html'%}
+        <div class="card">
+            <form class="d-flex flex-column" novalidate method="POST">
+                {% csrf_token %}
+                <div class="h3 text-center text-white">Exclude Account</div>
+                <div class="d-flex align-items-center input-field my-3 mb-4"> <p>Once you delete your account all data provided, will be deleted by consequence. So make sure that you are aware about that.</p></div>
+                
+                <button class="btn btn-outline-light text-center " name="action" type="submit" value="Delete"> Delete</button>
+                <a href="{% url 'share:index' %}" class="btn btn-outline-light m-2 btn-sm">Back</a>
+            </form>
+        </div>
+        <!-- ==================Footer================ -->
+        <footer class="my-1 pt-1 text-muted text-center text-small text-white">
+            <p class="mb-1 text-white">&copy; 2021 - {% now 'Y'%} SharePay</p>
+            <ul class="list-inline">
+            <li class="list-inline-item"><a href="{% url 'users:account_privacy_policy' %}">Privacy</a></li>
+            <li class="list-inline-item"><a href="{% url 'users:account_service_term' %}">Terms</a></li>
+            <li class="list-inline-item"><a href="#">Support</a></li>
+            </ul>
+        </footer>
+    </div> 
+{% endblock content %}

@@ -81,6 +81,7 @@
                 <hr>
                 <div class="input-group-append">
                   <a href="{% url 'users:account_logout' %}" type="button" class="btn btn-outline-warning btn-sm ">Log Out</a>
+                  <a href="{% url 'users:delete_user_data' pk=user.id %}" type="button" class="btn btn-outline-light btn-sm ">Delete Account</a>
                 </div>
               {% endif %}
             <!-- =============== END LOGOUT BUTTON ================= --> 
