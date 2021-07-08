@@ -87,7 +87,7 @@ class ConnectionsUserView(ConnectionsView):
 class ExcludeUserData(DeleteView):
     queryset = CustomUser.objects.all()
     template_name = 'account/delete_user_data.html'
-    success_url = reverse_lazy('users:index')
+    success_url = reverse_lazy('share:index')
 
     def delete(self, request, *args, **kwargs):
         """
