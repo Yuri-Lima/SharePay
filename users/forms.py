@@ -105,7 +105,7 @@ class CustomSignupAccount(SignupForm):
 
         # Ensure you call the parent class's save.
         # .save() returns a User object.
-        user = super(CustomLoginAccount, self).save(request)
+        user = super(CustomSignupAccount, self).save(request)
 
         # Add your own processing here.
 
