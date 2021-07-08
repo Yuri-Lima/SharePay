@@ -76,7 +76,6 @@ class PasswordResetFromKeyDoneUserView(PasswordResetFromKeyDoneView):
 class EmailUserView(EmailView):
     template_name= 'account/email.html'
     form_class = CustomAddEmailAccount
-    # extra_context = 'Dict'
 
 class ConnectionsUserView(ConnectionsView):
     # template_name = 'account/password_reset_confirm_new.html'
