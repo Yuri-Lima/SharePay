@@ -19,19 +19,31 @@
                     {% csrf_token %}
                     <div class="h3 text-center text-white">Sign Up</div>
                     <div class="d-flex align-items-center input-field mb-2"> <span class="far fa-user p-2"></span> {{ form.username }} </div>
-                    {{ form.username.errors }}
+                    {% if form.username.errors %}
+                        <div class="d-flex align-items-center input-field mb-2"> {{ form.username.errors }} </div>
+                    {% endif %}
+
                     <div class="d-flex align-items-center input-field mb-2"> <span class="far fa-envelope p-2"></span> {{ form.email }} </div>
-                    {{ form.email.errors }}
+                    {% if form.email.errors %}
+                        <div class="d-flex align-items-center input-field mb-2"> {{ form.email.errors }} </div>
+                    {% endif %}
+
                     <div class="d-flex align-items-center input-field my-3 mb-2"> <span class="fas fa-lock p-2"></span> {{ form.password1 }} <button class="btn" type="button" data-bs-toggle="button" onclick="showPassword()"> <span class="fas fa-eye-slash"></span> </button> </div>
-                    {{ form.password1.errors }}
+                    {% if form.password1.errors %}
+                        <div class="d-flex align-items-center input-field mb-2"> {{ form.password1.errors }} </div>
+                    {% endif %}
+                    
                     <div class="d-flex align-items-center input-field mb-2"> <span class="fas fa-lock p-2"></span> {{ form.password2 }} <button class="btn" type="button" data-bs-toggle="button" onclick="showPassword()"> <span class="fas fa-eye-slash"></span> </button> </div>
-                    {{ form.password2.errors }}
+                    {% if form.password2.errors %}
+                        <div class="d-flex align-items-center input-field mb-2"> {{ form.password2.errors }} </div>
+                    {% endif %}
+                    
                     <div class="d-sm-flex align-items-sm-center justify-content-sm-between">
                         <div class="d-flex align-items-center"> <label class="option"> <span class="text-light-white">Remember Me</span> <input type="checkbox" checked> <span class="checkmark"></span> </label> </div>
                         <div class="mt-sm-0 mt-3"><a href="{% url 'users:account_reset_password' %}">Forgot password?</a></div>
                     </div>
                     
-                    <div class="my-3"> <input type="submit" value="Login" class="btn btn-primary"></div>
+                    <div class="my-3"> <input type="submit" value="Sign In" class="btn btn-primary"></div>
                     <div class="mb-3"> <span class="text-light-white">You already have an account?</span> <a href="{% url 'users:account_login' %}"> Log In</a></div>
                 </form>
                 <div class="position-relative border-bottom my-3 line"> <span class="connect">or connect with</span> </div>
