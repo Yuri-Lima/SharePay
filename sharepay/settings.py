@@ -152,13 +152,14 @@ USE_L10N = True
 USE_TZ = True
 
 """ Security Session """
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-CSRF_COOKIE_SAMESITE = 'None'
-SESSION_COOKIE_SAMESITE = 'None'
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-BASE_URL = "https://www.sharepay.com.br"
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    CSRF_COOKIE_SAMESITE = 'None'
+    SESSION_COOKIE_SAMESITE = 'None'
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    BASE_URL = "https://www.sharepay.com.br"
 
 # # PREPEND_WWW = True
 
@@ -320,6 +321,13 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('secret_google')
 #Facebook Settings
 SOCIAL_AUTH_FACEBOOK_OAUTH2_KEY = config('client_id_facebook')
 SOCIAL_AUTH_FACEBOOK_OAUTH2_SECRET = config('secret_facebook')
+
+#Instagram Settings
+PROFILE_URL = 'https://instagram.com/'
+SOCIAL_AUTH_INSTAGRAM_KEY = config('client_id_instagram')
+SOCIAL_AUTH_INSTAGRAM_SECRET = config('secret_instagram')
+SOCIAL_AUTH_INSTAGRAM_EXTRA_DATA = [('user', 'user')]
+
 
 #Linkedin Settings
 SOCIAL_AUTH_LINKEDIN_OAUTH2_KEY = config('client_id_linkedin')
