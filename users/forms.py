@@ -15,6 +15,7 @@ from allauth.account.forms import (
     ChangePasswordForm,
     ResetPasswordForm,
     ResetPasswordKeyForm,
+    
 )
 from allauth.socialaccount.forms import (
     SignupForm as SignupFormSocial,
@@ -377,9 +378,18 @@ class CustomUserCreationForm(UserCreationForm):
 
 class CustomUserChangeForm(UserChangeForm):
 
+    def __init__(self, *args, **kwargs):
+        super(CustomUserChangeForm, self).__init__(*args, **kwargs)
+        password = self.fields.get('password')
+        if password:
+            password.help_text = password.help_text.format('../password/')
+        user_permissions = self.fields.get('user_permissions')
+        if user_permissions:
+            user_permissions.queryset = user_permissions.queryset.select_related('content_type')
+
     class Meta(UserChangeForm.Meta):
         model = CustomUser  
-        fields = ('username', 'email')
+        fields = ('username', 'email', 'first_name', 'last_name' )
         help_texts = {
             'username': None,
             'email': None,
@@ -401,11 +411,26 @@ class CustomUserChangeForm(UserChangeForm):
                     'aria-label': 'Enter email...',
                     'aria-describedby':'submit-button',
                 }),
+            'first_name': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'Enter First Name...',
+                    'aria-label': 'Enter First Name......',
+                    'aria-describedby':'submit-firstname',
+                }),
+            'last_name': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'placeholder': 'Enter Last Name...',
+                    'aria-label': 'Enter Last Name......',
+                    'aria-describedby':'submit-lastname',
+                }),
         }
 
     password1 = forms.CharField(
         label=("Password"),
         strip=False,
+        required=False,
         widget=forms.PasswordInput(
             attrs={
                 'class': 'form-control',
@@ -415,6 +440,7 @@ class CustomUserChangeForm(UserChangeForm):
     )
     password2 = forms.CharField(
         label=("Password confirmation"),
+        required=False,
         widget=forms.PasswordInput(
             attrs={
                 'class': 'form-control',

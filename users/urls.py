@@ -10,6 +10,8 @@ from .views import (
     EmailUserView,
     ExcludeUserData,
 
+    ProfileUserView,
+
     privacy_policy,
     service_term
     )
@@ -19,10 +21,13 @@ app_name = 'users'
 
 urlpatterns = [
 
-    path('accounts/signup/', SignUpUserView.as_view(), name='account_signup'),
     #Authenticaios Users
+    path('accounts/signup/', SignUpUserView.as_view(), name='account_signup'),
     path('accounts/login/',  LoginUserView.as_view(), name='account_login'), 
     path('accounts/logout/', LogoutUserView.as_view(), name='account_logout'),
+
+    #Profile Users
+    path('welcome/profile/<int:pk>/', ProfileUserView.as_view(), name='profile'),
 
     #Password Reset
     path('accounts/password/set/', PasswordSetUserView.as_view(), name='account_set_password'),
