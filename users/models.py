@@ -24,3 +24,4 @@ class CustomUser(AbstractUser):
     def get_absolute_url(self):
         return reverse("users:update", kwargs={"pk": self.pk})
     
+

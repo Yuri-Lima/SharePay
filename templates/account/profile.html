@@ -1,0 +1,67 @@
+{% extends 'account/base_account.html' %}
+{% load account %}
+{% load socialaccount %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}SharePay - Profile{% endblock %}
+
+{% block stylesheet %}
+    
+{% endblock  %}
+
+{% block content %}
+    <div class="wrapper">
+        {% comment %} LOGO {% endcomment %}
+        {% include 'account/logo.html'%}
+            <div class="card">
+                <form class="d-flex flex-column" novalidate method="POST">
+                    {% csrf_token %}
+                    <div class="h3 text-center text-white">Profile</div>
+                    <div class="d-flex align-items-center input-field my-3 mb-4"> <span class="far fa-user p-2"></span>{{ form.username }}</div>
+                    {% if form.username.errors %}
+                        <div class="d-flex align-items-center input-field mb-2"> {{ form.username.errors }} </div>
+                    {% endif %}
+
+                    <div class="d-flex align-items-center input-field mb-4" placeholder="First Name..."> <span class="fas fa-user-plus p-2"></span>{{ form.first_name }}</div>
+                    {% if form.first_name.errors %}
+                        <div class="d-flex align-items-center input-field mb-2"> {{ form.first_name.errors }} </div>
+                    {% endif %}
+
+                    <div class="d-flex align-items-center input-field mb-4" placeholder="Last Name..."> <span class="fas fa-user-plus p-2"></span>{{ form.last_name }}</div>
+                    {% if form.last_name.errors %}
+                        <div class="d-flex align-items-center input-field mb-2"> {{ form.last_name.errors }} </div>
+                    {% endif %}
+
+                    <div class="d-flex align-items-center input-field mb-2"> <span class="fas fa-lock p-2"></span>{{ form.email }}</div>
+                    {% if form.email.errors %}
+                        <div class="d-flex align-items-center input-field mb-2"> {{ form.email.errors }} </div>
+                    {% endif %}
+                    
+                    <div class="mb-4 text-center"> <input type="submit" value="Save" class="btn btn-primary"> </div>
+                </form>
+                <a href="{% url 'users:delete_user_data' pk=user.id %}" class="btn btn-outline-warning btn-sm mr-2">Delete Account</a>
+            </div>
+        
+        <!-- ==================Footer================ -->
+        <footer class="my-1 pt-1 text-muted text-center text-small text-white">
+            <p class="mb-1 text-white">&copy; 2021 - {% now 'Y'%} SharePay</p>
+            <ul class="list-inline">
+            <li class="list-inline-item"><a href="{% url 'users:account_privacy_policy' %}">Privacy</a></li>
+            <li class="list-inline-item"><a href="{% url 'users:account_service_term' %}">Terms</a></li>
+            <li class="list-inline-item"><a href="#">Support</a></li>
+            </ul>
+        </footer>
+    </div>
+    <script>
+        function showPassword() {
+            var password1 = document.getElementById('pwd1');
+            if (password1.type === 'password') {
+                password1.type = "text";
+            }
+            else {
+                password1.type = "password";
+            }
+        }
+    </script>  
+{% endblock content %}
