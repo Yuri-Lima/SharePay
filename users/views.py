@@ -1,10 +1,11 @@
-from share.models import HouseBillModel, HouseNameModel
+from django.contrib.auth.models import UserManager
 from users.models import CustomUser
 from django.urls import reverse_lazy
-from django.views.generic import CreateView, UpdateView
-from django.views.generic.edit import DeleteView, FormView
+from django.views.generic.edit import DeleteView, UpdateView
 from django.shortcuts import render
 from django.http.response import HttpResponseRedirect
+
+from allauth.account import signals
 
 from allauth.account.views import(
     LoginView,
@@ -31,6 +32,7 @@ from .forms import (
     CustomAddEmailAccount,
     SignupFormSocialAccount,
     DisconnectFormAccount,
+    CustomUserChangeForm
     )
 
 
@@ -38,6 +40,30 @@ from .forms import (
     [Source]
     https://docs.djangoproject.com/en/3.1/topics/auth/default/#django.contrib.auth.views.PasswordChangeView
 """
+class ProfileUserView(UpdateView):
+    model = CustomUser
+    template_name = 'account/profile.html'
+    form_class = CustomUserChangeForm
+    success_url = reverse_lazy('share:index')
+
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object(queryset=CustomUser.objects.all())
+        return super(ProfileUserView, self).get(request, *args, **kwargs)
+    
+    def post(self, request, *args, **kwargs):
+        super(ProfileUserView, self).post(request, *args, **kwargs)
+        self.object = self.get_object(queryset=CustomUser.objects.all())
+        
+        form = self.get_form()
+        if form.is_valid():
+            print(form)
+            return self.form_valid(form)
+        else:
+            print(form.errors)
+            return self.form_invalid(form)
+        # return super(ProfileUserView, self).post(request, *args, **kwargs)
+
+
 class LoginUserView(LoginView):
     template_name = 'account/login.html'
     success_url = reverse_lazy('share:index')

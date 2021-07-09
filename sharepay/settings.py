@@ -302,13 +302,20 @@ SOCIALACCOUNT_PROVIDERS = {
             'name',
             'name_format',
             # 'picture',
-            'short_name'
+            'short_name',
+            'birthday'
         ],
         'EXCHANGE_TOKEN': True,
         'LOCALE_FUNC': 'path.to.callable',
         'VERIFIED_EMAIL': False,
         'VERSION': 'v7.0',
         # 'LOCALE_FUNC': lambda request: 'en_US'
+    },
+    'instagram': {
+        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+        'METHOD': 'oauth2',
+        'LOCALE_FUNC': lambda request: 'en_US',
+        'VERIFIED_EMAIL': False,
     }
 }
 
