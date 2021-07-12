@@ -1,9 +1,11 @@
 from decimal import Decimal
+from django.core.cache import cache
 from django.db.models.base import Model
 from django import forms
 from django.db.models.fields import CharField
 from django.forms.models import inlineformset_factory
 from django.forms import TextInput, DateInput, NumberInput
+from django.http.response import JsonResponse
 from share.models import (
     HouseNameModel,
     HouseTenantModel,
@@ -16,6 +18,8 @@ from share.models import (
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from datetime import date, datetime
+
+from django.core import serializers
 
 """ CALENDAR """
 class HouseNameDateInput(DateInput):
@@ -62,6 +66,12 @@ class HouseTenantModelForm(forms.ModelForm):
         model= HouseTenantModel
         fields='__all__'
 
+    def has_changed(self):
+        if len(self.changed_data)>2: #Has not Changed['days', 'ORDER']--> 2 elements / Has Changed['house_tenant', 'days', 'ORDER'] --> 3 elements
+            cache.clear()
+            print(f"Has Changed{self.changed_data}")
+        return super(HouseTenantModelForm, self).has_changed()
+
     def clean(self):
         """
             A data inicial do Tenant nao deve ser menor que a data inicial da bill
@@ -69,11 +79,29 @@ class HouseTenantModelForm(forms.ModelForm):
         """
         #First Validation
         #Data Range Validation
-        obj_house_name=HouseNameModel.objects.get(pk=self.cleaned_data['house_name_FK'].id)
+        timeout = 60
+        
+        obj_house_bill_all, obj_house_name = {},{}
+        if cache.get('obj_house_name') and cache.get('obj_house_bill_all'):
+            obj_house_name = cache.get('obj_house_name')
+            obj_house_bill_all = cache.get('obj_house_bill_all')
+            print(f"From Cache")
+        else:
+            try:
+                obj_house_name=HouseNameModel.objects.get(pk=self.cleaned_data['house_name_FK'].id)
+                obj_house_bill_all =HouseBillModel.objects.get(house_bill_FK=self.cleaned_data['house_name_FK'].id),
+                cache.set('obj_house_name', obj_house_name, timeout)
+                cache.set('obj_house_bill_all', obj_house_bill_all, timeout)
+                print(f"From DB")
+            except HouseNameModel.DoesNotExist:
+                print(f"From Empty")
+                obj_house_name ={}
+                obj_house_bill_all ={}
+
         flag_start_date, flag_end_date = False, False
         start_date = self.cleaned_data['start_date']
         end_date = self.cleaned_data['end_date']
-        for obj_house_bill in obj_house_name.house_bill_related.all():
+        for obj_house_bill in obj_house_bill_all:
             if start_date < obj_house_bill.start_date_bill:
                 flag_start_date = True
             if end_date > obj_house_bill.end_date_bill:
