@@ -1,4 +1,5 @@
 from datetime import date
+from allauth.account.utils import user_display
 from django import contrib
 from django.db.models.fields import DecimalField
 from django.db.models.query import QuerySet
@@ -7,7 +8,7 @@ from django.shortcuts import redirect, render
 from django.urls.base import reverse, reverse_lazy, set_urlconf 
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.list import MultipleObjectMixin
-from django.views.generic.edit import BaseDeleteView
+from django.core.cache import cache
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from .models import (
@@ -52,11 +53,10 @@ class IndexTemplateView(TemplateView):
 
     def get_context_data(self, **kwargs):
         user = self.request.user
-        if user.id: 
-            ctx = super().get_context_data(**kwargs)
+        if user.id:
+            ctx = super(IndexTemplateView, self).get_context_data(**kwargs)
             ctx = {
                 'user' : self.request.user,
-                'houses' : HouseNameModel.objects.all().filter(user_FK=self.request.user),
             }
             return ctx
     
@@ -64,12 +64,23 @@ class HouseNameListView(LoginRequiredMixin, ListView):
     model = HouseNameModel
     template_name = 'houses/list_house_name.html'
 
-    
     def get_context_data(self, **kwargs):
-        ctx = {
-            'housesnames' : HouseNameModel.objects.all().filter(user_FK=self.request.user).order_by('-last_updated_house'), 
-        }
-        return super(HouseNameListView, self).get_context_data(**ctx)
+        timeout = 60
+        context = super(HouseNameListView, self).get_context_data(**kwargs)
+        if cache.get("housesnames"):
+            context['housesnames'] = cache.get('housesnames')
+            print(f"From Cache")
+        else:
+            print("From DB")
+            try:
+
+                context.update({
+                    'housesnames' : HouseNameModel.objects.all().filter(user_FK=self.request.user).order_by('-last_updated_house'), 
+                })
+                cache.set('housesnames', context['housesnames'],timeout)
+            except HouseNameModel.DoesNotExist:
+                housesnames ={}
+        return context
 
 class HouseNameCreateView(LoginRequiredMixin, CreateView):
     model = HouseNameModel
@@ -79,7 +90,7 @@ class HouseNameCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         #Set User
         form.instance.user_FK =  self.request.user
-
+        cache.clear()
         messages.add_message(
             self.request, 
             messages.INFO,
@@ -93,20 +104,38 @@ class HouseNameDetailView(LoginRequiredMixin, DetailView, MultipleObjectMixin):
     context_object_name = 'house'
     paginate_by = 2
 
-    def help(self, *args, **kwargs):
-        self.has_sub_kwh = dict()
-        try:
-            a = SubKilowattModel.objects.all()
-            print(f'Has--->{a}')
-        except:
-            return None
-
     def get_context_data(self, **kwargs):
-        # print(f'Has--->{self.help()}')
-        # print(f'OBJECT:{self.object}') 
-        object_list = HouseTenantModel.objects.filter(house_name_FK=self.object)
-        context = super(HouseNameDetailView, self).get_context_data(object_list= object_list, **kwargs)
+        timeout = 60
+        if cache.get("object_list") and cache.get("object") and cache.get("house") :
+            print(f"Deleted: {cache.get('house', 'has expired')}\n")
+            context = super(HouseNameDetailView, self).get_context_data(object_list= cache.get('object_list'), **kwargs)
+            context['house'] = cache.get('house')
+            context['object'] = cache.get('object')
+            context['paginator'] = cache.get('paginator')
+            context['object_list'] = cache.get('object_list')
+            context['is_paginated'] = cache.get('is_paginated')
+            context['house_bill'] = cache.get('house_bill')
+            context['house_kwh'] = cache.get('house_kwh')
+            context['house_tenants'] = cache.get('house_tenants')
+        else:
+            object_list = HouseTenantModel.objects.filter(house_name_FK=self.object)
+            context = super(HouseNameDetailView, self).get_context_data(object_list= object_list, **kwargs)
+            context.update({
+                'house_bill': HouseBillModel.objects.filter(house_bill_FK=self.object),
+                'house_kwh': HouseKilowattModel.objects.filter(house_kwh_FK=self.object),
+                'house_tenants': HouseTenantModel.objects.filter(house_name_FK=self.object),
+            })
+            cache.set('house', context['house'],timeout)
+            cache.set('object', context['object'],timeout)
+            cache.set('paginator', context['paginator'],timeout)
+            cache.set('object_list', context['object_list'],timeout)
+            cache.set('page_obj', context['page_obj'],timeout)
+            cache.set('is_paginated', context['is_paginated'],timeout)
+            cache.set('house_bill', context['house_bill'],timeout)
+            cache.set('house_kwh', context['house_kwh'],timeout)
+            cache.set('house_tenants', context['house_tenants'],timeout)
         return context
+
 
 class SubHouseNameListDetailView(LoginRequiredMixin, DetailView, MultipleObjectMixin):
     model = HouseNameModel
@@ -130,6 +159,7 @@ class HouseNameUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         user = self.get_object()
+        cache.clear()
         if user.user_FK == self.request.user:
             return True
         return False
@@ -171,12 +201,15 @@ class HouseNameDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
 
     def post(self, request, *args, **kwargs):
         obj = self.get_object()
+        cache.clear()
+
         messages.add_message(
                 self.request, 
                 messages.INFO,
                 f"{obj.house_name} has been Deleted."
             )  
         return super(HouseNameDeleteView, self).post(request, *args, **kwargs)
+
     def test_func(self):
         user = self.get_object()
         if user.user_FK == self.request.user:
