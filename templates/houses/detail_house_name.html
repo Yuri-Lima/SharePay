@@ -29,8 +29,8 @@
           <!-- ================================ -->
           <h3>Details from {{house.house_name}}</h3>
           <a href="{% url 'share:update_house_name' pk=house.id %}" role="button" class="btn btn-outline-primary text-white w-100 mb-2">Edit House Name</a>
-          {% if house.house_bill_related.all %}
-              {% for bill in  house.house_bill_related.all %}
+          {% if house_bill %}
+              {% for bill in  house_bill %}
                   <div class="d-flex d-flex-inline">
                       <span class="pe-2"><h6>Amout: €{{ bill.amount_bill|intcomma }}</h6></span>
                   </div>
@@ -40,9 +40,9 @@
               <a href="{% url 'share:add_house_bill' pk=house.id %}" role="button" class="btn btn-success w-100 mb-2">Add Bill Value</a>
           {% endif %}
 
-          {% if house.house_bill_related.all %}
-            {% if house.house_kilowatt_related.all %}
-              {% for kwh in  house.house_kilowatt_related.all %}
+          {% if house_bill %}
+            {% if house_kwh %}
+              {% for kwh in  house_kwh %}
                   <div class="d-flex d-flex-inline">
                       <span class="pe-2"><h6>Read: {{kwh.kwh}}-kwh</h6></span>
                   </div>
@@ -53,11 +53,11 @@
             {% endif %}
           {% endif %}
 
-          {% if house.house_bill_related.all and house.house_kilowatt_related.all %} 
+          {% if house_bill and house_kwh %} 
             {% if object_list %}<!-- for Paginations -->
-              <span class="pe-2"><h6>Total Tenants: {{house.house_tenant_related.all.count}}</h6></span>
+              <span class="pe-2"><h6>Total Tenants: {{house_tenants.count}}</h6></span>
                 <a href="{% url 'share:add_house_tenant_name' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Add/Edit Tenant</a>
-                {% for name in object_list %}
+                {% for name in house_tenants %}
                   {% comment %} <div class="small">Tenant Id: {{ name.id }}</div> {% endcomment %}
                   <div><strong>Tenant's Name:</strong> {{ name.house_tenant }}</div>
                   <div><b>{{name.days}} days</b> living at {{name.house_name_FK}}</div>  
@@ -92,8 +92,8 @@
             {% endif %}
           {% endif %}
 
-          {% if house.house_tenant_related.all and house.house_bill_related.all and house.house_kilowatt_related.all%}
-            {% if house.sub_house_related.all %}
+          {% if house_tenants and house_bill and house_kwh %}
+            {% if house %}
               <a href="{% url 'share:list_detail_sub_house_name' pk=house.id %}" role="button" class="btn btn-info w-100 mb-2">Edit Sub Houses</a>
             {% else %}
               <a href="{% url 'share:add_sub_house' pk=house.id %}" role="button" class="btn btn-success w-100 mb-2">Add Sub Houses</a>
