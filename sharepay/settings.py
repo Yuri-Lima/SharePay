@@ -130,12 +130,12 @@ CACHE_TTL = 60 * 5
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": [config('REDIS_URL')],
+        "LOCATION": [config('REDIS_TLS_URL')],
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             # "SERIALIZER": "django_redis.serializers.json.JSONSerializer",
             "CONNECTION_POOL_KWARGS": {
-                "ssl_cert_reqs": True,
+                "ssl_cert_reqs": None,
                 "max_connections": 100, 
                 "retry_on_timeout": True
             },
@@ -180,14 +180,14 @@ USE_L10N = True
 USE_TZ = True
 
 """ Security Session """
-if not DEBUG:
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    CSRF_COOKIE_SAMESITE = 'None'
-    SESSION_COOKIE_SAMESITE = 'None'
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    BASE_URL = "https://www.sharepay.com.br"
+# if not DEBUG:
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SAMESITE = 'None'
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+BASE_URL = "https://www.sharepay.com.br"
 
 # # PREPEND_WWW = True
 
