@@ -135,7 +135,7 @@ CACHES = {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             # "SERIALIZER": "django_redis.serializers.json.JSONSerializer",
             "CONNECTION_POOL_KWARGS": {
-                "ssl_cert_reqs": None,
+                "ssl_cert_reqs": True,
                 "max_connections": 100, 
                 "retry_on_timeout": True
             },
