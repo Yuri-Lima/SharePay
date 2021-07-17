@@ -66,6 +66,9 @@ INSTALLED_APPS = [
 AUTH_USER_MODEL = 'users.CustomUser'
 
 MIDDLEWARE = [
+    #Must be here on top
+    'django.middleware.cache.UpdateCacheMiddleware',
+
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -73,7 +76,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    #Must be here on bottom
+    'django.middleware.cache.FetchFromCacheMiddleware'
 ]
+CACHE_MIDDLEWARE_SECONDS = 300
+CACHE_MIDDLEWARE_ALIAS = 'default'
+CACHE_MIDDLEWARE_KEY_PREFIX = 'sharepay'
 
 ROOT_URLCONF = 'sharepay.urls'
 
@@ -114,12 +123,31 @@ DATABASES = {
         'PASSWORD': '3e1684e449b1ef06f11168901c2b3e141a3fe086225c010d70c0bc3ce73be2b4',
         'HOST': 'ec2-52-213-119-221.eu-west-1.compute.amazonaws.com',
         'PORT': '5432',
-    }
-    # 'default': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': BASE_DIR / 'db.sqlite3',
-    # }
+    }   
 }
+#Redis Cache
+CACHE_TTL = 60 * 5
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": [config('REDIS_URL')],
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
+            # "SERIALIZER": "django_redis.serializers.json.JSONSerializer",
+            "CONNECTION_POOL_KWARGS": {
+                "ssl_cert_reqs": True,
+                "max_connections": 100, 
+                "retry_on_timeout": True
+            },
+        }
+    }
+}
+"""
+Django can by default use any cache backend as session backend and you benefit from that by using django-redis 
+as backend for session storage without installing any additional backends:
+"""
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_CACHE_ALIAS = "default"
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -225,8 +253,13 @@ ACCOUNT_SESSION_REMEMBER = None
 ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = True
 ACCOUNT_USERNAME_BLACKLIST = ['admin', 'user']
 ACCOUNT_USERNAME_MIN_LENGTH = 5
-SOCIALACCOUNT_STORE_TOKENS = True
 ACCOUNT_SIGNUP_REDIRECT = LOGIN_REDIRECT_URL
+
+# SOCIALACCOUNT
+SOCIALACCOUNT_STORE_TOKENS = True
+SOCIALACCOUNT_EMAIL_REQUIRED = False
+SOCIALACCOUNT_EMAIL_VERIFICATION = False
+SOCIALACCOUNT_AUTO_SIGNUP = False
 
 #or any other page
 ACCOUNT_LOGOUT_REDIRECT_URL ='users:account_login'
