@@ -28,14 +28,8 @@ DEBUG = False
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
-    'www.sharepay.app.br',
-    'sharepay.app.br',
-    'www.sharepay.com.br',
-    'sharepay.com.br',
-    'http://www.sharepay.com.br',
-    'http://sharepay.com.br',
-    'https://sharepaybill.herokuapp.com/',
-    'https://git.heroku.com/sharepaybill.git'
+    '.sharepay.com.br',
+    '.herokuapp.com/',
     ]
 
 # Application definition
