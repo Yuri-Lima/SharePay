@@ -130,7 +130,7 @@ CACHE_TTL = 60 * 5
 CACHES = {
     "default": {
         "BACKEND": "django_redis.cache.RedisCache",
-        "LOCATION": [config('REDIS_URL')],
+        "LOCATION": [config('REDIS_TLS_URL')],
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             # "SERIALIZER": "django_redis.serializers.json.JSONSerializer",
