@@ -7,3 +7,17 @@ git branch -d localBranchName
 
 // delete branch remotely
 git push origin --delete remoteBranchName
+
+//Rewind to an Earlier Point in History
+
+We know programmers love to experiment and try new things. However, sometimes during the course of that experimentation we realize we went down the wrong path and the commits we were making might not be as useful as we originally thought.
+
+Git has a git reset command that can help rewind the history of our project, but, it alters the commit history, which as mentioned before, might cause issues for other collaborators. It is highly recommended that you use git reset only when you have not pushed your commits to your remote branch. git reset comes in three distinct flavors, --soft, --mixed, and --hard.
+
+    git reset --soft takes the identified commit(s) and places all of the changes in the staging area. This is helpful if you want to take a group of commits and squash them into a single larger commit.
+    git reset --mixed, the default mode for git reset, takes the identified commit(s) and places all of the changes in the working directory. Like --soft, this is helpful if you want to take a group of small commits and combine some of the changes to make larger commits. But you can also use it to make additional changes to the files and then re-create the commit history.
+    git reset --hard will take the identified commit(s) and destroy them. Be careful with this, because they don’t go in your trash or recycle bin—the files essentially don't exist and are completely removed from your repository. Any uncommitted changes to files that are currently in the working directory or staging area will also be deleted. You can lose work with git reset --hard.
+
+An example of using reset could look something like this:
+
+git reset --soft HEAD~2 would rewind the branch you are on by two commits (remember HEAD is a pointer to the tip of your branch). The changes that had been made in those last two commits would be reflected in the staging area.
