@@ -1,11 +1,13 @@
 {% extends 'houses/calc_bill/base_calc.html' %}
 {% load static %}
 {% load humanize %}
+{% load adv_cache %}
 
 {% block title %}Reports SharePay{% endblock title %}
 {% block content %}
 {% comment %} LOGO {% endcomment %}
 {% include 'houses/logo_report.html' %}
+{% cache 0 'calcmain' request.user.pk request.user.last_login %}
 {% nocache %}
 <a type="button" class="close" aria-label="Close" href="{% url 'share:reports_view' pk=Main_House.first.id %}">
       <small><span aria-hidden="true">Back to Reports</span> </small>
@@ -185,6 +187,7 @@
       <small><span aria-hidden="true">Back to Reports</span></small>
 </a>
 {% endnocache %}
+{% endcache %}
 
 {% endblock content %} 
 
