@@ -1,13 +1,11 @@
 {% extends 'houses/base.html' %}
 {% load static %}
-{% load cache %}
 
 
 {% block title %}SharePay - Welcome{% endblock title %}
 
 {% block content %}
 {% include 'houses/video.html' %}
-{% cache 1440 'indexpage' %}
   <div class="masthead">
     <div class="masthead-bg"></div>
     <div class="container h-100">
@@ -66,7 +64,6 @@
       </div>
     </div>
   </div>
-{% endcache %}
   {% include 'social_media/social_media.html' %}
 {% endblock content %}
 
