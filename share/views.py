@@ -63,17 +63,9 @@ class HouseNameListView(LoginRequiredMixin, ListView):
     model = HouseNameModel
     template_name = 'houses/list_house_name.html' 
     
-    def get_context_data(self, **kwargs):
-        # key = make_template_fragment_key('title', self.request.user.username)
-        # if cache.get('key'):
-        #     print(cache.get('key'))
-        # else:
-        #     cache.set('key', key) 
-        #     print(f"Cached: Done")      
-
+    def get_context_data(self, **kwargs):   
         ctx = {
             'housesnames' : HouseNameModel.objects.all().filter(user_FK=self.request.user).order_by('-last_updated_house'),
-            'timeout': 7200
         }
         return super(HouseNameListView, self).get_context_data(**ctx)
 
@@ -91,7 +83,7 @@ class HouseNameCreateView(LoginRequiredMixin, CreateView):
         messages.add_message(
             self.request, 
             messages.INFO,
-            'The House Name has been added'
+            f"{form.instance.house_name} has been added."
         )
         return super(HouseNameCreateView, self).form_valid(form)
 
@@ -101,17 +93,7 @@ class HouseNameDetailView(LoginRequiredMixin, DetailView, MultipleObjectMixin):
     context_object_name = 'house'
     paginate_by = 2
 
-    # def help(self, *args, **kwargs):
-    #     self.has_sub_kwh = dict()
-    #     try:
-    #         a = SubKilowattModel.objects.all()
-    #         print(f'Has--->{a}')
-    #     except:
-    #         return None
-
     def get_context_data(self, **kwargs):
-        # print(f'Has--->{self.help()}')
-        # print(f'OBJECT:{self.object}') 
         object_list = HouseTenantModel.objects.filter(house_name_FK=self.object)
         context = super(HouseNameDetailView, self).get_context_data(object_list= object_list, **kwargs)
         return context
@@ -124,7 +106,6 @@ class SubHouseNameListDetailView(LoginRequiredMixin, DetailView, MultipleObjectM
 
     #Activate PAGINATIONS [MultipleObjectMixin]
     def get_context_data(self, **kwargs):
-        # print(f'Objects: {self.object.id}')
         context = {
             'object_list': SubHouseNameModel.objects.filter(sub_house_FK=self.object.id).order_by('-sub_last_updated_house'),
         }
@@ -135,6 +116,16 @@ class HouseNameUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     template_name = 'houses/update_house_name.html'
     fields = ['house_name',]
     context_object_name = 'house'
+
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
+        if form.has_changed():
+            messages.add_message(
+            self.request, 
+            messages.INFO,
+            'The House Name has been changed'
+        )
+        return super(HouseNameUpdateView, self).post(request, *args, **kwargs)
 
     def test_func(self):
         user = self.get_object()
@@ -151,7 +142,6 @@ class PreHouseNameDetailView(LoginRequiredMixin, DetailView, MultipleObjectMixin
     paginate_by = 2
 
     def get_context_data(self, **kwargs):
-        # print(f'OBJECT:{self.object}') 
         object_list = SubTenantModel.objects.filter(main_tenant_FK=self.object)
         context = super(PreHouseNameDetailView, self).get_context_data(object_list= object_list, **kwargs)
         return context
@@ -164,7 +154,6 @@ class SubHouseNameDetailView(LoginRequiredMixin, DetailView, MultipleObjectMixin
 
     #Activate PAGINATIONS [MultipleObjectMixin]
     def get_context_data(self, **kwargs):
-        # print(f'kwargs: {self.kwargs["subpk"]}') 
         context = {
             'object_list': SubTenantModel.objects.filter(sub_house_tenant_FK=self.kwargs['subpk']),
             'subhouse': SubHouseNameModel.objects.filter(pk=self.kwargs['subpk'])
@@ -182,7 +171,7 @@ class HouseNameDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         messages.add_message(
                 self.request, 
                 messages.INFO,
-                f"{obj.house_name} has been Deleted."
+                f"{obj.house_name} has been deleted."
             )  
         return super(HouseNameDeleteView, self).post(request, *args, **kwargs)
     def test_func(self):
@@ -211,7 +200,7 @@ class SubHouseNameDeleteView(LoginRequiredMixin, UserPassesTestMixin, CreateView
         messages.add_message(
                 self.request, 
                 messages.INFO,
-                f"{self.object} has been Deleted."
+                f"{self.object} has been deleted."
             )
         self.object.delete()
 
@@ -243,7 +232,13 @@ class SubHouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
 
     """Handle a Formset setting - Instansce get self.object which was set for HousesName by each user"""
     def get_form(self, form_class=None):
-        formset = SubHouseNameFormset(**self.get_form_kwargs(), instance=self.object)    
+        formset = SubHouseNameFormset(**self.get_form_kwargs(), instance=self.object) 
+        if formset.has_changed():
+            messages.add_message(
+            self.request, 
+            messages.INFO,
+            f"The Sub House Name has been changed."
+        )
         return formset # inline FormSet
 
     def form_valid(self, form) :
@@ -253,12 +248,6 @@ class SubHouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
                 eachform.instance.save()
             if eachform.cleaned_data['DELETE']:
                 eachform.instance.delete()
-
-        messages.add_message(
-            self.request, 
-            messages.INFO,
-            "Sub House Name Was Informed."
-        )
         return HttpResponseRedirect(self.get_success_url())#
 
     def get_success_url(self):
@@ -282,16 +271,16 @@ class TenantsHouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
     """Handle a Formset setting - Instansce get self.object which was set for HousesName by each user"""
     def get_form(self, form_class=None):
         formset = HouseTenantFormset(**self.get_form_kwargs(), instance=self.object)
+        if formset.has_changed():
+            messages.add_message(
+            self.request, 
+            messages.INFO,
+            f"Tenants Name has been changed."
+        )
         return formset # inline FormSet
 
     def form_valid(self, form) :
         form.save()
-        print(f"Valid_Form: {4}")
-        messages.add_message(
-            self.request, 
-            messages.INFO,
-            "Tenant's Detail Was Informed."
-        )
         return HttpResponseRedirect(self.get_success_url())
     
     def get_success_url(self):
@@ -314,20 +303,16 @@ class HouseBillFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
     """Handle a Formset setting - Instansce get self.object which was set for HousesName by each user"""
     def get_form(self, form_class=None):
         formset = HouseBillFormset(**self.get_form_kwargs(), instance=self.object)
+        if formset.has_changed():
+            messages.add_message(
+            self.request, 
+            messages.INFO,
+            f"Amount has been changed."
+        )
         return formset # inline FormSet
 
     def form_valid(self, form) :
-        # print(form.has_changed())
-        # if form.has_changed():
-        #     form.update()
-        # else:
-        #     form.save()
         form.save()
-        messages.add_message(
-            self.request, 
-            messages.INFO,
-            "Bill's Detail Was Informed."
-        )
         return HttpResponseRedirect(self.get_success_url())
         
     def get_success_url(self):
@@ -367,6 +352,12 @@ class SubTenantsHouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormVie
         
         pkform = self.kwargs['pk']
         formset= SubHouseTenantFormset(**self.get_form_kwargs(), instance=self.object, form_kwargs={'pkform': pkform})
+        if formset.has_changed():
+            messages.add_message(
+            self.request, 
+            messages.INFO,
+            f"Sub Tenants Name has been changed."
+        )
         
         return formset # inline FormSet
 
@@ -411,16 +402,17 @@ class HouseKilowattsFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
 
     """Handle a Formset setting - Instansce get self.object which was set for HousesName by each user"""
     def get_form(self, form_class=None):
-        formset = HouseKilowattsFormset(**self.get_form_kwargs(), instance=self.object)       
+        formset = HouseKilowattsFormset(**self.get_form_kwargs(), instance=self.object)
+        if formset.has_changed():
+            messages.add_message(
+            self.request, 
+            messages.INFO,
+            f"Kilowatts has been changed."
+        )     
         return formset # inline FormSet
 
     def form_valid(self, form) :
         form.save()
-        messages.add_message(
-            self.request, 
-            messages.INFO,
-            "Kilowatts Details Was Informed."
-        )
         return HttpResponseRedirect(self.get_success_url())
         
     def get_success_url(self):
@@ -446,8 +438,12 @@ class SubHouseKilowattsFormView(LoginRequiredMixin, SingleObjectMixin, FormView)
     def get_form(self, form_class=None):
         pkform = self.kwargs['pk']
         formset = SubHouseKilowattFormset(**self.get_form_kwargs(), instance=self.object, form_kwargs={'pkform': pkform})
-        # print(f' SubHouseKilowattsFormView:\n {formset}')
-        # print(f'*'*10) 
+        if formset.has_changed():
+            messages.add_message(
+            self.request, 
+            messages.INFO,
+            f"Sub Kilowatts has been changed."
+        )
         return formset # inline FormSet
 
     def form_valid(self, form): 
@@ -457,12 +453,6 @@ class SubHouseKilowattsFormView(LoginRequiredMixin, SingleObjectMixin, FormView)
             if not obj.main_house_kwh_FK:
                 obj.main_house_kwh_FK = HouseNameModel.objects.get(pk=self.kwargs['pk']) 
                 obj.save()
-            
-        messages.add_message(
-            self.request, 
-            messages.INFO,
-            "Sub Kilowatts Details Was Informed."
-        )
         return HttpResponseRedirect(self.get_success_url())
     
     # def form_invalid(self, form):
