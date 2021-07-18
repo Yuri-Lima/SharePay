@@ -104,8 +104,12 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     #Must be here on bottom
+
     # 'django.middleware.cache.FetchFromCacheMiddleware'#This is to cache the entery page
 ]
+CACHE_MIDDLEWARE_SECONDS = 300
+CACHE_MIDDLEWARE_ALIAS = 'default'
+CACHE_MIDDLEWARE_KEY_PREFIX = 'sharepay'
 
 ROOT_URLCONF = 'sharepay.urls'
 
@@ -208,14 +212,14 @@ USE_L10N = True
 USE_TZ = True
 
 """ Security Session """
-if not DEBUG:
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    CSRF_COOKIE_SAMESITE = 'None'
-    SESSION_COOKIE_SAMESITE = 'None'
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    BASE_URL = "https://www.sharepay.com.br"
+# if not DEBUG:
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_SAMESITE = 'None'
+SESSION_COOKIE_SAMESITE = 'None'
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+BASE_URL = "https://www.sharepay.com.br"
 
 # CORS_REPLACE_HTTPS_REFERER      = False
 # HOST_SCHEME                     = "http://"
