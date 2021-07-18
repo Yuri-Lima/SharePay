@@ -1,20 +1,14 @@
 {% extends 'houses/base.html' %}
 {% load static %}
+{% load adv_cache %}
 
-{% block title %}
-  {% if housesnames.count > 1 %}
-    SharePay - Houses
-  {% else %}
-    SharePay - House
-  {% endif %}
-{% endblock title %}
+
+{% block title %}SharePay - Houses{% endblock title %}
 
 {% block content %}
-  <div class="overlay"></div>
-  <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
-    <source src="{% static 'mp4/bg.mp4' %}" type="video/mp4">
-  </video>
 
+{% include 'houses/video.html' %}
+{% cache 43200 'list_houses' request.user.pk request.user.last_login %}
   <div class="masthead">
     <div class="masthead-bg"></div>
     <div class="container h-100">
@@ -24,6 +18,7 @@
           {% comment %} LOGO {% endcomment %}
           {% include 'houses/logo.html' %}
             <!-- ================================ -->
+            {% nocache %}
               {% if messages %}
               <ul class="tenant_messages">
                   {% for message in messages %}
@@ -31,7 +26,9 @@
                   {% endfor %}
               </ul>
               {% endif %}
+            {% endnocache %}
             <!-- ================================ -->
+            {% nocache %}
              <h2 class="h3 p-1">Houses</h2>
             {% if housesnames %}
               {% for housename in housesnames %}
@@ -46,7 +43,7 @@
                     <a type="button" class="btn btn-outline-warning text-white mb-2" href="{% url 'share:delete_house_name' pk=housename.id %}">Delete</a>
                   </div>
                 </div>
-                    {% endfor %}
+              {% endfor %}
             {%else %}
               <p>There is no House to display</p>
             {% endif %}
@@ -60,11 +57,13 @@
               {% include 'account/is_authenticated.html' %}
             </div>
             {% endif %}
+            {% endnocache %}
           </div>
         </div>
       </div>
     </div>
   </div>
+  {% endcache %}
 
   {% include 'social_media/social_media.html' %}
 {% endblock content %}

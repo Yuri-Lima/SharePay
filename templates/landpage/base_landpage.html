@@ -1,7 +1,8 @@
 {% load static %}
+{% load cache %}
 <!DOCTYPE html>
 <html lang="en">
-
+{% cache 43200 'header_landpage' %}
   <head>
     <!-- Primary Meta Tags -->
     <meta charset="UTF-8">
@@ -101,15 +102,20 @@
       });
       </script>
   </head>
+  {% endcache %}
 
   <body class="d-flex flex-column h-100">
   {% spaceless %}
     {% autoescape on %}
+        {% cache 43200 'content_landpage' %}
         {% block content %}
         
         {% endblock content %}
+        {%  endcache %}
     {% endautoescape %}
   {% endspaceless %}
+
+  {% cache 43200 'scripts_landpage' %}
       <!-- TODO this section should be updated based on your business requirements. -->
       <script>
         function consentGranted() {
@@ -124,5 +130,6 @@
       {% block Scripts %}
       
       {% endblock Scripts %}
+      {% endcache %}
   </body>
 </html>

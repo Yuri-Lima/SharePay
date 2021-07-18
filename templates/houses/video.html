@@ -1,0 +1,10 @@
+{% load static %}
+{% load cache %}
+
+
+{% cache 43200 'videoBK' %}
+  <div class="overlay"></div>
+  <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
+    <source src="{% static 'mp4/bg.mp4' %}" type="video/mp4">
+  </video>
+{% endcache %}

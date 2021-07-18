@@ -1,7 +1,8 @@
 {% load static %}
+{% load adv_cache %}
 <!DOCTYPE html>
 <html lang="en">
-
+  {% cache 43200 'header_addTenants' request.user.pk request.user.last_login %}
   <head>
     <!-- Primary Meta Tags -->
     <meta charset="UTF-8">
@@ -75,16 +76,19 @@
               });
     </script>
   </head>
-
+  {% endcache %}
   <body>
     {% spaceless %}
       {% autoescape on %}
+          {% cache 43200 'content_addTenants' request.user.pk request.user.last_login %}
           {% block content %}
           
           {% endblock content %}
+          {% endcache %}
       {% endautoescape %}
     {% endspaceless %}
 
+    {% cache 43200 'script_addTenants' request.user.pk request.user.last_login %}
     <!-- Dont remove anythong below -->
     <!-- Bootstrap core JavaScript -->
     <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
@@ -111,6 +115,7 @@
     <!-- Extras JavaScript Code by each Template -->
     {% block Scripts %}
     {% endblock Scripts %}
+    {% endcache %}
   </body>
 
 </html>

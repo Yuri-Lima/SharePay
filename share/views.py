@@ -1,13 +1,9 @@
-from datetime import date
-from django import contrib
-from django.db.models.fields import DecimalField
-from django.db.models.query import QuerySet
+from re import template
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls.base import reverse, reverse_lazy, set_urlconf 
 from django.views.generic.detail import SingleObjectMixin
 from django.views.generic.list import MultipleObjectMixin
-from django.views.generic.edit import BaseDeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from .models import (
@@ -45,6 +41,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.forms import BaseInlineFormSet
 from django.core.exceptions import ValidationError, NON_FIELD_ERRORS
 from django.utils.translation import gettext_lazy as _
+from django.core.cache import cache
+from django.core.cache.utils import make_template_fragment_key
 
 #############  START NORMAL GENERICS VIEWS  WITHOUT MODIFICATIONS  #########################
 class IndexTemplateView(TemplateView):
@@ -59,15 +57,23 @@ class IndexTemplateView(TemplateView):
                 'houses' : HouseNameModel.objects.all().filter(user_FK=self.request.user),
             }
             return ctx
-    
+
+
 class HouseNameListView(LoginRequiredMixin, ListView):
     model = HouseNameModel
-    template_name = 'houses/list_house_name.html'
-
+    template_name = 'houses/list_house_name.html' 
     
     def get_context_data(self, **kwargs):
+        # key = make_template_fragment_key('title', self.request.user.username)
+        # if cache.get('key'):
+        #     print(cache.get('key'))
+        # else:
+        #     cache.set('key', key) 
+        #     print(f"Cached: Done")      
+
         ctx = {
-            'housesnames' : HouseNameModel.objects.all().filter(user_FK=self.request.user).order_by('-last_updated_house'), 
+            'housesnames' : HouseNameModel.objects.all().filter(user_FK=self.request.user).order_by('-last_updated_house'),
+            'timeout': 7200
         }
         return super(HouseNameListView, self).get_context_data(**ctx)
 
@@ -76,10 +82,12 @@ class HouseNameCreateView(LoginRequiredMixin, CreateView):
     template_name = 'houses/create_house_name.html'
     form_class=HouseNameModelForm
 
+    def post(self, request, *args, **kwargs):
+        return super(HouseNameCreateView, self).post(request, *args, **kwargs)
+
     def form_valid(self, form):
         #Set User
         form.instance.user_FK =  self.request.user
-
         messages.add_message(
             self.request, 
             messages.INFO,
@@ -93,13 +101,13 @@ class HouseNameDetailView(LoginRequiredMixin, DetailView, MultipleObjectMixin):
     context_object_name = 'house'
     paginate_by = 2
 
-    def help(self, *args, **kwargs):
-        self.has_sub_kwh = dict()
-        try:
-            a = SubKilowattModel.objects.all()
-            print(f'Has--->{a}')
-        except:
-            return None
+    # def help(self, *args, **kwargs):
+    #     self.has_sub_kwh = dict()
+    #     try:
+    #         a = SubKilowattModel.objects.all()
+    #         print(f'Has--->{a}')
+    #     except:
+    #         return None
 
     def get_context_data(self, **kwargs):
         # print(f'Has--->{self.help()}')
