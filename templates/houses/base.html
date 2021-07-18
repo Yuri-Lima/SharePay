@@ -1,6 +1,10 @@
 {% load static %}
+{% load cache %}
+
+{% spaceless %}
 <!DOCTYPE html>
 <html lang="en">
+  {% cache 43200 'header_houses' %}
   <head>
     <!-- Primary Meta Tags -->
     <meta charset="UTF-8">
@@ -100,15 +104,16 @@
       });
       </script>
   </head>
+  {% endcache %}
 
   <body>
-  {% spaceless %}
     {% autoescape on %}
         {% block content %}
         
         {% endblock content %}
     {% endautoescape %}
-  {% endspaceless %}
+
+  {% cache 43200 'scripts_houses' %}
       <!-- Dont remove anythong below -->
       <!-- Bootstrap core JavaScript -->
       <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
@@ -138,6 +143,8 @@
       {% block Scripts %}
       
       {% endblock Scripts %}
+      {% endcache %}
   </body>
 
 </html>
+{% endspaceless %}

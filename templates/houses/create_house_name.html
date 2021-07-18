@@ -1,15 +1,13 @@
 {% extends 'houses/base.html' %}
 {% load static %}
+{% load adv_cache %}
 
 
 {% block title %}SharePay - New House Name{% endblock title %}
 
 {% block content %}
-  <div class="overlay"></div>
-  <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
-    <source src="{% static 'mp4/bg.mp4' %}" type="video/mp4">
-  </video>
-
+{% include 'houses/video.html' %}
+{% cache 0 'createhouse' request.user.pk request.user.last_login %}
 <div class="masthead">
   <div class="masthead-bg"></div>
   <div class="container h-100">
@@ -18,6 +16,7 @@
         <div class="masthead-content text-white py-5 py-md-0">
         {% comment %} LOGO {% endcomment %}
         {% include 'houses/logo.html' %}
+        {% nocache %}
         {% if houses %}
           <h2 class="h3">Houses Registered</h2>
           {% for house in houses %}
@@ -55,11 +54,13 @@
           {% include 'account/is_authenticated.html' %}
         </div>
         {% endif %}
+        {% endnocache %}
         </div>
       </div>
     </div>
   </div>
 </div>
+{% endcache %}
 
   {% include 'social_media/social_media.html' %}
 {% endblock content %}

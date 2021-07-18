@@ -1,15 +1,13 @@
 {% extends 'houses/base.html' %}
 {% load static %}
 {% load humanize %}
+{% load adv_cache %}
 
 {% block title %}SharePay - Details House - {{house.id}} {% endblock title %}
 
 {% block content %}
-  <div class="overlay"></div>
-  <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
-    <source src="{% static 'mp4/bg.mp4' %}" type="video/mp4">
-  </video>
-
+{% include 'houses/video.html' %}
+{% cache 0 'detailsubhousename' request.user.pk request.user.last_login %}
   <div class="masthead">
     <div class="masthead-bg"></div>
     <div class="container h-100">
@@ -27,7 +25,7 @@
                     </ul>
                   {% endif %}
                 <!-- ==============END_MESSAGES================== -->
-
+                {% nocache %}
                 <h3>Details from {{subhouse.first}}</h3>
                 <!-- ==============Edit_Sub_House================== -->
                 <a href="{% url 'share:add_sub_house' pk=house.id %}" role="button" class="btn btn-outline-primary w-100 p-1 mb-2">Edit Sub House</a>
@@ -58,22 +56,22 @@
                     <!-- Paginations -->
                       {% if is_paginated %}
                         {% if page_obj.has_previous %}<!-- Esse o objeto que nossa Views passa dentro do nosso template -->
-                            <a class="btn btn-outline-primary mb-4" href="?page=1">First</a>
-                            <a class="btn btn-outline-primary mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+                            <a class="btn btn-outline-primary mb-4 mr-1" href="?page=1">First</a>
+                            <a class="btn btn-outline-primary mb-4 mr-1" href="?page={{ page_obj.previous_page_number }}">Previous</a>
                         {% endif %}
 
                         {% for num in page_obj.paginator.page_range %}
                             {% if page_obj.number == num %}<!-- page_obj.number e o numero atual da pagina -->
-                                <a class="btn btn-primary mb-4" href="?page={{ num }}">{{ num }}</a>
+                                <a class="btn btn-primary mb-4 mr-1" href="?page={{ num }}">{{ num }}</a>
                             {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
-                                <a class="btn btn-primary mb-4" href="?page={{ num }}">{{ num }}</a>
+                                <a class="btn btn-primary mb-4 mr-1" href="?page={{ num }}">{{ num }}</a>
                             {% endif %}
 
                         {% endfor %}
 
                         {% if page_obj.has_next %}<!-- Esse o objeto que nossa Views passa dentro do nosso template -->
-                            <a class="btn btn-outline-primary mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
-                            <a class="btn btn-outline-primary mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a> <!-- page_obj.pagintor.num_pages Retorna o numero total de paginas -->
+                            <a class="btn btn-outline-primary mb-4 mr-1" href="?page={{ page_obj.next_page_number }}">Next</a>
+                            <a class="btn btn-outline-primary mb-4 mr-1" href="?page={{ page_obj.paginator.num_pages }}">Last</a> <!-- page_obj.pagintor.num_pages Retorna o numero total de paginas -->
                         {% endif %}
                       {% endif %} 
                   {% endif %}
@@ -93,11 +91,13 @@
                   {% include 'account/is_authenticated.html' %}
                 </div>
                 {% endif %}
+                {% endnocache %}
             </div>
         </div>
       </div>
     </div>
   </div>
+{% endcache %}
 
   {% include 'social_media/social_media.html' %}
 {% endblock content %}

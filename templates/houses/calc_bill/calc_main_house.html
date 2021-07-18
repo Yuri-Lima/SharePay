@@ -6,9 +6,11 @@
 {% block content %}
 {% comment %} LOGO {% endcomment %}
 {% include 'houses/logo_report.html' %}
+{% nocache %}
 <a type="button" class="close" aria-label="Close" href="{% url 'share:reports_view' pk=Main_House.first.id %}">
       <small><span aria-hidden="true">Back to Reports</span> </small>
 </a>
+{% endnocache %}
 
 {% comment %} START INFOR BILL {% endcomment %}
 <table class="table table-sm">
@@ -20,6 +22,7 @@
       <th scope="col">User Name</th>
     </tr>
   </thead>
+  {% nocache %}
   <tbody>
     <tr>
       <th scope="row">{{calc_1.kwh}}</th>
@@ -28,6 +31,7 @@
       <td>{{calc_1.user}}</td>
     </tr>
   </tbody>
+  {% endnocache %}
 </table>
 {% comment %} END INFOR BILL {% endcomment %}
 
@@ -36,6 +40,7 @@
 </div>
 
 {% comment %} START TABLE MAIN HOUSE {% endcomment %}
+{% nocache %}
 <div class="table-responsive">
   <table class="table table-hover">
     {% for main_name, values in calc_1.main_house.items %}
@@ -67,9 +72,11 @@
     {% endfor %}
   </table>
 </div>
+{% endnocache %}
 {% comment %} END TABLE MAIN HOUSE {% endcomment %}
 
 {% comment %} START TABLE SUB HOUSE {% endcomment %}
+{% nocache %}
 {% for subs_house_name, c in calc_1.sub_house_without.items %}
   <div class="table-responsive">
     <table class="table table-hover">
@@ -99,9 +106,11 @@
     </table>
   </div>
 {% endfor %}
+{% endnocache %}
 {% comment %} END TABLE SUB HOUSE {% endcomment %}
 
 {% comment %} START TABLE LEFT OVER {% endcomment %}
+{% nocache %}
 {% if  calc_1.left_over1 %}
   <p class="m-2">
     <a class="btn btn-primary" data-toggle="collapse" href="#collapseWithoutKWH" role="button" aria-expanded="false" aria-controls="collapseExample">
@@ -162,17 +171,20 @@
   </div>
 
 {% endif %}
-
+{% endnocache %}
 {% comment %} END TABLE LEFT OVER {% endcomment %}
 
 {% comment %} START all With Kilowatts {% endcomment %}
+{% nocache %}
 {% include 'houses/calc_bill/with_kwh.html' %}
+{% endnocache %}
 
 
-
+{% nocache %}
 <a type="button" class="close" aria-label="Close" href="{% url 'share:reports_view' pk=Main_House.first.id %}">
       <small><span aria-hidden="true">Back to Reports</span></small>
 </a>
+{% endnocache %}
 
 {% endblock content %} 
 
