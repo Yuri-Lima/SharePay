@@ -56,7 +56,34 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.instagram',
     'adv_cache_tag',#Cached Tags
-    #'debug_toolbar',#Debug Toolbar
+    'debug_toolbar',#Debug Toolbar
+]
+#Cached Tags
+"""
+So if you like the principle of a unique key for a given template for a given object/user or whatever, 
+be sure to always use the same arguments, except the last one, and activate the ADV_CACHE_VERSIONING setting.
+Note that we also manage an internal version number, which will always be compared to the cached one. 
+This internal version number is only updated when the internal algorithm of django-adv-cache-tag changes. 
+But you can update it to invalidate all cached templates by adding a ADV_CACHE_VERSION to your settings 
+(our internal version and the value from this settings will be concatenated to get the internal version really used)
+"""
+ADV_CACHE_VERSIONING = True
+"""
+To add a primary key, simply set the ADV_CACHE_INCLUDE_PK setting to True, and the first argument (after the fragment’s name) will be used as a pk.
+"""
+ADV_CACHE_INCLUDE_PK = True
+"""
+The fragment name-->
+The fragment name is the name to use as a base to create the cache key, and is defined just after the expiry time.
+In django-adv-cache-tag, by setting ADV_CACHE_RESOLVE_NAME to True, a fragment name that is not quoted will be resolved as a variable that should be in the context.
+"""
+ADV_CACHE_RESOLVE_NAME= True
+
+#Debug Toolbar
+INTERNAL_IPS = [
+    '127.0.0.1',
+    '.sharepay.com.br',
+    '.herokuapp.com',
 ]
 #Cached Tags
 """
@@ -90,7 +117,7 @@ AUTH_USER_MODEL = 'users.CustomUser'
 
 MIDDLEWARE = [
     #debug_toolbar MUST BE HERE below cache UPDATED
-    #'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 
     #Must be here on top
     # 'django.middleware.cache.UpdateCacheMiddleware',#This is to cache the entery page
@@ -104,7 +131,6 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     #Must be here on bottom
-  
     # 'django.middleware.cache.FetchFromCacheMiddleware'#This is to cache the entery page
 ]
 CACHE_MIDDLEWARE_SECONDS = 300
