@@ -7,7 +7,7 @@
 
 {% block content %}
 {% include 'houses/video.html' %}
-{% cache 0 'reports' request.user.pk request.user.last_login %}
+{% cache 10080 'reports' request.user.pk request.user.last_login %}
   <div class="masthead">
     <div class="masthead-bg"></div>
     <div class="container h-100">

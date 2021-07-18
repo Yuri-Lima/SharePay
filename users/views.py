@@ -57,10 +57,10 @@ class ProfileUserView(UpdateView):
         
         form = self.get_form()
         if form.is_valid():
-            print(form)
+            # print(form)
             return self.form_valid(form)
         else:
-            print(form.errors)
+            # print(form.errors)
             return self.form_invalid(form)
         # return super(ProfileUserView, self).post(request, *args, **kwargs)
 

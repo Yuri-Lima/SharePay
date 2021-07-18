@@ -1,5 +1,6 @@
 {% load static %}
 {% load adv_cache %}
+{% spaceless %}
 <!DOCTYPE html>
 <html lang="en">
   {% cache 43200 'header_addTenants' request.user.pk request.user.last_login %}
@@ -78,15 +79,14 @@
   </head>
   {% endcache %}
   <body>
-    {% spaceless %}
+    
       {% autoescape on %}
-          {% cache 43200 'content_addTenants' request.user.pk request.user.last_login %}
+          
           {% block content %}
           
           {% endblock content %}
-          {% endcache %}
+          
       {% endautoescape %}
-    {% endspaceless %}
 
     {% cache 43200 'script_addTenants' request.user.pk request.user.last_login %}
     <!-- Dont remove anythong below -->
@@ -119,3 +119,4 @@
   </body>
 
 </html>
+{% endspaceless %}
