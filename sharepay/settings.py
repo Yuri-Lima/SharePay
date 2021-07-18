@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.facebook',
     'allauth.socialaccount.providers.instagram',
     'adv_cache_tag',#Cached Tags
-    'debug_toolbar',#Debug Toolbar
+    #'debug_toolbar',#Debug Toolbar
 ]
 #Cached Tags
 """
@@ -80,17 +80,17 @@ In django-adv-cache-tag, by setting ADV_CACHE_RESOLVE_NAME to True, a fragment n
 ADV_CACHE_RESOLVE_NAME= True
 
 #Debug Toolbar
-INTERNAL_IPS = [
-    '127.0.0.1',
-    '.sharepay.com.br',
-    '.herokuapp.com',
-]
+# INTERNAL_IPS = [
+#     '127.0.0.1',
+#     '.sharepay.com.br',
+#     '.herokuapp.com',
+# ]
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
 MIDDLEWARE = [
     #debug_toolbar MUST BE HERE below cache UPDATED
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    #'debug_toolbar.middleware.DebugToolbarMiddleware',
 
     #Must be here on top
     # 'django.middleware.cache.UpdateCacheMiddleware',#This is to cache the entery page
@@ -104,7 +104,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     #Must be here on bottom
-
+  
     # 'django.middleware.cache.FetchFromCacheMiddleware'#This is to cache the entery page
 ]
 CACHE_MIDDLEWARE_SECONDS = 300
@@ -212,14 +212,14 @@ USE_L10N = True
 USE_TZ = True
 
 """ Security Session """
-# if not DEBUG:
-SECURE_SSL_REDIRECT = True
-SESSION_COOKIE_SECURE = True
-CSRF_COOKIE_SECURE = True
-CSRF_COOKIE_SAMESITE = 'None'
-SESSION_COOKIE_SAMESITE = 'None'
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-BASE_URL = "https://www.sharepay.com.br"
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    CSRF_COOKIE_SAMESITE = 'None'
+    SESSION_COOKIE_SAMESITE = 'None'
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    BASE_URL = "https://www.sharepay.com.br"
 
 # CORS_REPLACE_HTTPS_REFERER      = False
 # HOST_SCHEME                     = "http://"
