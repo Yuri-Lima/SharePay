@@ -1,13 +1,11 @@
 {% extends 'houses/base.html' %}
 {% load static %}
+{% load adv_cache %}
 
 {% block title %}SharePay - Kwh{% endblock title %}
 
 {% block content %}
-<div class="overlay"></div>
-<video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
-<source src="{% static 'mp4/bg.mp4' %}" type="video/mp4">
-</video>
+{% include 'houses/video.html' %}
 <div class="masthead">
     <div class="masthead-bg"></div>
         <div class="container h-100">
@@ -16,6 +14,7 @@
                     <div class="masthead-content py-5 py-md-0">
                         {% comment %} LOGO {% endcomment %}
                         {% include 'houses/logo.html' %}
+                        {% nocache %}
                         <form action="" method="POST", enctype="multipart/form-data">
                             {% for hidden_field in form.hidden_fields %}
                                 {{ hidden_field.erros }}
@@ -83,6 +82,7 @@
                             {% include 'account/is_authenticated.html' %}
                         </div>
                         {% endif %}
+                        {% endnocache %}
                     </div>
                 </div>
             </div>

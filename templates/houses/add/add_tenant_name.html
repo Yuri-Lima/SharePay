@@ -1,6 +1,7 @@
 {% extends 'houses/base_add_tenant.html' %}
 {% load static %}
 {% load humanize %}
+{% load adv_cache %}
 
 
 {% block title %}SharePay - Add Tenants{% endblock title %}
@@ -21,6 +22,7 @@
     </ul>
     {% endif %}
     <!-- ================================ -->
+    {% nocache %}
     <div class="d-flex flex-column  text-white">
         <div class="p-2">
             <h1>Tenants - {{houses.house_tenant_related.all.count }}</h>
@@ -86,6 +88,7 @@
             {% include 'account/is_authenticated.html' %}
         </div>
     {% endif %}
+    {% endnocache %}
 </div>
 {% endblock content %}
 

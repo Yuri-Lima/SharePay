@@ -34,6 +34,7 @@ from .forms import (
     DisconnectFormAccount,
     CustomUserChangeForm
     )
+from django.contrib.auth.models import AnonymousUser
 
 
 """
@@ -68,6 +69,11 @@ class LoginUserView(LoginView):
     template_name = 'account/login.html'
     success_url = reverse_lazy('share:index')
     # form_class  = CustomLoginAccount
+    def get_context_data(self, **kwargs):
+        ctx = {
+            'AnonymousUser': AnonymousUser.id
+        }
+        return super(LoginUserView, self).get_context_data(**kwargs)
 
 class SignUpUserView(SignupView):
     template_name = 'account/signup.html'

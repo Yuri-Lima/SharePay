@@ -1,9 +1,11 @@
 {% load static %}
 {% load account %}
 {% load socialaccount %}
+{% load cache %}
 
 <!doctype html>
 <html lang="en">
+    {% cache 43200 'header_account' %}
     <head>
         <!-- Primary Meta Tags -->
         <meta charset="UTF-8">
@@ -81,6 +83,7 @@
                 });
         </script>
     </head>
+    {% endcache %}
     <body >
     {% spaceless %}
         {% autoescape on %}
@@ -89,6 +92,8 @@
             {% endblock content %}
         {% endautoescape %}
     {% endspaceless %}
+    
+    {% cache 43200 'scripts_account' %}
     <!-- Dont remove anythong below -->
     <!-- Bootstrap core JavaScript -->
     <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
@@ -114,5 +119,6 @@
     {% block Scripts %}
 
     {% endblock Scripts %}
+    {% endcache %}
     </body>
 </html>

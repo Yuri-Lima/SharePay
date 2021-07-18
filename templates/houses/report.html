@@ -1,15 +1,13 @@
 {% extends 'houses/base.html' %}
 {% load static %}
 {% load humanize %}
+{% load adv_cache %}
 
 {% block title %}SharePay - Report House {% endblock title %}
 
 {% block content %}
-  <div class="overlay"></div>
-  <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
-    <source src="{% static 'mp4/bg.mp4' %}" type="video/mp4">
-  </video>
-
+{% include 'houses/video.html' %}
+{% cache 0 'reports' request.user.pk request.user.last_login %}
   <div class="masthead">
     <div class="masthead-bg"></div>
     <div class="container h-100">
@@ -30,6 +28,7 @@
                     </ul>
                   {% endif %}
                 <!-- ================================ -->
+                {% nocache %}
                 <h3>Details from {{Main_House.first.house_name}}</h3>
          
                 <a href="{% url 'share:calc_house' pk=Main_House.first.id %}" role="button" class="btn btn-primary w-100 mb-2">Calculate</a>
@@ -42,11 +41,13 @@
                   {% include 'account/is_authenticated.html' %}
                 </div>
                 {% endif %}
+                {% endnocache %}
             </div>
         </div>
       </div>
     </div>
   </div>
+  {% endcache %}
 
   {% include 'social_media/social_media.html' %}
 {% endblock content %}
