@@ -1,7 +1,7 @@
 from decimal import Decimal
 from django.db.models.base import Model
 from django import forms
-from django.db.models.fields import CharField
+from django.contrib import messages
 from django.forms.models import inlineformset_factory
 from django.forms import TextInput, DateInput, NumberInput
 from share.models import (
@@ -42,6 +42,10 @@ class HouseNameModelForm(forms.ModelForm):
     class Meta:
         model= HouseNameModel
         fields=['house_name']
+    
+    def has_changed(self):
+        print(f"Changed Data: {self.changed_data}\n")
+        return super(HouseNameModelForm, self).has_changed()
 
     def clean(self):
         house_name = self.cleaned_data['house_name']
@@ -210,7 +214,6 @@ class SubHouseNameModelForm(forms.ModelForm):
     class Meta:
         model= SubHouseNameModel
         fields= '__all__'
-
     
     #Overriding
     def clean(self):

@@ -2,11 +2,11 @@
 {% load adv_cache %}
 {% comment %} <img src="{% static 'logo/sharepay_dog_text.png' %}" alt="main_logo" width="192" height="192" srcset="" class='img-responsive'> {% endcomment %}
 {% cache 43200 'logoreport' request.user.pk request.user.last_login %}
-<a href="{% url 'share:index' %}">
+<a href="{% url 'share:index' %}" alt="reportlogo">
     <picture>
         <source media="(min-width:650px)" srcset="{% static 'logo/sharepay_dog_text.png' %}" width="190" height="auto">
         <source media="(min-width:465px)" srcset="{% static 'logo/sharepay_dog_text.png' %}" width="120" height="auto">
-        <img class="img-fluid py-2 mx-auto d-block" src="{% static 'logo/sharepay_dog_text.png' %}" alt="SharePay" max-width="100%" width="250" height="auto">
+        <img class="img-fluid py-2 mx-auto d-block" src="{% static 'logo/sharepay_dog_text.png' %}" alt="ReportLogo" max-width="100%" width="250" height="213">
     </picture>
 </a>
 {% endcache %}

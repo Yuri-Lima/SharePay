@@ -17,13 +17,13 @@
             {% comment %} LOGO {% endcomment %}
           {% include 'houses/logo.html' %}
                 <!-- ================================ -->
-                  {% if messages %}
+                  {% comment %} {% if messages %}
                     <ul class="detail_messages">
                         {% for message in messages %}
                             <li>{{message}}</li>
                         {% endfor %}
                     </ul>
-                  {% endif %}
+                  {% endif %} {% endcomment %}
                 <!-- ================================ -->
                 <h3>Houses Informations</h3>
                 {% nocache %}
