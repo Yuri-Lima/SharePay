@@ -5,10 +5,7 @@
 {% block title %}SharePay - Pre-Details House.{{house.id}} {% endblock title %}
 
 {% block content %}
-  <div class="overlay"></div>
-  <video playsinline="playsinline" autoplay="autoplay" muted="muted" loop="loop">
-    <source src="{% static 'mp4/bg.mp4' %}" type="video/mp4">
-  </video>
+{% include 'houses/video.html' %}
 
   <div class="masthead">
     <div class="masthead-bg"></div>
@@ -28,6 +25,7 @@
                   {% endif %}
                 <!-- ================================ -->
                 <h3>Houses Informations</h3>
+                {% nocache %}
                   {% if house.house_bill_related.all %}
                     <a href="{% url 'share:detail_house_name' pk=house.id %}" role="button" class="btn btn-primary w-100 mb-2">Edit Main House Details</a>
                   {% else %}
@@ -51,6 +49,7 @@
                   {% include 'account/is_authenticated.html' %}
                 </div>
                 {% endif %}
+                {% endnocache %}
             </div>
         </div>
       </div>

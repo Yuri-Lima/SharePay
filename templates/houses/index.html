@@ -1,15 +1,13 @@
 {% extends 'houses/base.html' %}
 {% load static %}
+{% load adv_cache %}
 
 
 {% block title %}SharePay - Welcome{% endblock title %}
 
 {% block content %}
-  <div class="overlay"></div>
-  <video playsinline="playsinline" id="mainvideo" autoplay="autoplay" muted="muted" loop="loop">
-    <source src="{% static 'mp4/bg.mp4' %}" type="video/mp4">
-  </video>
-
+{% include 'houses/video.html' %}
+{% cache 0 'indexpage' request.user.pk request.user.last_login %}
   <div class="masthead">
     <div class="masthead-bg"></div>
     <div class="container h-100">
@@ -68,7 +66,7 @@
       </div>
     </div>
   </div>
-
+{% endcache %}
   {% include 'social_media/social_media.html' %}
 {% endblock content %}
 

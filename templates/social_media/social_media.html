@@ -1,4 +1,6 @@
+{% load cache %}
 
+{% cache 43200 'social_links'  %}
 <div class="social-icons">
     <ul class="list-unstyled text-center mb-0">
       <li class="list-unstyled-item">
@@ -17,4 +19,5 @@
         </a>
       </li>
     </ul>
-  </div>
+</div>
+{% endcache %}
