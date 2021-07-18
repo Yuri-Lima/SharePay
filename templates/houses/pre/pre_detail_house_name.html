@@ -6,7 +6,7 @@
 
 {% block content %}
 {% include 'houses/video.html' %}
-
+{% cache 0 'predetailhousename' request.user.pk request.user.last_login %}
   <div class="masthead">
     <div class="masthead-bg"></div>
     <div class="container h-100">
@@ -55,6 +55,7 @@
       </div>
     </div>
   </div>
+  {% endcache %}
 
   {% include 'social_media/social_media.html' %}
 {% endblock content %}

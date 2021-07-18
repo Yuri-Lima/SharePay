@@ -21,6 +21,7 @@
         {% endfor %}
     </ul>
     {% endif %}
+    {% cache 0 'addtenantname' request.user.pk request.user.last_login %}
     <!-- ================================ -->
     {% nocache %}
     <div class="d-flex flex-column  text-white">
@@ -89,6 +90,7 @@
         </div>
     {% endif %}
     {% endnocache %}
+    {% endcache %}
 </div>
 {% endblock content %}
 
