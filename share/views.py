@@ -272,6 +272,7 @@ class TenantsHouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
     """Handle GET requests: instantiate a blank version of the form."""
     def get(self, request, *args, **kwargs):
         self.object = self.get_object(queryset=HouseNameModel.objects.all())
+        key = make_template_fragment_key('addtenantname')
         return super(TenantsHouseNameFormView, self).get(request, *args, **kwargs)
     
     def post(self, request, *args, **kwargs):
@@ -285,6 +286,7 @@ class TenantsHouseNameFormView(LoginRequiredMixin, SingleObjectMixin, FormView):
 
     def form_valid(self, form) :
         form.save()
+        print(f"Valid_Form: {4}")
         messages.add_message(
             self.request, 
             messages.INFO,
