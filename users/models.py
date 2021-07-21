@@ -3,11 +3,16 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 
 class CustomUser(AbstractUser):
     first_name = models.CharField(max_length=100, null= True, blank= True)
     last_name = models.CharField(max_length=100, null= True, blank= True)
     email = models.EmailField(max_length=255, unique=True)
+
+    class Meta:
+        verbose_name = _("User")
+        verbose_name_plural = _("Users")
 
     def __str__(self):
         if self.first_name and self.last_name:
