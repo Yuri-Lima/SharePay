@@ -11,13 +11,19 @@ from decimal import *
 
 
 class HouseNameModel(models.Model):
-    user_FK = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_related', null=False, verbose_name='User')
-    house_name = models.CharField(verbose_name="House Name",max_length=100, null=True, blank=True,)
+    user_FK = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='user_related', null=False)
+    house_name = models.CharField(max_length=100, null=True, blank=True,)
     meter = models.IntegerField(default=1)
     # main_house = models.BooleanField(null=False, blank=False, help_text='Is the bill belongs this house typed above?')
     last_updated_house = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     unique_test_HouseName = models.UniqueConstraint(fields= ['user_FK','house_name'], name='unique_house')
     #unique=True,  error_messages={'unique':'Sub House Name has already been created! Try some diferent one.'}
+
+    class Meta:
+        ordering = ['-last_updated_house']
+        verbose_name = _("Main House Name")
+        verbose_name_plural = _("Main House Names")
+
     def __str__(self) -> str:
         if self.house_name:
             return self.house_name
@@ -25,21 +31,21 @@ class HouseNameModel(models.Model):
     
     def get_absolute_url(self):
         return reverse('share:detail_house_name', kwargs={'pk': self.pk})
-
-    class Meta:
-        ordering = ['-last_updated_house']
+        
         
 class HouseBillModel(models.Model):
     house_bill_FK = models.ForeignKey(HouseNameModel, null=True, blank=True, max_length=255,
-                                on_delete=models.CASCADE, related_name='house_bill_related', verbose_name='House Bill')
+                                on_delete=models.CASCADE, related_name='house_bill_related')
     amount_bill = models.CharField(null=True, blank= True, max_length=22)
     start_date_bill = models.DateField(null=False, blank=False)
     end_date_bill = models.DateField(null=False, blank=False)
     days_bill = models.IntegerField(default=0)
-    last_updated_bill = models.DateTimeField(auto_now=True, null=True, blank=True)
+    last_updated_bill = models.DateTimeField(auto_now=True, null=True, blank=True)        
 
     class Meta:
         ordering = ['-last_updated_bill']
+        verbose_name = _("Main House Bill")
+        verbose_name_plural = _("Main House Bills")
 
     def __str__(self):
         if self.house_bill_FK and self.amount_bill:
@@ -51,7 +57,7 @@ class HouseBillModel(models.Model):
 
 class HouseKilowattModel(models.Model):
     house_kwh_FK = models.ForeignKey(HouseNameModel, null=True, blank=True, max_length=255,
-                                on_delete=models.CASCADE, related_name='house_kilowatt_related', verbose_name='House Name')
+                                on_delete=models.CASCADE, related_name='house_kilowatt_related')
     kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=0)
     last_read_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=0)
     read_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=0)
@@ -59,6 +65,8 @@ class HouseKilowattModel(models.Model):
 
     class Meta:
         ordering = ['-last_updated_kwh']
+        verbose_name = _("Main House Killowatt")
+        verbose_name_plural = _("Main House Killowatts")
 
     def __str__(self):
         return str(self.house_kwh_FK) + ' - ' + str(self.kwh) + 'kwh'
@@ -68,13 +76,18 @@ class HouseKilowattModel(models.Model):
 
 class HouseTenantModel(models.Model):
     house_name_FK = models.ForeignKey(HouseNameModel, null=True, blank=True, max_length=255,
-                            on_delete=models.CASCADE, related_name='house_tenant_related', verbose_name='Tenant Name')
+                            on_delete=models.CASCADE, related_name='house_tenant_related')
     house_tenant = models.CharField(max_length=150, null=True, blank=True,)
     start_date = models.DateField(null=False, blank=False)
     end_date = models.DateField(null=False, blank=False)
     days = models.IntegerField(null=True, blank=True, default=0)
     last_updated_tenant = models.DateField(auto_now=True, null=True, blank=True)
     unique_test_HouseTenant = models.UniqueConstraint(fields= ['house_name_FK','house_tenant'], name='unique_tenant')
+
+    class Meta:
+        ordering = ['-last_updated_tenant']
+        verbose_name = _("Main House Tenant")
+        verbose_name_plural = _("Main House Tenants")
     
     def __str__(self) -> str:
         return self.house_tenant
@@ -92,22 +105,26 @@ class HouseTenantModel(models.Model):
             raise ValidationError({
                     'house_tenant': _('This field is required.'),
                 })
-            
-    class Meta:
-        ordering = ['-last_updated_tenant']
+
 
 class SubHouseNameModel(models.Model):
     """
         'unique_test': Source--> https://docs.djangoproject.com/en/3.2/ref/models/constraints/#django.db.models.UniqueConstraint
     """
     sub_house_FK = models.ForeignKey(HouseNameModel, null=True, blank=True, max_length=255,
-                                on_delete=models.CASCADE, related_name='sub_house_related', verbose_name='House Name')
+                                on_delete=models.CASCADE, related_name='sub_house_related')
     sub_house_name = models.CharField(verbose_name="Sub House Name",max_length=100, null=True, blank=True,)
     sub_meter = models.IntegerField(null=True, blank=True, default=1)
     sub_main_house = models.BooleanField(null=False, blank=False, help_text='Is the bill belongs this house typed above?')
     sub_last_updated_house = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     unique_test_SubHouseName = models.UniqueConstraint(fields= ['sub_house_FK','sub_house_name'], name='unique_sub_house')
     #unique=True, error_messages={'unique':'Sub House Name has already been created! Try some diferent one.'}
+
+    class Meta:
+        ordering = ['-sub_last_updated_house']
+        verbose_name = _("Sub House Name")
+        verbose_name_plural = _("Sub House Names")
+
     def __str__(self) -> str:
         return self.sub_house_name
 
@@ -116,15 +133,11 @@ class SubHouseNameModel(models.Model):
                                                         'pk': self.pk,
                                                         'subpk': self.subpk,
                                                         })
-
-    class Meta:
-        ordering = ['-sub_last_updated_house']
-
 class SubKilowattModel(models.Model):
     main_house_kwh_FK = models.ForeignKey(HouseNameModel, null=True, blank=True, max_length=255,
-                                on_delete=models.CASCADE, related_name='main_house_kilowatt_related', verbose_name='House Name')
+                                on_delete=models.CASCADE, related_name='main_house_kilowatt_related')
     sub_house_kwh_FK = models.ForeignKey(SubHouseNameModel, null=True, blank=True, max_length=255,
-                                on_delete=models.CASCADE, related_name='sub_house_kilowatt_related', verbose_name='Sub House Name')              
+                                on_delete=models.CASCADE, related_name='sub_house_kilowatt_related')              
     sub_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=0,)
     sub_amount_bill = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=0,)
     sub_last_read_kwh = models.DecimalField(null=True, blank= True, max_digits=10, decimal_places=0,)
@@ -133,6 +146,8 @@ class SubKilowattModel(models.Model):
 
     class Meta:
         ordering = ['-sub_last_updated_kwh']
+        verbose_name = _("Sub House Kilowatt")
+        verbose_name_plural = _("Sub House Kilowatts")
 
     def __str__(self):
         return str(self.sub_house_kwh_FK) + ' - ' + str(self.sub_kwh) + 'kwh'
@@ -145,9 +160,9 @@ class SubKilowattModel(models.Model):
 
 class SubTenantModel(models.Model):
     main_tenant_FK = models.ForeignKey(HouseNameModel, null=True, blank=True, max_length=255,
-                                on_delete=models.CASCADE, related_name='main_house_tenant_related', verbose_name='House Name')
+                                on_delete=models.CASCADE, related_name='main_house_tenant_related')
     sub_house_tenant_FK = models.ForeignKey(SubHouseNameModel, null=True, blank=True, max_length=255,
-                                on_delete=models.CASCADE, related_name='sub_house_tenant_related', verbose_name='Sub House Name')
+                                on_delete=models.CASCADE, related_name='sub_house_tenant_related')
     sub_house_tenant = models.CharField(max_length=150, null=True, blank=True,)
     sub_start_date = models.DateField(null=True, blank=True)
     sub_end_date = models.DateField(null=True, blank=True)
@@ -157,6 +172,9 @@ class SubTenantModel(models.Model):
 
     class Meta:
         ordering = ['-sub_last_updated_tenant']
+        verbose_name = _("Sub House Tenant")
+        verbose_name_plural = _("Sub House Tenants")
+        
 
     def __str__(self):
         if self.sub_house_tenant:
