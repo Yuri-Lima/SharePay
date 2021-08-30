@@ -30,6 +30,7 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
     '.sharepay.com.br',
     '.herokuapp.com',
+    '.sharepaybill.herokuapp.com',
 ]
 
 # Application definition
