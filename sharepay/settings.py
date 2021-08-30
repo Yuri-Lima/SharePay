@@ -424,14 +424,14 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = config('client_id_google')
 SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('secret_google')
 
 #Facebook Settings
-SOCIAL_AUTH_FACEBOOK_OAUTH2_KEY = config('client_id_facebook')
-SOCIAL_AUTH_FACEBOOK_OAUTH2_SECRET = config('secret_facebook')
+# SOCIAL_AUTH_FACEBOOK_OAUTH2_KEY = config('client_id_facebook')
+# SOCIAL_AUTH_FACEBOOK_OAUTH2_SECRET = config('secret_facebook')
 
 #Instagram Settings
-PROFILE_URL = 'https://instagram.com/'
-SOCIAL_AUTH_INSTAGRAM_KEY = config('client_id_instagram')
-SOCIAL_AUTH_INSTAGRAM_SECRET = config('secret_instagram')
-SOCIAL_AUTH_INSTAGRAM_EXTRA_DATA = [('user', 'user')]
+# PROFILE_URL = 'https://instagram.com/'
+# SOCIAL_AUTH_INSTAGRAM_KEY = config('client_id_instagram')
+# SOCIAL_AUTH_INSTAGRAM_SECRET = config('secret_instagram')
+# SOCIAL_AUTH_INSTAGRAM_EXTRA_DATA = [('user', 'user')]
 
 
 #Linkedin Settings
