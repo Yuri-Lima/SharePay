@@ -53,8 +53,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'allauth.socialaccount.providers.linkedin_oauth2',
-    'allauth.socialaccount.providers.facebook',
-    'allauth.socialaccount.providers.instagram',
+    # 'allauth.socialaccount.providers.facebook',
+    # 'allauth.socialaccount.providers.instagram',
     'adv_cache_tag',#Cached Tags
     'debug_toolbar',#Debug Toolbar
 ]
@@ -385,35 +385,35 @@ SOCIALACCOUNT_PROVIDERS = {
             'x-li-src': 'msdk'
         },
     },
-    'facebook': {
-        'METHOD': 'oauth2',
-        'SDK_URL': '//connect.facebook.net/en_US/sdk.js',
-        'SCOPE': ['email', 'public_profile'],
-        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
-        'INIT_PARAMS': {'cookie': True},
-        'FIELDS': [
-            'id',
-            'first_name',
-            'last_name',
-            'middle_name',
-            'name',
-            'name_format',
-            # 'picture',
-            'short_name',
-            'birthday'
-        ],
-        'EXCHANGE_TOKEN': True,
-        'LOCALE_FUNC': 'path.to.callable',
-        'VERIFIED_EMAIL': False,
-        'VERSION': 'v7.0',
-        # 'LOCALE_FUNC': lambda request: 'en_US'
-    },
-    'instagram': {
-        'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
-        'METHOD': 'oauth2',
-        'LOCALE_FUNC': lambda request: 'en_US',
-        'VERIFIED_EMAIL': False,
-    }
+    # 'facebook': {
+    #     'METHOD': 'oauth2',
+    #     'SDK_URL': '//connect.facebook.net/en_US/sdk.js',
+    #     'SCOPE': ['email', 'public_profile'],
+    #     'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+    #     'INIT_PARAMS': {'cookie': True},
+    #     'FIELDS': [
+    #         'id',
+    #         'first_name',
+    #         'last_name',
+    #         'middle_name',
+    #         'name',
+    #         'name_format',
+    #         # 'picture',
+    #         'short_name',
+    #         'birthday'
+    #     ],
+    #     'EXCHANGE_TOKEN': True,
+    #     'LOCALE_FUNC': 'path.to.callable',
+    #     'VERIFIED_EMAIL': False,
+    #     'VERSION': 'v7.0',
+    #     # 'LOCALE_FUNC': lambda request: 'en_US'
+    # },
+    # 'instagram': {
+    #     'AUTH_PARAMS': {'auth_type': 'reauthenticate'},
+    #     'METHOD': 'oauth2',
+    #     'LOCALE_FUNC': lambda request: 'en_US',
+    #     'VERIFIED_EMAIL': False,
+    # }
 }
 
 XCHANGE_TOKEN = True
