@@ -29,6 +29,8 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
     '.sharepay.com.br',
+    'www.sharepay.com.br',
+    'sharepay.com.br',
     '.herokuapp.com',
     '.sharepaybill.herokuapp.com',
 ]
@@ -85,6 +87,8 @@ INTERNAL_IPS = [
     '127.0.0.1',
     '.sharepay.com.br',
     '.herokuapp.com',
+    'www.sharepay.com.br',
+    'sharepay.com.br',
 ]
 #Cached Tags
 """
@@ -171,13 +175,13 @@ WSGI_APPLICATION = 'sharepay.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        "LOCATION": [config('DATABASE_URL')],
-        # 'NAME': 'REDACTED',
-        # 'USER': 'REDACTED',
-        # 'PASSWORD': 'REDACTED',
-        # 'HOST': 'REDACTED',
-        # 'PORT': '5432',
+        'ENGINE': 'django.db.backends.mysql',
+        # "LOCATION": [config('DATABASE_URL')],
+        'NAME': 'REDACTED',
+        'USER': 'REDACTED',
+        'PASSWORD': 'REDACTED',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }   
 }
 
@@ -438,4 +442,4 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = config('secret_google')
 SOCIAL_AUTH_LINKEDIN_OAUTH2_KEY = config('client_id_linkedin')
 SOCIAL_AUTH_LINKEDIN_OAUTH2_SECRET = config('secret_linkedin')
 
-django_heroku.settings(locals())
+# django_heroku.settings(locals())
