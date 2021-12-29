@@ -51,3 +51,9 @@
     sudo systemctl enable gunicorn_sharepay
     sudo systemctl status gunicorn_sharepay
     gunicorn sharepay.wsgi --preload --log-file - -b 0.0.0.0:8000
+
+# Source
+    https://www.digitalocean.com/community/tutorials/how-to-use-systemctl-to-manage-systemd-services-and-units-pt
+
+# Another Settings to deploy with Nginx and Django Apps
+    https://stackoverflow.com/questions/12800862/how-to-make-django-serve-static-files-with-gunicorn
