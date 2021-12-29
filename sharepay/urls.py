@@ -60,10 +60,10 @@ urlpatterns = [
     #Google Robots >> robots.txt << https://developers.google.com/search/docs/advanced/robots/create-robots-txt?hl=en
     path('robots.txt', TemplateView.as_view(template_name="robots.txt", content_type='text/plain')),
 ]
+
 #Static Paths >> static <<
 if settings.DEBUG is True:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-    # urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 #Error Pages Paths >> ERROR PAGES <<
 handler404 = 'share.views.handle_page_not_found_404'

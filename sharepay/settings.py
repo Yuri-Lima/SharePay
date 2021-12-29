@@ -23,11 +23,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=False, cast=bool)
+# DEBUG = config('DEBUG', default=True, cast=bool)
+DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
+    '5.161.47.220',
     '.sharepay.com.br',
     'www.sharepay.com.br',
     'sharepay.com.br',
@@ -111,13 +113,6 @@ In django-adv-cache-tag, by setting ADV_CACHE_RESOLVE_NAME to True, a fragment n
 """
 ADV_CACHE_RESOLVE_NAME= True
 
-#Debug Toolbar
-# INTERNAL_IPS = [
-#     '127.0.0.1',
-#     '.sharepay.com.br',
-#     '.herokuapp.com',
-# ]
-
 AUTH_USER_MODEL = 'users.CustomUser'
 
 MIDDLEWARE = [
@@ -198,7 +193,7 @@ CACHES = {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             # "SERIALIZER": "django_redis.serializers.json.JSONSerializer",
             "CONNECTION_POOL_KWARGS": {
-                "ssl_cert_reqs": None,
+                # "ssl_cert_reqs": None,
                 "max_connections": 500, 
                 "retry_on_timeout": True
             },
@@ -243,14 +238,17 @@ USE_L10N = True
 USE_TZ = True
 
 """ Security Session """
-if not DEBUG:
-    SECURE_SSL_REDIRECT = True
-    SESSION_COOKIE_SECURE = True
-    CSRF_COOKIE_SECURE = True
-    CSRF_COOKIE_SAMESITE = 'None'
-    SESSION_COOKIE_SAMESITE = 'None'
-    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-    BASE_URL = "https://www.sharepay.com.br"
+SECURE_SSL_REDIRECT = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+# if not DEBUG:
+#     SECURE_SSL_REDIRECT = True
+#     SESSION_COOKIE_SECURE = True
+#     CSRF_COOKIE_SECURE = True
+#     CSRF_COOKIE_SAMESITE = 'None'
+#     SESSION_COOKIE_SAMESITE = 'None'
+#     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+#     BASE_URL = "https://www.sharepay.com.br"
 
 # CORS_REPLACE_HTTPS_REFERER      = False
 # HOST_SCHEME                     = "http://"
@@ -264,9 +262,17 @@ if not DEBUG:
 MEDIA_ROOT  = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
 
+#Static Paths
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [BASE_DIR / "static"]
-STATIC_ROOT = BASE_DIR / "staticfiles"
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+
+# STATIC_URL = '/static/'
+# STATIC_ROOT = "/www/wwwroot/sharepay/SharePay/static/"
+
+
+
 
 #Settings SMTP email
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
