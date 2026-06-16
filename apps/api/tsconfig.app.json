@@ -19,9 +19,9 @@
     "skipLibCheck": true,
     "baseUrl": "../../",
     "paths": {
-      "@sharepay/calculator": ["dist/libs/calculator/src/index"],
-      "@sharepay/shared": ["dist/libs/shared/src/index"],
-      "@sharepay/api-interfaces": ["dist/libs/api-interfaces/src/index"]
+      "@sharepay/calculator": ["libs/calculator/src/index.ts"],
+      "@sharepay/shared": ["libs/shared/src/index.ts"],
+      "@sharepay/api-interfaces": ["libs/api-interfaces/src/index.ts"]
     }
   },
   "include": ["src/**/*.ts"],
