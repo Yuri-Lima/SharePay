@@ -3,7 +3,13 @@
   "compilerOptions": {
     "outDir": "../../dist/out-tsc",
     "declaration": true,
-    "types": ["node"]
+    "types": ["node"],
+    "baseUrl": "../../",
+    "paths": {
+      "@sharepay/calculator": ["libs/calculator/src/index.ts"],
+      "@sharepay/shared": ["libs/shared/src/index.ts"],
+      "@sharepay/api-interfaces": ["libs/api-interfaces/src/index.ts"]
+    }
   },
   "include": ["src/**/*.ts"],
   "exclude": ["jest.config.ts", "src/**/*.spec.ts", "src/**/*.test.ts"]

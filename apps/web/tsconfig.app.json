@@ -1,1 +1,16 @@
-{"extends":"../../tsconfig.base.json","compilerOptions":{"outDir":"../../dist/out-tsc","types":[]},"files":["src/main.ts"],"include":["src/**/*.d.ts","src/**/*.ts"],"exclude":["jest.config.ts","**/*.spec.ts","**/*.test.ts"]}
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "../../dist/out-tsc",
+    "types": [],
+    "baseUrl": "../../",
+    "paths": {
+      "@sharepay/calculator": ["libs/calculator/src/index.ts"],
+      "@sharepay/shared": ["libs/shared/src/index.ts"],
+      "@sharepay/api-interfaces": ["libs/api-interfaces/src/index.ts"]
+    }
+  },
+  "files": ["src/main.ts"],
+  "include": ["src/**/*.d.ts", "src/**/*.ts"],
+  "exclude": ["jest.config.ts", "**/*.spec.ts", "**/*.test.ts"]
+}

@@ -11,7 +11,13 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "skipLibCheck": true,
-    "types": ["jest", "node"]
+    "types": ["jest", "node"],
+    "baseUrl": "../../",
+    "paths": {
+      "@sharepay/calculator": ["libs/calculator/src/index.ts"],
+      "@sharepay/shared": ["libs/shared/src/index.ts"],
+      "@sharepay/api-interfaces": ["libs/api-interfaces/src/index.ts"]
+    }
   },
   "include": ["jest.config.ts", "src/**/*.spec.ts", "src/**/*.d.ts"],
   "exclude": []
