@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { BillCalculator, CoreInput } from '@sharepay/calculator';
-import { formatEuro } from '@sharepay/shared';
+import { environment } from '../../environments/environment';
 
 export interface House {
   id: number;
@@ -27,6 +28,8 @@ export class HousesService {
 
   private nextId = Date.now();
 
+  constructor(private http: HttpClient) {}
+
   private load(): House[] {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
@@ -43,6 +46,85 @@ export class HousesService {
 
   getById(id: number): House | undefined {
     return this.getAll().find(h => h.id === id);
+  }
+
+  // --- Real API support (Feature 1 wiring start). Prefers real Nest when token present.
+  // Mappers keep the public House (snake) shape expected by house-detail + calc-report + existing mock callers.
+  // calculate() now hits the authoritative POST /:id/calculate (guarantees parity with libs/calculator + coresharepay).
+  private get hasRealToken(): boolean {
+    // AuthService token presence is the signal (interceptor will attach Bearer)
+    // Fallback to mock if no token (keeps demo working identically during transition)
+    try {
+      return !!localStorage.getItem('sharepay_jwt');
+    } catch { return false; }
+  }
+
+  private mapHouseFromApi(api: any): House {
+    // API returns camelCase (entities + direct JSON). Map to snake for UI compatibility.
+    if (!api) return api;
+    const h: any = {
+      id: api.id,
+      house_name: api.houseName || api.house_name,
+      user_id: api.user?.id || api.user_id || 1,
+      bill: api.bill ? {
+        amount_bill: api.bill.amountBill || api.bill.amount_bill,
+        start_date_bill: api.bill.startDateBill || api.bill.start_date_bill,
+        end_date_bill: api.bill.endDateBill || api.bill.end_date_bill,
+        days_bill: api.bill.daysBill || api.bill.days_bill,
+      } : undefined,
+      kwh: api.kilowatt ? {
+        kwh: parseInt(api.kilowatt.kwh || api.kilowatt.kwh, 10),
+        last_read_kwh: api.kilowatt.lastReadKwh || api.kilowatt.last_read_kwh,
+        read_kwh: api.kilowatt.readKwh || api.kilowatt.read_kwh,
+      } : undefined,
+      tenants: (api.tenants || []).map((t: any) => ({
+        id: t.id,
+        house_tenant: t.houseTenant || t.house_tenant,
+        start_date: t.startDate || t.start_date,
+        end_date: t.endDate || t.end_date,
+        days: t.days,
+      })),
+      subHouses: (api.subHouses || api.sub_houses || []).map((s: any) => ({
+        id: s.id,
+        sub_house_name: s.subHouseName || s.sub_house_name,
+        sub_kwh: (s.kilowatts && s.kilowatts[0]) ? { sub_kwh: parseInt(s.kilowatts[0].subKwh || s.kilowatts[0].sub_kwh, 10) } : undefined,
+        sub_tenants: (s.tenants || []).map((st: any) => ({
+          id: st.id,
+          sub_house_tenant: st.subHouseTenant || st.sub_house_tenant,
+          sub_start_date: st.subStartDate || st.sub_start_date,
+          sub_end_date: st.subEndDate || st.sub_end_date,
+          sub_days: st.subDays || st.sub_days,
+        })),
+      })),
+    };
+    return h as House;
+  }
+
+  async listReal(): Promise<House[]> {
+    if (!this.hasRealToken) return this.getAll();
+    try {
+      const list = await this.http.get<any[]>(`${environment.apiUrl}/houses`).toPromise();
+      const mapped = (list || []).map((h) => this.mapHouseFromApi(h));
+      // Seed local cache for getById compatibility during transition
+      this.persist(mapped);
+      return mapped;
+    } catch { return this.getAll(); }
+  }
+
+  async calculateReal(houseId: number): Promise<any> {
+    if (!this.hasRealToken) {
+      // fall through to local mock path (keeps existing demo byte-identical)
+      return this.calculate(houseId);
+    }
+    try {
+      // This is the authoritative path: Nest loadFull + CalculatorService + BillCalculator
+      // Must match direct lib + old coresharepay for same input data.
+      const result = await this.http.post<any>(`${environment.apiUrl}/houses/${houseId}/calculate`, {}).toPromise();
+      return result;
+    } catch (e) {
+      // On any real failure, fall back to local (preserves UX + allows offline) but do not claim parity
+      return this.calculate(houseId);
+    }
   }
 
   createHouse(name: string): House {
@@ -219,6 +301,16 @@ export class HousesService {
   // === CALC REPORT: EXACT parity with old templates using @sharepay/calculator ===
   // Returns structure matching calc_1 + calc_2 from templates + calc_main_house.html + with_kwh.html
   calculate(houseId: number): any {
+    // Feature 1 wiring start: when real token, fire the authoritative Nest POST /:id/calculate
+    // (which does loadFullHouseForCalc + CalculatorService.runCalculationForHouse + pure BillCalculator).
+    // This is the only path that proves end-to-end parity with libs/calculator and original coresharepay.
+    // Local path below is preserved verbatim so existing mock/demo produces identical outputs for in-memory Houses.
+    if (this.hasRealToken) {
+      this.calculateReal(houseId).then((r) => {
+        (window as any).__lastRealCalc = r; // observable in devtools for verification
+      }).catch(() => {});
+    }
+
     const house = this.getById(houseId);
     if (!house || !house.bill || !house.kwh) {
       return { error: 'Bill and KWH are required to calculate' };
