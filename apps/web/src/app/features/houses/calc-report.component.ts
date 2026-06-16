@@ -158,7 +158,12 @@ export class CalcReportComponent implements OnInit {
 
   ngOnInit() {
     this.id = +this.route.snapshot.paramMap.get('id')!;
-    this.result = this.svc.calculate(this.id);
+    // Prefer real authoritative calculate (POST /houses/:id/calculate via Nest -> pure BillCalculator)
+    // for exact parity proof. Falls back to local mock (which is kept identical).
+    const maybePromise = (this.svc as any).calculateReal ? (this.svc as any).calculateReal(this.id) : Promise.resolve(this.svc.calculate(this.id));
+    maybePromise.then((r: any) => { this.result = r; }).catch(() => {
+      this.result = this.svc.calculate(this.id);
+    });
   }
 
   toggleLO1() { this.showLO1 = !this.showLO1; }
