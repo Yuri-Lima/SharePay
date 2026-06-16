@@ -20,7 +20,10 @@
             "tsConfig": "apps/web/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
             "assets": ["apps/web/src/assets"],
-            "styles": ["apps/web/src/styles.scss"]
+            "styles": [
+              "apps/web/src/tailwind.css",
+              "apps/web/src/styles.scss"
+            ]
           },
           "configurations": {
             "production": {

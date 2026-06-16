@@ -5,3 +5,6 @@ h1, h2, h3 { font-weight: 600; }
 .table-hover tbody tr:hover { background-color: #f1f3f5; }
 .alert { border-radius: .375rem; }
 .collapse-toggle { cursor: pointer; }
+
+/* Tailwind v4 (CSS-first, processed via PostCSS in apps/web/.postcssrc.json) */
+@import "tailwindcss";

@@ -113,7 +113,7 @@ import { HousesService, House } from '../../core/houses.service';
                         type="number"
                         class="form-control form-control-sm"
                         placeholder="Sub kWh"
-                        [value]="subKwhVal()[sh.id] ?? ''"
+                        [value]="subKwhVal()[sh.id] || ''"
                         (input)="updateSubKwhVal(sh.id, $any($event.target).value)"
                       />
                     </div>
@@ -134,7 +134,7 @@ import { HousesService, House } from '../../core/houses.service';
                       <input
                         class="form-control form-control-sm"
                         placeholder="Sub Tenant"
-                        [value]="newSubTenant()[sh.id] ?? ''"
+                        [value]="newSubTenant()[sh.id] || ''"
                         (input)="updateNewSubTenant(sh.id, $any($event.target).value)"
                       />
                     </div>
@@ -142,7 +142,7 @@ import { HousesService, House } from '../../core/houses.service';
                       <input
                         type="date"
                         class="form-control form-control-sm"
-                        [value]="newSubStart()[sh.id] ?? ''"
+                        [value]="newSubStart()[sh.id] || ''"
                         (input)="updateNewSubStart(sh.id, $any($event.target).value)"
                       />
                     </div>
@@ -150,7 +150,7 @@ import { HousesService, House } from '../../core/houses.service';
                       <input
                         type="date"
                         class="form-control form-control-sm"
-                        [value]="newSubEnd()[sh.id] ?? ''"
+                        [value]="newSubEnd()[sh.id] || ''"
                         (input)="updateNewSubEnd(sh.id, $any($event.target).value)"
                       />
                     </div>

@@ -4,8 +4,12 @@ packages:
 allowBuilds:
   '@nestjs/core': set this to true or false
   bcrypt: set this to true or false
-  esbuild: set this to true or false
-  lmdb: set this to true or false
+  esbuild: true
+  lmdb: true
   msgpackr-extract: set this to true or false
   nice-napi: set this to true or false
+  nx: true
   sqlite3: set this to true or false
+  unrs-resolver: true
+minimumReleaseAgeExclude:
+  - jest-preset-angular@17.0.0

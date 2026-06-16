@@ -18,6 +18,7 @@
     "experimentalDecorators": true,
     "skipLibCheck": true,
     "baseUrl": "../../",
+    "rootDir": "../../",
     "paths": {
       "@sharepay/calculator": ["libs/calculator/src/index.ts"],
       "@sharepay/shared": ["libs/shared/src/index.ts"],
