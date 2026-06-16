@@ -18,35 +18,48 @@ export class AuthService {
 
   getToken(): string | null { return this.token(); }
 
-  // Simulate API calls to /auth/* as required. In real would be this.http.post(`${environment.apiUrl}/auth/login`...
-  // Store JWT. Simple client validation performed in components; here basic.
   async login(usernameOrEmail: string, password: string): Promise<boolean> {
-    // Client side validation is done in form; here call simulated /auth/login
     if (!usernameOrEmail || !password) return false;
-
-    // Fake API response - generate JWT-like token. For demo SPA full parity we persist user.
-    const fakeJwt = btoa(JSON.stringify({ sub: usernameOrEmail, exp: Date.now() + 86400000 }));
-    const user: User = { id: 1, username: usernameOrEmail.split('@')[0], email: usernameOrEmail.includes('@') ? usernameOrEmail : usernameOrEmail + '@example.com' };
-
-    localStorage.setItem(this.tokenKey, fakeJwt);
-    localStorage.setItem(this.userKey, JSON.stringify(user));
-    this.token.set(fakeJwt);
-    this.currentUser.set(user);
-    return true;
+    try {
+      // Real call to Nest (LocalAuthGuard + jwt). Returns {access_token, user}
+      const res = await this.http.post<{ access_token: string; user: { id: number; username: string } }>(
+        `${environment.apiUrl}/auth/login`,
+        { username: usernameOrEmail, password } as any
+      ).toPromise();
+      if (!res?.access_token) return false;
+      const token = res.access_token;
+      const u = res.user;
+      const user: User = { id: u.id, username: u.username, email: (u as any).email || usernameOrEmail };
+      localStorage.setItem(this.tokenKey, token);
+      localStorage.setItem(this.userKey, JSON.stringify(user));
+      this.token.set(token);
+      this.currentUser.set(user);
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   async signup(username: string, email: string, password: string): Promise<boolean> {
-    // Simulate /auth/signup . Client validation in component (required fields, basic email, pw len)
     if (!username || !email || !password || password.length < 4) return false;
-
-    const fakeJwt = btoa(JSON.stringify({ sub: username, exp: Date.now() + 86400000 }));
-    const user: User = { id: Date.now(), username, email };
-
-    localStorage.setItem(this.tokenKey, fakeJwt);
-    localStorage.setItem(this.userKey, JSON.stringify(user));
-    this.token.set(fakeJwt);
-    this.currentUser.set(user);
-    return true;
+    try {
+      // Real register returns {access_token, user}
+      const res = await this.http.post<{ access_token: string; user: { id: number; username: string } }>(
+        `${environment.apiUrl}/auth/register`,
+        { username, email, password }
+      ).toPromise();
+      if (!res?.access_token) return false;
+      const token = res.access_token;
+      const u = res.user;
+      const user: User = { id: u.id, username: u.username, email };
+      localStorage.setItem(this.tokenKey, token);
+      localStorage.setItem(this.userKey, JSON.stringify(user));
+      this.token.set(token);
+      this.currentUser.set(user);
+      return true;
+    } catch {
+      return false;
+    }
   }
 
   logout(): void {

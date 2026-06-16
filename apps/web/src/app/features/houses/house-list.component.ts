@@ -34,6 +34,12 @@ import { HousesService, House } from '../../core/houses.service';
 })
 export class HouseListComponent {
   houses: House[] = [];
-  constructor(private svc: HousesService) { this.svc.houses$.subscribe(hs => this.houses = hs); }
+  constructor(private svc: HousesService) {
+    this.svc.houses$.subscribe(hs => this.houses = hs);
+    // Start of real API wiring: if token, load from Nest (persists to local cache for getById during transition)
+    if ((this.svc as any).listReal) {
+      (this.svc as any).listReal().then((hs: House[]) => { this.houses = hs; });
+    }
+  }
   del(id: number) { if (confirm('Delete house?')) this.svc.deleteHouse(id); }
 }
