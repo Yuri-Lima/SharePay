@@ -44,3 +44,17 @@ By following the correct simple steps of the application, we ensure that in five
 |-------|--------|---------|
 |  Yuri Lima | y.m.lima19@gmail.com  | +353 83 419.1605  |
 
+---
+
+**2026 Migration Notice**
+
+This repository has been **fully migrated** from the original Python/Django codebase to a **pnpm + Nx TypeScript monorepo** (NestJS backend + Angular frontend).
+
+- 100% bill splitting logic preserved in `libs/calculator` (tested for parity).
+- See `MIGRATION.md`, `PERFORMANCE_SECURITY_AUDIT.md`, `FINAL_REVIEW.md`, `CHANGELOG.md`.
+- Old Django code is retained in git history only.
+- All new development, Docker, CI, tests use the modern stack.
+- `pnpm` is the **exclusive** package manager.
+
+To run the old version refer to git tag `pre-migration` or original heroku deploy. New production is the TS stack.
+

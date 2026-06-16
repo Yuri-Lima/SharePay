@@ -1,0 +1,27 @@
+{
+  "name": "web",
+  "sourceRoot": "apps/web/src",
+  "projectType": "application",
+  "prefix": "sp",
+  "targets": {
+    "build": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "npx ng build web --configuration=production"
+      },
+      "configurations": {
+        "development": {
+          "command": "npx ng build web --configuration=development"
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/angular:dev-server",
+      "options": { "buildTarget": "web:build" }
+    },
+    "test": { "executor": "@nx/jest:jest", "options": { "jestConfig": "apps/web/jest.config.ts", "passWithNoTests": true } },
+    "lint": { "executor": "@nx/eslint:lint", "options": { "lintFilePatterns": ["apps/web/**/*.ts"] } },
+    "typecheck": { "executor": "nx:run-commands", "options": { "command": "tsc -p apps/web/tsconfig.app.json --noEmit" } }
+  },
+  "tags": ["scope:web", "type:app"]
+}

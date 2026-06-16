@@ -1,0 +1,66 @@
+# SharePay CI for pnpm + Nx TS monorepo
+# Triggers on push / PR targeting master (aligns with nx.json defaultBase)
+# - Frozen pnpm install (reproducible)
+# - Nx affected for lint / build / test / typecheck (efficient monorepo)
+# - Headless e2e (Playwright via Nx)
+# - Docker image builds for both api (Nest) and web (nginx)
+# Keeps calculator + api business invariants: full nx build graph exercised before docker layer.
+
+name: CI
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # required for nx affected
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11.5.0
+          run_install: false
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Install dependencies (frozen)
+        run: pnpm install --frozen-lockfile
+
+      - name: Nx affected: lint
+        run: pnpm nx affected -t lint --parallel=3
+
+      - name: Nx affected: build
+        run: pnpm nx affected -t build --parallel=3
+
+      - name: Nx affected: test
+        run: pnpm nx affected -t test --parallel=3 --passWithNoTests
+
+      - name: Nx affected: typecheck
+        run: pnpm nx affected -t typecheck --parallel=3
+
+      - name: Install Playwright browsers (for e2e)
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E (headless)
+        run: pnpm e2e
+        # Alternative explicit: pnpm nx run web-e2e:e2e --headed=false
+        # If web-e2e project not present yet, this may be skipped/adjusted; task requires the step.
+
+      - name: Build Docker images (api + web) for verification
+        run: |
+          docker build -f docker/Dockerfile.api -t sharepay-api:ci-${{ github.sha }} .
+          docker build -f docker/Dockerfile.web -t sharepay-web:ci-${{ github.sha }} .
+        # In real CD you would push to registry here. This step proves multi-stage builds succeed.

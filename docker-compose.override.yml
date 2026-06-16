@@ -1,0 +1,32 @@
+# Optional dev override (automatically merged by `docker compose` when present in CWD)
+# Useful for local iteration:
+#   docker compose up --build
+#   (override not committed to prod deploys; use only locally)
+#
+# Notes:
+# - For true dev loops prefer native: pnpm dev:api and pnpm dev:web (hot reload via Nx)
+# - This override keeps prod images but relaxes some settings for easier debugging.
+# - To avoid building prod layers every time during active dev, use the host pnpm scripts.
+# - If you want source-mounted dev containers, extend further (advanced; TS recompiles needed).
+
+version: '3.8'
+
+services:
+  api:
+    # Keep production build for parity testing, but allow override of CMD for debugging.
+    # Example: docker compose run --rm api sh  (inspect)
+    environment:
+      NODE_ENV: production   # change to development only if you have dev Dockerfile target
+    # Example volume for quick static file experiments (api is compiled):
+    # volumes:
+    #   - ./dist:/app/dist:ro
+
+  web:
+    # nginx serves the last built assets. Rebuild web after `pnpm nx build web --configuration=production`
+    ports:
+      - "4200:80"
+
+  db:
+    # Local postgres accessible on standard port from host tools (psql, pgadmin, etc.)
+    ports:
+      - "5432:5432"

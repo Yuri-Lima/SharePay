@@ -1,0 +1,68 @@
+# SharePay .dockerignore (production-ready, keeps context small + secure)
+# Matches pnpm Nx monorepo + legacy Python bits
+
+# Build / dist / cache
+dist/
+.nx/
+tmp/
+.nyc_output/
+coverage/
+*.tsbuildinfo
+
+# Deps (re-installed inside image)
+node_modules/
+
+# Git / VCS
+.git/
+.gitignore
+.gitattributes
+
+# Docker / compose (prevent recursive context bloat)
+Dockerfile*
+docker-compose*
+.dockerignore
+
+# Env / secrets (never ship)
+.env
+.env.*
+!.env.example
+
+# Python / old Django / Heroku (legacy, not part of new TS stack)
+*.py
+__pycache__/
+*.pyc
+share/
+sharepay/
+users/
+landpage/
+templates/
+static/
+staticfiles/
+manage.py
+requirements.txt
+runtime.txt
+Procfile
+doesNotDeleteIt.md
+git_commands.txt
+queryset.txt
+Valid_cpf.txt
+
+# Docs / misc (keep small image)
+*.md
+!README.md
+docs/
+.vscode/
+.idea/
+*.log
+
+# Test / dev only
+jest.config.*
+tsconfig.spec.json
+**/*.spec.ts
+**/*.test.ts
+e2e/
+playwright-report/
+test-results/
+
+# Lock is intentionally included (for reproducible pnpm install)
+# pnpm-lock.yaml  -- DO NOT ignore

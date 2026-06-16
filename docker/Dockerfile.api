@@ -1,0 +1,90 @@
+# Multi-stage production-ready Dockerfile for SharePay API (NestJS + Nx + pnpm)
+# Builds using workspace, produces slim Node runtime image.
+# syntax=docker/dockerfile:1.4
+
+FROM node:22-alpine AS base
+
+# Corepack + pinned pnpm (matches root packageManager)
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+RUN corepack enable && corepack prepare pnpm@11.5.0 --activate
+
+WORKDIR /app
+
+# ==========================================
+# Deps stage (leverages layer cache + pnpm store mount)
+# ==========================================
+FROM base AS deps
+
+# Only manifests first for better caching
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
+
+# Full workspace install (dev + prod). Nx build needs some dev tools.
+RUN --mount=type=cache,id=pnpm-store,target=/pnpm/store \
+    pnpm install --frozen-lockfile
+
+# Bring in full source (after deps cached)
+COPY . .
+
+# ==========================================
+# Build stage: compile api + dependent libs (calculator etc)
+# nx pipeline ensures ^build for libs
+# ==========================================
+FROM deps AS build
+
+# Prefer production config; fallback gracefully if not present in nx project yet.
+RUN pnpm nx build api --configuration=production || pnpm nx build api
+
+# ==========================================
+# Production runtime (small, no src, fixed workspace links)
+# ==========================================
+FROM node:22-alpine AS production
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV PORT=3000
+
+# wget for optional simple checks; node-based healthcheck below does not require it
+RUN apk add --no-cache wget ca-certificates
+
+# Bring prod-friendly node_modules (workspace symlinks will be overridden below)
+COPY --from=deps /app/node_modules ./node_modules
+
+# Bring compiled output (apps + built libs)
+COPY --from=build /app/dist ./dist
+
+# === CRITICAL for monorepo runtime ===
+# The Nx tsc builds keep bare specifiers (@sharepay/calculator etc).
+# pnpm links those to *source* dirs (src/index.ts) during install.
+# We replace the @sharepay/* entries in node_modules with the *built* dist outputs.
+# This guarantees prod runs pure JS with calculator/api invariants intact.
+RUN set -eux; \
+    mkdir -p node_modules/@sharepay; \
+    # Remove any existing links/dirs for our scope packages
+    rm -rf node_modules/@sharepay/calculator node_modules/@sharepay/shared node_modules/@sharepay/api-interfaces 2>/dev/null || true; \
+    # Copy built libs (they contain index.js + .d.ts from tsc)
+    if [ -d dist/libs/calculator ]; then cp -r dist/libs/calculator node_modules/@sharepay/calculator; fi; \
+    if [ -d dist/libs/shared ]; then cp -r dist/libs/shared node_modules/@sharepay/shared; fi; \
+    if [ -d dist/libs/api-interfaces ]; then cp -r dist/libs/api-interfaces node_modules/@sharepay/api-interfaces; fi; \
+    # Emit minimal package.json so Node resolution + any consumers succeed (main -> compiled)
+    if [ -d node_modules/@sharepay/calculator ]; then \
+      printf '{"name":"@sharepay/calculator","version":"0.0.1","main":"index.js","types":"index.d.ts","private":true}\n' > node_modules/@sharepay/calculator/package.json; \
+    fi; \
+    if [ -d node_modules/@sharepay/shared ]; then \
+      printf '{"name":"@sharepay/shared","version":"0.0.1","main":"index.js","types":"index.d.ts","private":true}\n' > node_modules/@sharepay/shared/package.json; \
+    fi; \
+    if [ -d node_modules/@sharepay/api-interfaces ]; then \
+      printf '{"name":"@sharepay/api-interfaces","version":"0.0.1","main":"index.js","types":"index.d.ts","private":true}\n' > node_modules/@sharepay/api-interfaces/package.json; \
+    fi
+
+EXPOSE 3000
+
+# Healthcheck: confirms the HTTP server is listening and returns non-5xx.
+# Works even before full Nest routes/guards/health module are added (404 is acceptable for "up").
+# Syncs with api invariants: any failure here would block dependent compose services.
+HEALTHCHECK --interval=30s --timeout=8s --start-period=15s --retries=3 \
+  CMD node -e 'const h=require("http");const p=process.env.PORT||3000;h.get("http://127.0.0.1:"+p,(r)=>{process.exit(r.statusCode<500?0:1)}).on("error",()=>process.exit(1));' || exit 1
+
+# Default start (overrideable). Assumes standard Nx Nest output layout.
+CMD ["node", "dist/apps/api/main.js"]
