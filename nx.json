@@ -55,5 +55,6 @@
         "cacheableOperations": ["build", "lint", "test", "e2e", "typecheck"]
       }
     }
-  }
+  },
+  "analytics": false
 }

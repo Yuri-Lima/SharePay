@@ -16,8 +16,11 @@
       }
     },
     "serve": {
-      "executor": "@nx/angular:dev-server",
-      "options": { "buildTarget": "web:build" }
+      "executor": "nx:run-commands",
+      "continuous": true,
+      "options": {
+        "command": "npx ng serve web --configuration=development"
+      }
     },
     "test": { "executor": "@nx/jest:jest", "options": { "jestConfig": "apps/web/jest.config.ts", "passWithNoTests": true } },
     "lint": { "executor": "@nx/eslint:lint", "options": { "lintFilePatterns": ["apps/web/**/*.ts"] } },

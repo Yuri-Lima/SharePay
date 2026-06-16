@@ -123,7 +123,7 @@ export class HousesService {
       // Must match direct lib + old coresharepay for same input data.
       const result = await this.http.post<any>(`${environment.apiUrl}/houses/${houseId}/calculate`, {}).toPromise();
       return result;
-    } catch (e) {
+    } catch {
       // On any real failure, fall back to local (preserves UX + allows offline) but do not claim parity
       return this.calculate(houseId);
     }

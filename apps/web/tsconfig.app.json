@@ -4,6 +4,7 @@
     "outDir": "../../dist/out-tsc",
     "types": [],
     "baseUrl": "../../",
+    "rootDir": "../../",
     "paths": {
       "@sharepay/calculator": ["libs/calculator/src/index.ts"],
       "@sharepay/shared": ["libs/shared/src/index.ts"],
@@ -12,5 +13,5 @@
   },
   "files": ["src/main.ts"],
   "include": ["src/**/*.d.ts", "src/**/*.ts"],
-  "exclude": ["jest.config.ts", "**/*.spec.ts", "**/*.test.ts"]
+  "exclude": ["jest.config.ts", "**/*.spec.ts", "**/*.test.ts", "src/test-setup.ts"]
 }

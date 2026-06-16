@@ -1,6 +1,6 @@
-import { Component, inject, effect } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { HousesService, House } from '../../core/houses.service';
+import { HousesService } from '../../core/houses.service';
 
 @Component({
   standalone: true,
