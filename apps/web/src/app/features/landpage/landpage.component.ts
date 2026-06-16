@@ -1,11 +1,10 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'sp-landpage',
   standalone: true,
-  imports: [CommonModule, RouterLink],
+  imports: [RouterLink],
   template: `
   <!-- Navigation + Masthead from index.html + features list -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">

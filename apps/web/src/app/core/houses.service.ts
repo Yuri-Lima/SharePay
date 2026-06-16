@@ -1,5 +1,4 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { Injectable, signal, computed } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BillCalculator, CoreInput } from '@sharepay/calculator';
 import { environment } from '../../environments/environment';
@@ -23,8 +22,11 @@ const STORAGE_KEY = 'sharepay_houses_v1';
 
 @Injectable({ providedIn: 'root' })
 export class HousesService {
-  private housesSubject = new BehaviorSubject<House[]>(this.load());
-  houses$ = this.housesSubject.asObservable();
+  private _houses = signal<House[]>(this.load());
+  readonly houses = this._houses.asReadonly();
+
+  // Convenience computed for consumers that prefer arrays (keeps API ergonomic)
+  readonly allHouses = computed(() => this._houses());
 
   private nextId = Date.now();
 
@@ -39,10 +41,10 @@ export class HousesService {
 
   private persist(houses: House[]) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(houses));
-    this.housesSubject.next(houses);
+    this._houses.set(houses);
   }
 
-  getAll(): House[] { return this.housesSubject.value; }
+  getAll(): House[] { return this._houses(); }
 
   getById(id: number): House | undefined {
     return this.getAll().find(h => h.id === id);
