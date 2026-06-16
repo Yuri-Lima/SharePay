@@ -1,0 +1,22 @@
+{
+  "extends": "./tsconfig.base.json",
+  "files": [],
+  "include": [],
+  "references": [
+    {
+      "path": "./libs/calculator"
+    },
+    {
+      "path": "./libs/shared"
+    },
+    {
+      "path": "./libs/api-interfaces"
+    },
+    {
+      "path": "./apps/api"
+    },
+    {
+      "path": "./apps/web"
+    }
+  ]
+}

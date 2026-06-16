@@ -1,0 +1,91 @@
+# SharePay multi-service production-ready compose
+# Services: db (postgres:16), api (Nest on Node), web (nginx static)
+# Ports (host): 4200 (web), 3000 (api), 5432 (db)
+# Env: provided via .env or inline defaults. See .env.example
+# Healthchecks + depends_on ensure startup order.
+# Usage:
+#   docker compose up -d --build
+#   docker compose logs -f api
+# Dev: `docker compose -f docker-compose.yml -f docker-compose.override.yml up` (see override)
+# All calculator invariants preserved (libs/calculator is part of api build graph)
+
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: sharepay-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER:-sharepay}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-change_this_in_production_please_use_strong}
+      POSTGRES_DB: ${DB_NAME:-sharepay}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-sharepay} -d ${DB_NAME:-sharepay}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - sharepay-net
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.api
+    container_name: sharepay-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: ${DB_USER:-sharepay}
+      DB_PASSWORD: ${DB_PASSWORD:-change_this_in_production_please_use_strong}
+      DB_NAME: ${DB_NAME:-sharepay}
+      JWT_SECRET: ${JWT_SECRET:-dev_jwt_secret_replace_in_prod}
+      NODE_ENV: production
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    healthcheck:
+      # Node-native check: server must respond (non-5xx). Works pre-/health controller.
+      test: ["CMD-SHELL", "node -e \"const h=require('http');h.get('http://127.0.0.1:3000',r=>process.exit(r.statusCode<500?0:1)).on('error',()=>process.exit(1))\""]
+      interval: 30s
+      timeout: 8s
+      retries: 3
+      start_period: 20s
+    networks:
+      - sharepay-net
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.web
+    container_name: sharepay-web
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "4200:80"
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    networks:
+      - sharepay-net
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  sharepay-net:
+    driver: bridge
